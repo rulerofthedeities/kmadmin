@@ -1,0 +1,57 @@
+<div class="row filter">
+  <div class="form-inline col-xs-12">
+    <div class="form-group">
+      <label for="wordFilter" class="sr-only">Filter woord:</label>
+      <input
+        type="text"
+        id="wordFilter"
+        placeholder="Filter woord"
+        class="form-control"
+        [(ngModel)]="filter.word"
+        (ngModelChange)="onFilterChanged()">
+    </div>
+    <div class="checkbox">
+      <label>
+        <input 
+        type="checkbox" 
+        name="startcb"
+        (change)="onFilterChanged()"
+        [(ngModel)]="filter.isFromStart">
+        Vanaf begin
+      </label>
+    </div>
+    <div class="checkbox">
+      <label>
+        <input 
+        type="checkbox" 
+        name="startcb"
+        (change)="onFilterChanged()"
+        [(ngModel)]="filter.isExact">
+        Exact match
+      </label>
+    </div>
+
+    <select 
+      class="form-control" 
+      (change)="onFilterChanged()"
+      [(ngModel)]="filter.lanCode">
+      <option *ngFor="let lan of languages" [value]="lan.code">
+        {{lan.name}}
+      </option>
+    </select>
+
+    <!--
+    <div *ngFor="let lan of languages">
+      <input type="radio" 
+        [(ngModel)]="filter.languageId" 
+        name="language" 
+        [value]="lan" 
+        (ngModelChange)="onFilterChanged()">{{lan}}
+    </div>
+    -->
+    <div class="text-muted">
+      Aantal woorden: <strong>{{totalWords}}</strong>
+    </div>
+  </div>
+</div>
+

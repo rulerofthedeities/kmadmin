@@ -1,0 +1,266 @@
+<div *ngIf="item">
+  <h1>{{item.name}} - {{item.lan}}</h1>
+  <form
+    [formGroup]="itemForm"
+    (ngSubmit) = "onSubmit(itemForm)"
+    class="form-horizontal">
+
+<!-- MAIN -->
+    <fieldset>
+      <legend>Main</legend>
+      <div class="form-group">
+        <label for="alias" class="control-label col-xs-2">Alias</label>
+        <div class="col-xs-10">
+          <input 
+            type="text"
+            class="form-control"
+            id="alias"
+            formControlName="alias">
+        </div>
+      </div>
+    </fieldset>
+
+<!-- LOCATION -->
+    <fieldset>
+      <legend>Location</legend>
+
+      <div class="form-group" *ngIf="item.lan==='en'">
+        <label for="pos" class="control-label col-xs-2">Long, lat</label>
+        <div class="col-xs-10">
+          <input 
+            type="text"
+            class="form-control"
+            id="pos"
+            formControlName="pos">
+        </div>
+      </div>
+
+      <div class="form-group" *ngIf="item.lan==='en'">
+        <label for="polyline" class="control-label col-xs-2">Polyline</label>
+        <div class="col-xs-10">
+          <textarea
+            class="form-control"
+            id="polyline"
+            rows="10"
+            formControlName="polyline">
+          </textarea>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="address" class="control-label col-xs-2">Address</label>
+        <div class="col-xs-10">
+          <input 
+            type="text"
+            class="form-control"
+            id="address"
+            formControlName="address">
+        </div>
+        <div class="col-xs-10 col-xs-offset-2" *ngIf="item.lan!=='en'">
+          <i>
+            {{item.address_en}}
+          </i>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="location" class="control-label col-xs-2">Location</label>
+        <div class="col-xs-10">
+          <input 
+            type="text"
+            class="form-control"
+            id="location"
+            formControlName="location">
+        </div>
+        <div class="col-xs-10 col-xs-offset-2" *ngIf="item.lan!=='en'">
+          <i>
+            {{item.location_en}}
+          </i>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="metro" class="control-label col-xs-2">Metro</label>
+        <div class="col-xs-10">
+          <input 
+            type="text"
+            class="form-control"
+            id="metro"
+            formControlName="metro">
+        </div>
+        <div class="col-xs-10 col-xs-offset-2" *ngIf="item.lan!=='en'">
+          <i>
+            {{item.metro_en}}
+          </i>
+        </div>
+      </div>
+    </fieldset>
+
+<!-- HEADER -->
+    <fieldset>
+      <legend>Header</legend>
+      <div class="form-group">
+        <label for="name" class="control-label col-xs-2">Title</label>
+        <div class="col-xs-10">
+          <input 
+            type="text"
+            class="form-control"
+            id="name"
+            formControlName="name">
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="subtitle" class="control-label col-xs-2">SubTitle</label>
+        <div class="col-xs-10">
+          <input 
+            type="text"
+            class="form-control"
+            id="subtitle"
+            formControlName="subTitle">
+        </div>
+      </div>
+
+      <div class="form-group" *ngIf="item.lan==='en'">
+        <label for="prefix" class="control-label col-xs-2">Prefix</label>
+        <div class="col-xs-1">Hotels near </div>
+        <div class="col-xs-1">
+          <input 
+            type="text"
+            class="form-control"
+            id="prefix"
+            formControlName="prefix">
+        </div> 
+        <div class="col-xs-8">{{item.name}}</div>
+      </div>
+
+      <div class="form-group">
+        <label for="description" class="control-label col-xs-2">Description</label>
+        <div class="col-xs-10">
+          <input 
+            type="text"
+            class="form-control"
+            id="description"
+            formControlName="description">
+        </div>
+      </div>
+
+      <div class="form-group" *ngIf="item.lan==='en'">
+        <label for="websites" class="control-label col-xs-2">Websites</label>
+        <div class="col-xs-10">
+          <input 
+            type="text"
+            class="form-control"
+            id="websites"
+            formControlName="websites">
+        </div>
+      </div>
+
+      <div class="form-group" *ngIf="item.lan==='en'">
+        <label for="categories" class="control-label col-xs-2">Categories</label>
+        <div class="col-xs-10">
+          <input 
+            type="text"
+            class="form-control"
+            id="categories"
+            formControlName="categories">
+        </div>
+      </div>
+
+    </fieldset>
+
+<!-- PHOTOS -->
+    <fieldset *ngIf="item.lan==='en'">
+      <legend>Photos</legend>
+
+      <div class="form-group">
+        <label for="thumb" class="control-label col-xs-2">Thumb</label>
+        <div class="col-xs-10">
+          <input 
+            type="text"
+            class="form-control"
+            id="thumb"
+            formControlName="thumb">
+        </div>
+      </div>
+
+
+      <div class="form-group">
+        <label for="photo" class="control-label col-xs-2">Photo</label>
+        <div class="col-xs-10">
+          <input 
+            type="text"
+            class="form-control"
+            id="photo"
+            formControlName="photo">
+        </div>
+      </div>
+
+    </fieldset>
+
+
+<!-- CONTENT -->
+    <fieldset>
+      <legend>Content</legend>
+
+      <div class="form-group">
+        <label for="preview" class="control-label col-xs-2">Preview</label>
+        <div class="col-xs-10">
+          <textarea
+            class="form-control"
+            id="preview"
+            rows="3"
+            formControlName="preview">
+          </textarea>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="preview" class="control-label col-xs-2">Content</label>
+        <div class="col-xs-10">
+          <textarea
+            class="form-control"
+            id="content"
+            rows="40"
+            formControlName="content">
+          </textarea>
+        </div>
+      </div>
+
+    </fieldset>
+
+
+
+    <div class="row">
+      <div class="form-group col-xs-12">
+        <input 
+          type="checkbox" 
+          name="publish"
+          formControlName="isPublish">
+          Publish
+      </div>
+      <div class="form-group col-xs-12" *ngIf="item.lan==='en'">
+        <input 
+          type="checkbox" 
+          name="topattraction"
+          formControlName="isTopAttraction">
+          Top Attraction
+      </div>
+      <div class="form-group col-xs-12" *ngIf="item.lan==='en'">
+        <input 
+          type="checkbox" 
+          name="quality"
+          formControlName="isQuality">
+          Quality
+      </div>
+    </div>
+
+    <div class="clearfix"></div>
+
+    <button
+      type="submit" 
+      class="btn btn-success" 
+      [disabled]="!itemForm.valid">
+      Update
+    </button>
+  </form>
+</div>

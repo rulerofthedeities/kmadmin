@@ -1,0 +1,15 @@
+form, .form {
+  border-radius: 6px;
+}
+.hasDetail {
+  border: 3px solid #5cb85c;
+}
+.update{
+  border: 3px solid orange;      
+}
+.add {
+  border: 3px solid red;
+}
+h4 > .fa {
+  font-size: 26px;
+}

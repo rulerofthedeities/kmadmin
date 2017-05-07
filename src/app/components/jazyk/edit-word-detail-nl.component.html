@@ -1,0 +1,28 @@
+DETAIL NL
+
+<form *ngIf="detailForm"
+      [formGroup]="detailForm"
+      class="form-horizontal"
+      [ngClass]="{
+        hasDetail:detailExists,
+        add:!detailExists,
+        update: detailExists && detailForm.dirty
+      }">
+  <div class="form-group">
+    <label 
+      for="article" 
+      class="control-label col-xs-2">
+      Article: 
+    </label>
+    <div class="col-xs-10">
+      <div *ngFor="let control of detailForm.controls['article'].controls; let i=index">
+        <input type="checkbox" id="checkbox-1" value="value-1" [formControl]="control" />     
+        {{articles[i]}}
+      </div>
+    </div>
+  </div>
+</form>
+
+{{wordTpe}}
+Detail exists: {{detailExists}}<br>
+detail:<pre>{{detail|json}}</pre>

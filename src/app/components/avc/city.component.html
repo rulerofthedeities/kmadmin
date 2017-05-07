@@ -1,0 +1,354 @@
+<div *ngIf="city">
+  <h1>CITY {{city.name}} - {{city.lan}}</h1>
+  <form
+    [formGroup]="cityForm"
+    (ngSubmit) = "onSubmit(cityForm)"
+    class="form-horizontal">
+
+<!-- MAIN -->
+    <fieldset>
+      <legend>Main</legend>
+      <div class="form-group">
+        <label for="alias" class="control-label col-xs-2">Local Alias</label>
+        <div class="col-xs-10">
+          <input 
+            type="text"
+            class="form-control"
+            id="alias"
+            formControlName="alias">
+        </div>
+      </div>
+
+      <div class="form-group" *ngIf="city.lan==='en'">
+        <label for="icon" class="control-label col-xs-2">Icon</label>
+        <div class="col-xs-10">
+          <input 
+            type="text"
+            class="form-control"
+            id="icon"
+            formControlName="icon">
+        </div>
+      </div>
+    </fieldset>
+
+<!-- LOCATION -->
+    <fieldset>
+      <legend>Location</legend>
+
+      <div class="form-group">
+        <label for="name" class="control-label col-xs-2">City Name</label>
+        <div class="col-xs-10">
+          <input 
+            type="text"
+            class="form-control"
+            id="name"
+            formControlName="name">
+        </div>
+      </div>
+
+      <div class="row">
+        <label for="state" class="control-label col-xs-2">State</label>
+        <div class="form-group col-xs-5">
+          <label for="statename" class="col-xs-2">Name:</label>
+          <div class="col-xs-10">
+            <input 
+              type="text"
+              class="form-control"
+              id="statename"
+              formControlName="stateName">
+          </div>
+        </div>
+        <div class="form-group col-xs-5">
+          <label for="statecode" class="col-xs-2">Code:</label>
+          <div class="col-xs-10">
+            <input 
+              type="text"
+              class="form-control"
+              id="statecode"
+              formControlName="stateCode">
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="country" class="control-label col-xs-2">Country</label>
+        <div class="col-xs-10">
+          <input 
+            type="text"
+            class="form-control"
+            id="country"
+            formControlName="country">
+        </div>
+      </div>
+
+      <div class="form-group" *ngIf="city.lan==='en'">
+        <label for="location" class="control-label col-xs-2">Long, lat</label>
+        <div class="col-xs-10">
+          <input 
+            type="text"
+            class="form-control"
+            id="location"
+            formControlName="location">
+        </div>
+      </div>
+
+      <div class="row">
+        <label for="state" class="control-label col-xs-2">Location</label>
+        <div class="form-group col-xs-7" [ngClass]="{'col-xs-7':city.lan==='en','col-xs-10':city.lan!=='en' }">
+          <label for="locationdescr" class="col-xs-1">Descr:</label>
+          <div class="col-xs-11">
+            <input 
+              type="text"
+              class="form-control"
+              id="locationdescr"
+              formControlName="locationDescr">
+          </div>
+        </div>
+        <div class="form-group col-xs-3" *ngIf="city.lan==='en'">
+          <label for="locationimg" class="col-xs-2">Img:</label>
+          <div class="col-xs-10">
+            <input 
+              type="text"
+              class="form-control"
+              id="locationimg"
+              formControlName="locationImg">
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group" *ngIf="city.lan==='en'">
+        <label for="zoom" class="control-label col-xs-2">Map Zoom</label>
+        <div class="col-xs-10">
+          <input 
+            type="text"
+            class="form-control"
+            id="zoom"
+            formControlName="zoom">
+        </div>
+      </div>
+
+    </fieldset>
+
+
+<!-- Facts -->
+    <fieldset>
+      <legend>Facts</legend>
+
+      <div class="row">
+        <label for="state" class="control-label col-xs-2">Currency</label>
+        <div class="form-group col-xs-5">
+          <label for="currencyname" class="col-xs-2">Name:</label>
+          <div class="col-xs-10">
+            <input 
+              type="text"
+              class="form-control"
+              id="currencyname"
+              formControlName="currencyName">
+          </div>
+        </div>
+        <div class="form-group col-xs-5" *ngIf="city.lan==='en'">
+          <label for="currencycode" class="col-xs-2">Code:</label>
+          <div class="col-xs-10">
+            <input 
+              type="text"
+              class="form-control"
+              id="currencycode"
+              formControlName="currencyCode">
+          </div>
+        </div>
+      </div>
+
+      <div class="row" *ngIf="city.lan==='en'">
+        <label for="state" class="control-label col-xs-2">Altitude</label>
+        <div class="form-group col-xs-5">
+          <label for="altitudemeter" class="col-xs-2">m:</label>
+          <div class="col-xs-10">
+            <input 
+              type="text"
+              class="form-control"
+              id="altitudemeter"
+              formControlName="altitudeMeter">
+          </div>
+        </div>
+        <div class="form-group col-xs-5">
+          <label for="altitudeft" class="col-xs-2">ft:</label>
+          <div class="col-xs-10">
+            <input 
+              type="text"
+              class="form-control"
+              id="altitudeft"
+              formControlName="altitudeFt">
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <label for="state" class="control-label col-xs-2">TimeZone</label>
+        <div class="form-group col-xs-5">
+          <label for="timezonecode" class="col-xs-2">Code:</label>
+          <div class="col-xs-10">
+            <input 
+              type="text"
+              class="form-control"
+              id="timezonecode"
+              formControlName="timezoneCode">
+          </div>
+        </div>
+        <div class="form-group col-xs-5">
+          <label for="timezonename" class="col-xs-2">Name:</label>
+          <div class="col-xs-10">
+            <input 
+              type="text"
+              class="form-control"
+              id="timezonename"
+              formControlName="timezoneName">
+          </div>
+        </div>
+      </div>
+      <div class="row" *ngIf="city.lan==='en'">
+        <label class="control-label col-xs-2"></label>
+        <div class="form-group col-xs-5">
+          <label for="timezoneoffset" class="col-xs-2">Offset:</label>
+          <div class="col-xs-10">
+            <input 
+              type="text"
+              class="form-control"
+              id="timezoneoffset"
+              formControlName="timezoneOffset">
+          </div>
+        </div>
+        <div class="form-group col-xs-5">
+          <label for="timezonezone" class="col-xs-2">Zone:</label>
+          <div class="col-xs-10">
+            <input 
+              type="text"
+              class="form-control"
+              id="timezonezone"
+              formControlName="timezoneZone">
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="language" class="control-label col-xs-2">Language</label>
+        <div class="col-xs-10">
+          <input 
+            type="text"
+            class="form-control"
+            id="location"
+            formControlName="language">
+        </div>
+      </div>
+
+      <div class="form-group" *ngIf="city.lan==='en'">
+        <label for="localname" class="control-label col-xs-2">Local Name</label>
+        <div class="col-xs-10">
+          <input 
+            type="text"
+            class="form-control"
+            id="localname"
+            formControlName="localName">
+        </div>
+      </div>
+
+      <div class="form-group" *ngIf="city.lan==='en'">
+        <label for="coordinates" class="control-label col-xs-2">Coordinates</label>
+        <div class="col-xs-10">
+          <input 
+            type="text"
+            class="form-control"
+            id="coordinates"
+            formControlName="coordinates">
+        </div>
+      </div>
+
+      <div class="form-group" *ngIf="city.lan==='en'">
+        <label for="flag" class="control-label col-xs-2">Flag</label>
+        <div class="col-xs-10">
+          <input 
+            type="text"
+            class="form-control"
+            id="flag"
+            formControlName="flag">
+        </div>
+      </div>
+
+    </fieldset>
+
+<!-- Affiliates -->
+    <fieldset>
+      <legend>Affiliates</legend>
+
+      <div class="form-group" *ngIf="city.lan==='en'">
+        <label for="eancityid" class="control-label col-xs-2">EAN City ID</label>
+        <div class="col-xs-10">
+          <input 
+            type="text"
+            class="form-control"
+            id="eancityid"
+            formControlName="eanCityID">
+        </div>
+      </div>
+
+      <div class="form-group" *ngIf="city.lan==='en'">
+        <label for="viatorpage" class="control-label col-xs-2">Viator Page</label>
+        <div class="col-xs-10">
+          <input 
+            type="text"
+            class="form-control"
+            id="viatorpage"
+            formControlName="viatorPage">
+        </div>
+      </div>
+      
+      <div class="form-group">
+        <label for="carrental" class="control-label col-xs-2">Car Rental</label>
+        <div class="col-xs-10">
+          <input 
+            type="text"
+            class="form-control"
+            id="carrental"
+            formControlName="carRental">
+        </div>
+      </div>
+
+    </fieldset>
+
+<!-- Facts -->
+    <fieldset>
+      <legend>Intro</legend>
+
+      <div class="form-group">
+        <label for="intro" class="control-label col-xs-2">Intro Text</label>
+        <div class="col-xs-10">
+          <textarea
+            class="form-control"
+            id="intro"
+            rows="5"
+            formControlName="intro">
+          </textarea>
+        </div>
+      </div>
+
+    </fieldset>
+
+    <div class="row">
+      <div class="form-group col-xs-12">
+        <input 
+          type="checkbox" 
+          name="publish"
+          formControlName="isPublish">
+          Publish
+      </div>
+    </div>
+
+    <div class="clearfix"></div>
+
+    <button
+      type="submit" 
+      class="btn btn-success" 
+      [disabled]="!cityForm.valid">
+      Update
+    </button>
+  </form>
+</div>

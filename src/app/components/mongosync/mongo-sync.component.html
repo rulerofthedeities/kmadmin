@@ -1,0 +1,198 @@
+<div class="row">
+  <div class="col-xs-6">
+    <div class="input-group">
+      
+      <select 
+        class="form-control" 
+        id="profilelist"
+        #selectedProfile>
+        <option *ngFor="let p of profiles" [value]="p._id">
+          {{p.name}}
+        </option>
+      </select>
+
+      <span class="input-group-btn">
+        <button type="button" 
+          class="btn btn-default" 
+          (click)="selectProfile(selectedProfile.value)">
+          Select Profile
+        </button>
+      </span>
+    </div>
+  </div>
+</div>
+
+<div class="row">
+  <div class="form-group col-xs-6">
+    <label 
+      for="source"
+      class="control-label">
+      Source
+    </label>
+  </div>
+  <div class="form-group col-xs-6">
+    <label 
+      for="target"
+      class="control-label">
+      Target
+    </label>
+  </div>
+</div>
+<div class="row">
+  <form 
+    [formGroup]="connForm" 
+    class="form-horizontal">
+
+    <div class="form-group col-xs-6">
+      <select 
+        class="form-control" 
+        id="source"
+        (change)='getDatabases("source", sourceConn.value)'
+        formControlName="source"
+        #sourceConn>
+        <option *ngFor="let c of connections" [value]="c._id">
+          {{c.name}}
+        </option>
+      </select>
+    </div>
+
+    <div class="form-group col-xs-6">
+      <select 
+        class="form-control" 
+        id="target"
+        (change)='setTargetConn(targetConn.value)'
+        formControlName="target"
+        #targetConn>
+        <option *ngFor="let c of connections" [value]="c._id">
+          {{c.name}}
+        </option>
+      </select>
+    </div>
+
+  </form>
+</div>
+
+<div class="row">
+  <div class="form-group col-xs-6">
+    <label 
+      for="source-db"
+      class="control-label"
+      *ngIf="current.source.dbList">
+      Database
+    </label>
+  </div>
+  <div class="form-group col-xs-6">
+  </div>
+</div>
+
+<div class="row">
+  <form 
+    [formGroup]="dbForm" 
+    class="form-horizontal">
+
+    <div class="form-group col-xs-6">
+      <select 
+        class="form-control" 
+        id="source-db"
+        formControlName="source"
+        *ngIf="current.source.dbList"
+        (change)='getCollections("source", sourceConn.value, sourceDb.value)'
+        #sourceDb>
+        <option *ngFor="let d of current.source.dbList" [value]="d">
+          {{d}}
+        </option>
+      </select>
+    </div>
+
+    <div class="form-group col-xs-6">
+    </div>
+
+  </form>
+</div>
+
+<div class="row">
+  <div class="list-group col-xs-6 colls">
+    <a *ngFor="let c of current.source.collList;" 
+      href="#"
+      (click)='selectCollection("source", c)'
+      class="list-group-item" 
+      [ngClass]="{active:c === current.source.collName}">
+      <span class="glyphicon glyphicon-camera"></span>{{c}}
+    </a>
+  </div>
+  <ul class="col-xs-6">
+  </ul>
+</div>
+
+<div class="row" *ngIf="current.source.collName && current.target.connId">
+  <div class="col-xs-6">
+    <div class="input-group">
+      <input type="text" class="form-control" placeholder="Profile Name" #profileName>
+      <span class="input-group-btn">
+        <button type="button" 
+          class="btn btn-default" 
+          (click)="saveProfile(profileName.value)">
+          Save Profile
+        </button>
+      </span>
+    </div>
+  </div>
+</div>
+
+<br><br>
+
+<div class="row" *ngIf="current.source.collName && current.target.connId">
+  <button class="btn btn-primary" (click)="compare()">
+    Compare
+  </button>
+  <div *ngIf="isCompared">
+    <dl class="dl-horizontal">
+      <dt>Source documents</dt>
+      <dd>{{compared_totals.source}}</dd>
+      <dt>Target documents</dt>
+      <dd>{{compared_totals.target}}</dd>
+      <dt>Documents to add</dt>
+      <dd>
+        {{compared_docs.toAdd.length}}
+        <button class="btn btn-default" (click)="showDocs('toAdd')">
+          {{show.toAdd ? 'Hide' : 'Show'}} documents to add
+        </button>
+        <div *ngIf="show.toAdd">
+          <pre>{{compared_docs.toAdd|json}}</pre>
+        </div>
+      </dd>
+      <dt>Documents to delete</dt>
+      <dd>
+        {{compared_docs.toDelete.length}}
+        <button class="btn btn-default" (click)="showDocs('toDelete')">
+          {{show.toDelete ? 'Hide' : 'Show'}} documents to delete
+        </button>
+        <div *ngIf="show.toDelete">
+          <pre>{{compared_docs.toDelete|json}}</pre>
+        </div>
+      </dd>
+      <dt>Documents to update</dt>
+      <dd>
+        {{compared_docs.toUpdate.length}}
+        <button class="btn btn-default" (click)="showDocs('toUpdate')">
+          {{show.toUpdate ? 'Hide' : 'Show'}} documents to update
+        </button>
+        <div *ngIf="show.toUpdate">
+          <pre>{{compared_docs.toUpdate|json}}</pre>
+        </div>
+      </dd>
+    </dl>
+  </div>
+</div>
+
+<div class="row" *ngIf="isCompared">
+  <button *ngIf="compared_docs.toAdd.length > 0" class="btn btn-primary" (click)="synch('toAdd')">
+    Add documents
+  </button>
+  <button *ngIf="compared_docs.toUpdate.length > 0" class="btn btn-primary" (click)="synch('toUpdate')">
+    Update documents
+  </button>
+  <button *ngIf="compared_docs.toDelete.length > 0" class="btn btn-primary" (click)="synch('toDelete')">
+    Delete documents
+  </button>
+<div>

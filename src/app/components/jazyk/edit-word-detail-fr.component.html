@@ -1,0 +1,30 @@
+DETAIL FR
+
+<form *ngIf="detailForm"
+      [formGroup]="detailForm"
+      class="form-horizontal"
+      [ngClass]="{
+        hasDetail:detailExists,
+        add:!detailExists,
+        update: detailExists && detailForm.dirty
+      }">
+  <div class="form-group">
+    <label 
+      for="genus" 
+      class="control-label col-xs-2">
+      Genus:
+    </label>
+    <div class="col-xs-10">
+      <div *ngFor="let genus of genera">
+        <input type="radio" 
+          formControlName="genus" 
+          name="genus" 
+          [value]="genus">{{genus}}
+      </div>
+    </div>
+  </div>
+</form>
+
+Detail exists: {{detailExists}}<br>
+{{wordTpe}}
+detail:<pre>{{detail|json}}</pre>
