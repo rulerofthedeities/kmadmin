@@ -36,7 +36,7 @@ module.exports.initialize = function(app, router) {
   router.get('/jazyk/wordpairs', jazyk_edit.getWordPairs);
   router.get('/jazyk/worddetail', jazyk_edit.getWordDetail);
   router.get('/jazyk/config/lan/:lan', jazyk_config.getLanConfig);
-  //router.get('/jazyk/wordpair/:id', jazyk_edit.getWordPairDetail);
+  router.get('/jazyk/wordpair/unique', jazyk_edit.checkUniqueWordpair);
 
   router.post('/jazyk/add/word', jazyk_edit.addWordPair);
 

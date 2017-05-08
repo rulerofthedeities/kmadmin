@@ -6,6 +6,7 @@ var response = require('../../response'),
     wordCount = require('./sync_wordcount'),
     categories = require('./sync_categories'),
     WordModel = require('../../models/jazyk/importword'),
+    DetailModel = require('../../models/jazyk/worddetail'),
     CznlWordModel = require('../../models/jazyk/cznlword'),
     WordDetailModels = require('../../models/jazyk/importworddetail'),
     SentenceModel = require('../../models/jazyk/sentence'),
@@ -20,10 +21,13 @@ const cznlUri = 'mongodb://127.0.0.1:27017/km-cznl',
       countConn = mongoose.createConnection(countUri),
       cznlModel = cznlConn.model('Word', CznlWordModel),
       jazykWordModel = jazykConn.model('Word', WordModel),
+      jazykDetailModel = jazykConn.model('Detail', DetailModel),
+      /*
       jazykNounModel = jazykConn.model('Noun', WordDetailModels.noun),
       jazykVerbModel = jazykConn.model('Verb', WordDetailModels.verb),
       jazykPrepositionModel = jazykConn.model('Preposition', WordDetailModels.preposition),
       jazykAdjectiveModel = jazykConn.model('Adjective', WordDetailModels.adjective),
+      */
       jazykSentenceModel = jazykConn.model('Sentence', SentenceModel),
       countModelNl = countConn.model('Count', CountModel, 'nl'),
       countModelCs = countConn.model('Count', CountModel, 'cs');
@@ -66,7 +70,7 @@ let addWordDocs = function(req, res, callback) {
   console.log('adding words');
   addedWords = [];
   cznlModel.find({tpe:{$ne:'zin'}}, {tpe:1, nl:1, cz:1, nlP:1, czP:1, categories:1}, function(err, cznlWords) {
-    // cznlWords = cznlWords.slice(0, 500);
+    //cznlWords = cznlWords.slice(0, 500);
     async.eachSeries(cznlWords, addWord, function (err) {
       callback(err, {added:addedWords.length});
     });
@@ -83,6 +87,7 @@ let addSentenceDocs = function(req, res, callback) {
   });
 }
 
+/*
 let updateAltWords = function(callback) {
   console.log('Updating alt words');
   jazykWordModel.find({docTpe: "wordpair"}, {'nl.altLegacy':1, 'cs.altLegacy':1}, function(err, altwords) {
@@ -113,6 +118,7 @@ let getAltArray = function(word, callback) {
     callback(null);
   }
 }
+*/
 
 let fetchGenusArticle = function(lan, word, callback) {
   query = lan === 'nl' ? {'nl.word':word.word} : {'cz.word':word.word};
@@ -134,7 +140,7 @@ let fetchGenusArticle = function(lan, word, callback) {
     callback(err, genusArticle);
   })
 }
-
+/*
 let saveAltWords = function(lan, word, countData, wordData, callback) {
   key = lan + '.alt';
   legacyKey = lan + '.altLegacy';
@@ -163,7 +169,6 @@ let saveAltWords = function(lan, word, countData, wordData, callback) {
     }
   )
 }
-
 let updateAltWord = function(word, callback) {
   const lan = word.lan === 'nl' ? 'nl' : 'cs';
   const model = lan === 'nl' ? countModelNl : countModelCs;
@@ -176,6 +181,7 @@ let updateAltWord = function(word, callback) {
     });
   });
 }
+*/
 
 let addWord = function(word, callback) {
   //console.log('Trying to add word', word);
@@ -215,16 +221,21 @@ let addNewWord = function(word, callback) {
   let csword = addWordData(word.cz);
   newWord.cs = csword;
 
-  //Add tags
-  if (word.categories){
-    newWord.nl.tags = word.categories.filter(cat => allowedTags.filter(atag => atag === cat).length > 0);
-  }
 
   //Add word details
   let newWordDetailNl = getWordDetail(word, 'nl');
   let newWordDetailCs = getWordDetail(word, 'cz');
   let newWordDetailCsP = getWordDetail(word, 'czP');
   let newWordCsP;
+
+  //Add tags
+  if (word.categories){
+    tags = word.categories.filter(cat => allowedTags.filter(atag => atag === cat).length > 0);
+    if (tags && !newWordDetailNl) {
+      newWordDetailNl = getEmptyWordDetail(word, 'nl');
+    }
+    newWordDetailNl.tags = tags;
+  }
 
   if (newWordDetailCsP) {
     newWordCsP = {
@@ -240,49 +251,77 @@ let addNewWord = function(word, callback) {
   }
 
   //console.log('adding word', newWord);
-  //  console.log('adding details', newWordDetailNl, newWordDetailCs, newWordDetailCsP);
+  //console.log('adding details', newWordDetailNl, newWordDetailCs, newWordDetailCsP);
   
   // Add Score & word count for nl word
   wordCount.getWordCount(newWord.nl.word, countModelNl, function(err, countData){
-    newWord.nl.wordCount = countData.wordCount;
-    newWord.nl.score = countData.score;
+    if (countData.score > 0 && !newWordDetailNl) {
+      //Create empty detail doc
+      newWordDetailNl = getEmptyWordDetail(word, 'nl');
+    }
+    if (newWordDetailNl) {
+      newWordDetailNl.wordCount = countData.wordCount;
+      newWordDetailNl.score = countData.score;
+    }
+    /*
     if (newWordCsP) {
       newWordCsP.nl.wordCount = countData.wordCount;
       newWordCsP.nl.score = countData.score;
     }
+    */
     // Get word count for all words cz
     wordCount.getWordCount(newWord.cs.word, countModelCs, function(err, countData){
-      newWord.cs.wordCount = countData.wordCount;
-      newWord.cs.score = countData.score;
+      if (countData.score > 0 && !newWordDetailCs) {
+        //Create empty detail doc
+        newWordDetailCs = getEmptyWordDetail(word, 'cz');
+      }
+      if (newWordDetailCs) {
+        newWordDetailCs.wordCount = countData.wordCount;
+        newWordDetailCs.score = countData.score;
+      }
       // Get word count for all words czP
       let w = newWordCsP ? newWordCsP.cs.word : null;
       wordCount.getWordCount(w, countModelCs, function(err, countData){
-        if (newWordCsP) {
-          newWordCsP.cs.wordCount = countData.wordCount;
-          newWordCsP.cs.score = countData.score;
+        if (w) {
+          //console.log('csp', w, newWordDetailCsP, newWordDetailCs);
+          if (countData.score > 0 && !newWordDetailCsP) {
+            //Create empty detail doc
+            newWordDetailCsP = getEmptyWordDetail(w, 'czP');
+          }
+          if (newWordDetailCsP) {
+            newWordDetailCsP.wordCount = countData.wordCount;
+            newWordDetailCsP.score = countData.score;
+          }
         }
 
         //Save detail Nl
         if (newWordDetailNl) {
-          detailModel = getModel(newWordDetailNl.tpe);
-          detailModel.create(newWordDetailNl, function (err, result) {
+          //detailModel = getModel(newWordDetailNl.tpe);
+          jazykDetailModel.create(newWordDetailNl, function (err, result) {
             if (!err) {
               // console.log('Added to jazyk NL Detail:', newWordDetailNl);
+              /*
               newWord.nl.detailId = result._id;
               if (newWordCsP) {
                 newWordCsP.nl.detailId = result._id;
               }
+              */
               // Save detail Cs
-              saveCSDetail(newWordDetailCs, newWord, newWordCsP, word, function(err){
-                callback(err);
-              })
+              if (newWordDetailCs) {
+                saveCSDetail(newWordDetailCs, newWordDetailCsP, newWord, newWordCsP, word, function(err){
+                  callback(err);
+                })
+              } else {
+                //console.log('no detail cs for', word);
+                callback(null);
+              }
             }
           });
         } else {
           // console.log('no worddetail nl');
           // Save detail Cs
           if (newWordDetailCs) {
-            saveCSDetail(newWordDetailCs, newWord, newWordCsP, word, function(err){
+            saveCSDetail(newWordDetailCs, newWordDetailCsP, newWord, newWordCsP, word, function(err){
               callback(err);
             })
           } else {
@@ -292,133 +331,44 @@ let addNewWord = function(word, callback) {
             })
           }
         }
-
-        // Save wordpair
-        /*
-        jazykWordModel.create(newWord, function (err, result) {
-          if (!err) {
-            console.log('Added to jazyk:', addedWords.length, newWord.nl.word);
-            addedWords.push(word);
-          } else {
-            console.log('failed to add word', newWord);
-            console.log(err);
-          }
-          callback(err);
-        })
-        */
-
-        //Save wordpair Pf
-        /*
-        if (newWordCsP) {
-          console.log('adding wordpair Perfective', newWordCsP);
-          jazykWordModel.create(newWordCsP, function (err, result) {
-            if (!err) {
-              console.log('Added to jazyk Pf:', newWordCsP.nl.word);
-            } else {
-              console.log('failed to add word Pf', newWordCsP);
-              console.log(err);
-            }
-          })
-        }
-        */
-
-        //Save detail cz
-
-        //Save detail czP
-
       });
     });
   });
-  /*
-  //NL
-  if (word.nl.article && word.tpe === "noun") {
-    newWord.nl.article = word.nl.article
-  }
-  // CZ
-  let czword = addCzData(word, 'cz');
-  let czPword = addCzPData(word, czword);
-
-  //Add Categories
-  categories.getCategories(word.categories, function(newCategories) {
-    // Add categories to word object
-    if (newCategories.length > 0) {
-      newWord.categories = newCategories;
-    }
-  })
-
-  if (word.nl.word !== 'filter' && word.nl.word !== 'pop') {
-    if (frWords[word.nl.word]) {
-      //Add French words
-      newWord.fr = frWords[word.nl.word];
-    }
-
-    if (gbWords[word.nl.word]) {
-      //Add English words
-      newWord.gb = gbWords[word.nl.word];
-    }
-
-    if (deWords[word.nl.word]) {
-      //Add English words
-      newWord.de = deWords[word.nl.word];
-    }
-  }
-
-  // Get word count for all words cz
-  wordCount.getWordCount(czword.word, countModelCs, function(err, countData){
-    czword.wordCount = countData.wordCount;
-    czword.score = countData.score;
-    newWord.cs.push(czword);
-
-    // Get word count for all words czP
-    let czpw = czPword ? czPword.word : null;
-    wordCount.getWordCount(czpw, countModelCs, function(err, countData){
-      if (czpw) {
-        czPword.wordCount = countData.wordCount;
-        czPword.score = countData.score;
-        newWord.cs.push(czPword);
-      }
-
-      // Get word count for all words nl
-      wordCount.getWordCount(newWord.nl.word, countModelNl, function(err, countData){
-        newWord.nl.wordCount = countData.wordCount;
-        newWord.nl.score = countData.score;
-        //console.log('Added:', newWord);
-
-        //Insert new word
-        jazykWordModel.create(newWord, function (err, result) {
-          if (!err) {
-            // console.log('Added to jazyk:', addedWords.length, newWord.nl.word);
-            addedWords.push(word);
-          } else {
-            console.log('failed to add word', newWord);
-            console.log(err);
-          }
-          callback(err);
-        })
-        
-        // callback(err);
-      })
-    })
-  })
-  */
 }
 
-let saveCSDetail = function(newWordDetailCs, newWord, newWordCsP, word, callback) {
-  detailModel = getModel(newWordDetailCs.tpe);
-  detailModel.create(newWordDetailCs, function (err, result) {
+let saveCSDetail = function(newWordDetailCs, newWordDetailCsP, newWord, newWordCsP, word, callback) {
+  //detailModel = getModel(newWordDetailCs.tpe);
+  jazykDetailModel.create(newWordDetailCs, function (err, result) {
     if (!err) {
       // console.log('Added to jazyk CS Detail:', newWordDetailCs);
+      /*
       newWord.cs.detailId = result._id;
       if (newWordCsP) {
         newWordCsP.cs.detailId = result._id;
       }
+      */
       //saved both nl & cs detail, so I can save cs word
-      saveDocs(newWord, newWordCsP, word, function(err){
-        callback(err);
-      })
+      if (!newWordDetailCsP) {
+        saveDocs(newWord, newWordCsP, word, function(err){
+          callback(err);
+        })
+      } else {
+        jazykDetailModel.create(newWordDetailCsP, function (err, result) {
+          if (!err) {
+            saveDocs(newWord, newWordCsP, word, function(err){
+              callback(err);
+            });
+          } else {
+            console.log('failed to add word CSP Detail', newWordDetailCsP);
+            console.log(err);
+            callback(err);
+          }
+        });
+      }
     } else {
-      console.log('failed to add word', newWordDetailCs);
+      console.log('failed to add word CS Detail', newWordDetailCs);
       console.log(err);
+      callback(err);
     }
   });
 }
@@ -449,7 +399,7 @@ let saveDocs = function(newWord, newWordCsP, word, callback) {
     }
   })
 }
-
+/*
 let getModel = function(tpe) {
   let model = jazykWordModel;
 
@@ -467,6 +417,7 @@ let getModel = function(tpe) {
 
   return model;
 }
+*/
 
 let addWordData = function(word) {
   let newlanword = {
@@ -493,7 +444,8 @@ let getWordDetail = function(word, lan) {
 
   newdetails = {
     word: lanWord.word,
-    lan: lan === 'nl' ? 'nl' : 'cs'
+    lan: lan === 'nl' ? 'nl' : 'cs',
+    wordTpe: word.tpe
   };
   switch (word.tpe) {
     case 'noun':
@@ -513,7 +465,7 @@ let getWordDetail = function(word, lan) {
       if (lan==="cz") {
         add = true; 
         if (lanWord.case) {newdetails.followingCase = lanWord.case;}
-        if (lanWord.firstpersonsingular) {newdetails.conjugation = {singular: [lanWord.firstpersonsingular]};}
+        if (lanWord.firstpersonsingular) {newdetails.conjugation = [lanWord.firstpersonsingular];}
         
         if (word.perfective) {
           newdetails.aspect = "perfective";
@@ -527,7 +479,7 @@ let getWordDetail = function(word, lan) {
       } else if (lan === "czP") {
         add = true;
         if (lanWord.case) {newdetails.followingCase = lanWord.case;}
-        if (lanWord.firstpersonsingular) {newdetails.conjugation = {singular: [lanWord.firstpersonsingular]};}
+        if (lanWord.firstpersonsingular) {newdetails.conjugation = [lanWord.firstpersonsingular];}
         newdetails.aspect = "perfective";
         if (word.cz && word.cz.word) {
           newdetails.aspectPair = word.cz.word;
@@ -538,87 +490,20 @@ let getWordDetail = function(word, lan) {
   return add ? newdetails : null;
 }
 
-/*
-let joinInfoHint = function(info, hint) {
-  let newInfo = '';
-  if (info && hint) {
-    newInfo = hint + ';' + info;
-  } else {
-    if (info) {
-      newInfo = info;
-    } else {
-      newInfo = hint
-    }
-  }
-  return newInfo;
+let getEmptyWordDetail = function(word, lan) {
+  const lanWord = word[lan];
+  let add = false;
+  if (!lanWord) { return null; }
+
+  newdetails = {
+    word: lanWord.word,
+    lan: lan === 'nl' ? 'nl' : 'cs',
+    wordTpe: word.tpe
+  };
+
+  return newdetails;
 }
 
-let addCzData = function(word, tpe) {
-  let czword = {word: word[tpe].word};
-  if (word.cz.genus && word.tpe === "noun") {
-    czword.genus = word.cz.genus
-  }
-  if (word[tpe].case) {
-    czword.case = word[tpe].case
-  }
-  if (word.cz.diminutive && word.tpe === "noun") {
-    czword.diminutive = word.cz.diminutive
-  }
-  if (word.cz.plural && word.tpe === "noun") {
-    czword.plural = word.cz.plural
-  }
-  if (word.nl.otherwords || word.nl.info || word.nl.hint) {
-    czword.fromNl = {};
-    if (word.nl.info) {
-      czword.fromNl.info = word.nl.info;
-    }
-    if (word.nl.hint) {
-      czword.fromNl.hint = word.nl.hint
-    }
-    if (word.nl.otherwords) {
-      czword.fromNl.alt = word.nl.otherwords.replace(',', ';');
-    }
-  }
-  if (word[tpe].otherwords || word[tpe].info || word[tpe].hint) {
-    czword.toNl = {};
-    if (word[tpe].info) {
-      czword.toNl.info = word[tpe].info;
-    }
-    if (word[tpe].hint) {
-      czword.toNl.hint = word[tpe].hint;
-    }
-    if (word[tpe].otherwords) {
-      czword.toNl.alt = word[tpe].otherwords.replace(',', ';');
-    }
-  }
-  if (word.tpe === "verb") {
-    czword.aspect = word.perfective ? 'p' : (tpe === 'cz' ? 'i' : 'p');
-    if (word[tpe].firstpersonsingular) {
-      czword.firstpersonsingular = word[tpe].firstpersonsingular;
-    }
-  }
-  return czword;
-}
-
-let addCzPData = function(word, czword) {
-  let czpword;
-
-  if (word.tpe==='verb' && !word.perfective) {
-    if (!word.nlP && word.czP && word.czP.word) {
-      // Perfective verbs are the same, use same data
-      czpword = addCzData(word, 'czP');
-      czpword.aspectPair = word.cz.word;
-      czword.aspectPair = czpword.word;
-    } else {
-      if (word.czP) {
-        // Should be different words in source -> split
-        console.log('VERB', word.cz.word, 'SHOULD BE SEPARATED');
-      }
-    }
-  }
-  return czpword;
-}
-*/
 let addNewSentence = function(sentence, callback) {
   let newSentence = {
     _id: sentence._id,

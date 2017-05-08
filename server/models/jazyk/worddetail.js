@@ -9,7 +9,7 @@ var conjugationSchema = new Schema({
 var detailSchema = new Schema({
     lan: {type: String, required: true},
     word: {type: String, required: true},
-    docTpe: String,
+    docTpe: {type: String, default: 'details'},
     wordTpe: String,
     article: String,
     case: String,
@@ -21,8 +21,30 @@ var detailSchema = new Schema({
     superlative: String,
     aspect: String,
     aspectPair: String,
-    conjugation: conjugationSchema
+    conjugation: [String],
+    tags: [String],
+    score: Number,
+    wordCount: Number
   }, {collection: 'wordpairs'}
 );
+detailSchema.pre('save', function (next) {
+  if (this.isNew) {
+    if (this.conjugation.length == 0) {
+      this.conjugation = undefined;       
+    }           
+    if (this.tags.length == 0) {
+      this.tags = undefined;       
+    }                          
+  }
+  next();
+});
+detailSchema.post('init', function(doc) {
+  if (doc.conjugation && doc.conjugation.length < 1) {
+    doc.conjugation = undefined;
+  }
+  if (doc.tags && doc.tags.length < 1) {
+    doc.tags = undefined;
+  }
+});
 
 module.exports = detailSchema;

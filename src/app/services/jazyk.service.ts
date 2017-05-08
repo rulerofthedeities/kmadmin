@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {Http, Headers, URLSearchParams} from '@angular/http';
 import {Observable} from 'rxjs/Observable';
-import {TpeList, Filter, LanPair, Language} from '../models/jazyk.model';
+import {DetailFilterData, TpeList, Filter, LanPair, Language} from '../models/jazyk.model';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
 import 'rxjs/add/observable/throw';
@@ -79,6 +79,20 @@ export class JazykService {
     params.set('wordTpe', filter.wordTpe);
     return this.http
     .get('/api/jazyk/worddetail/', {search: params})
+    .map(response => response.json().obj)
+    .catch(error => Observable.throw(error));
+  }
+
+  checkWordPairExists(filter: DetailFilterData) {
+    console.log('checkwordpair', filter);
+    const params = new URLSearchParams();
+    params.set('word1', filter.word1);
+    params.set('word2', filter.word2);
+    params.set('lanCode1', filter.lan1);
+    params.set('lanCode2', filter.lan2);
+    params.set('wordTpe', filter.tpe);
+    return this.http
+    .get('/api/jazyk/wordpair/unique', {search: params})
     .map(response => response.json().obj)
     .catch(error => Observable.throw(error));
   }

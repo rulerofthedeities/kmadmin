@@ -3,15 +3,7 @@ import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {JazykDetailForm} from './edit-word-detail.component';
 import {JazykService} from '../../services/jazyk.service';
 import {ErrorService} from '../../services/error.service';
-import {Filter, TpeList, Language, WordPair, WordDetail} from '../../models/jazyk.model';
-
-interface DetailFilterData {
-  word1: string;
-  lan1: string;
-  word2: string;
-  lan2: string;
-  tpe: string;
-}
+import {DetailFilterData, Filter, TpeList, Language, WordPair, WordDetail} from '../../models/jazyk.model';
 
 interface DetailHelper {
   hasDetail: boolean;
@@ -120,6 +112,16 @@ export class JazykEditWordComponent implements OnInit, OnDestroy {
       },
       error => this.errorService.handleError(error)
     );
+
+    this.jazykService
+    .checkWordPairExists(this.detailFilterData[i])
+    .takeWhile(() => this.componentActive)
+    .subscribe(
+      data => {
+        console.log('check wordpair exists', data);
+      },
+      error => this.errorService.handleError(error)
+    );
   }
 
   onSubmit(wordForm: any, i: number) {
@@ -159,6 +161,12 @@ export class JazykEditWordComponent implements OnInit, OnDestroy {
       'lan2': [lan2],
       'word1': [wordpair[lan1] ? wordpair[lan1].word : '', [Validators.required]],
       'word2': [wordpair[lan2] ? wordpair[lan2].word : '', [Validators.required]],
+      'alt1': [wordpair[lan1] ? wordpair[lan1].alt : ''],
+      'alt2': [wordpair[lan2] ? wordpair[lan2].alt : ''],
+      'hint1': [wordpair[lan1] ? wordpair[lan1].hint : ''],
+      'hint2': [wordpair[lan2] ? wordpair[lan2].hint : ''],
+      'info1': [wordpair[lan1] ? wordpair[lan1].info : ''],
+      'info2': [wordpair[lan2] ? wordpair[lan2].info : '']
     });
      return wordpairForm;
   }

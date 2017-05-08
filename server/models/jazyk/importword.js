@@ -26,17 +26,21 @@ var wordSchema = new Schema({
     lanPair: {type: [String], required: true},
     nl: wordLangSchema,
     cs: wordLangSchema,
-    tags: [String],
-    author: {type: String, default: 'jazykimport'}
+    author: {type: String, default: 'jazykimport'},
+    score: Number,
+    wordCount: Number
   }, {collection: 'wordpairs'}
 );
 
 wordSchema.pre('save', function (next) {
   if (this.isNew) {
-    if (this.tags.length == 0) {
-      this.tags = undefined;       
-    }           
     /*
+    if (this.nl && this.nl.tags && this.nl.tags.length == 0) {
+      this.nl.tags = undefined;       
+    }           
+    if (this.cs && this.cs.tags) {
+      this.cs.tags = undefined;       
+    }           
     if (this.nl.alt.length == 0) {
       this.nl.alt = undefined;       
     }            

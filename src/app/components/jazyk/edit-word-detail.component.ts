@@ -53,8 +53,7 @@ export abstract class JazykDetailForm implements OnChanges, OnInit {
       'docTpe': [detail.docTpe],
       'wordTpe': [detail._id],
       'lan': [detail.lan],
-      'word': [detail.word],
-      'article': [detail.article]
+      'word': [detail.word]
     });
   }
 
@@ -71,7 +70,6 @@ export abstract class JazykDetailForm implements OnChanges, OnInit {
   }
 
   getConfig(lanCode: string) {
-    console.log('getting config', lanCode);
     this.jazykService
     .fetchLanConfig(lanCode)
     .takeWhile(() => this.componentActive)
@@ -121,14 +119,17 @@ export class JazykDetailFormNlComponent extends JazykDetailForm implements OnIni
         selectedArticles.filter(selArticle => selArticle === article).length > 0));
     });
 
+    console.log('detail', detail);
+
     this.detailForm = this.formBuilder.group({
       '_id': [detail._id],
       'docTpe': [detail.docTpe],
-      'wordTpe': [detail._id],
+      'wordTpe': [detail.wordTpe],
       'lan': [detail.lan],
       'word': [detail.word],
-      'article': new FormArray(articleControls)
+      'article': [new FormArray(articleControls), detail.wordTpe === 'noun' ? [Validators.required] : []]
     });
+    console.log('detailForm', this.detailForm.value);
   }
 
   postProcessFormData(data: any): any {
@@ -172,7 +173,7 @@ export class JazykDetailFormFrComponent extends JazykDetailForm {
       'wordTpe': [detail._id],
       'lan': [detail.lan],
       'word': [detail.word],
-      'genus': [detail.genus]
+      'genus': [detail.genus, detail.wordTpe === 'noun' ? [Validators.required] : []]
     });
   }
 }

@@ -22,24 +22,26 @@ export interface Filter {
   returnTotal: boolean;
 }
 
+export interface DetailFilterData {
+  word1: string;
+  lan1: string;
+  word2: string;
+  lan2: string;
+  tpe: string;
+}
+
+
 export interface FilterList {
   wordpairs: WordPair[];
   filter: Filter;
 }
 
-interface Conjugation {
-  singular: string[];
-  plural: string[];
-}
-
 interface Word {
-  detailId?: string;
+  // detailId?: string;
   word: string;
   alt?: string;
   hint?: string;
   info?: string;
-  wordCount: number;
-  score: number;
 }
 
 // Data specific for this language pair!!
@@ -77,7 +79,9 @@ export interface WordDetail {
   aspectPair?: string;
   images?: string[];
   audio?: string[];
-  conjugation?: Conjugation;
+  conjugation?: string[];
+  wordCount?: number;
+  score?: number;
 }
 
 /*

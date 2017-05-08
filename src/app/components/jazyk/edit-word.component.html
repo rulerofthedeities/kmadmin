@@ -101,6 +101,54 @@
                 </strong>
               </div>
             </div>
+            <div class="form-group">
+              <label 
+                for="word1.alt" 
+                class="control-label col-xs-2">
+                Alt:
+              </label>
+              <div class="col-xs-10">
+                <strong>
+                  <input 
+                    type="text"
+                    class="form-control"
+                    id="word1.alt"
+                    formControlName="alt1">
+                </strong>
+              </div>
+            </div>
+            <div class="form-group">
+              <label 
+                for="word1.hint" 
+                class="control-label col-xs-2">
+                Hint:
+              </label>
+              <div class="col-xs-10">
+                <strong>
+                  <input 
+                    type="text"
+                    class="form-control"
+                    id="word1.hint"
+                    formControlName="hint1">
+                </strong>
+              </div>
+            </div>
+            <div class="form-group">
+              <label 
+                for="word1.info" 
+                class="control-label col-xs-2">
+                Info:
+              </label>
+              <div class="col-xs-10">
+                <strong>
+                  <input 
+                    type="text"
+                    class="form-control"
+                    id="word1.info"
+                    formControlName="info1">
+                </strong>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -131,10 +179,59 @@
                 </strong>
               </div>
             </div>
+            <div class="form-group">
+              <label 
+                for="word2.alt" 
+                class="control-label col-xs-2">
+                Alt:
+              </label>
+              <div class="col-xs-10">
+                <strong>
+                  <input 
+                    type="text"
+                    class="form-control"
+                    id="word2.alt"
+                    formControlName="alt2">
+                </strong>
+              </div>
+            </div>
+            <div class="form-group">
+              <label 
+                for="word2.hint" 
+                class="control-label col-xs-2">
+                Hint:
+              </label>
+              <div class="col-xs-10">
+                <strong>
+                  <input 
+                    type="text"
+                    class="form-control"
+                    id="word2.hint"
+                    formControlName="hint2">
+                </strong>
+              </div>
+            </div>
+            <div class="form-group">
+              <label 
+                for="word2.info" 
+                class="control-label col-xs-2">
+                Info:
+              </label>
+              <div class="col-xs-10">
+                <strong>
+                  <input 
+                    type="text"
+                    class="form-control"
+                    id="word2.info"
+                    formControlName="info2">
+                </strong>
+              </div>
+            </div>
           </div>
         </div>
       </div>
     </div>
+
     <p>Form value: {{ wordForms[0].value | json }}</p>
     <p>Form status: {{ wordForms[0].status | json }}</p>
     <p>Form dirty: {{ wordForms[0].dirty |json }}</p>

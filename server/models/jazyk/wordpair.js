@@ -6,13 +6,11 @@ var wordLangSchema = new Schema({
   word: {type: String, required: true},
   alt: String,
   hint: String,
-  info: String,
-  score: Number,
-  wordCount: Number
+  info: String
 }, {_id: false});
 
 var wordSchema = new Schema({
-  docTpe: {type: String, required: true},
+  docTpe: {type: String, default: 'wordpair'},
   wordTpe: {type: String, required: true},
   lanPair: [String],
   tags: [String],

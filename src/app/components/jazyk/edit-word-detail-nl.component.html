@@ -15,8 +15,12 @@ DETAIL NL
       Article: 
     </label>
     <div class="col-xs-10">
-      <div *ngFor="let control of detailForm.controls['article'].controls; let i=index">
-        <input type="checkbox" id="checkbox-1" value="value-1" [formControl]="control" />     
+      <div *ngFor="let control of detailForm.value['article'].controls; let i=index">
+        <input 
+          type="checkbox" 
+          id="checkbox-1" 
+          value="value-1" 
+          [formControl]="control" />     
         {{articles[i]}}
       </div>
     </div>
@@ -25,4 +29,3 @@ DETAIL NL
 
 {{wordTpe}}
 Detail exists: {{detailExists}}<br>
-detail:<pre>{{detail|json}}</pre>

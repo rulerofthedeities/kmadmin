@@ -21,6 +21,22 @@ getDetailById= function(word, callback) {
 }
 */
 
+let createLanDoc = function(formData, nr) {
+  let lanDoc = {
+    word: formData['word' + nr].trim()
+  };
+  if (formData['alt' + nr]) {
+    lanDoc.alt = formData['alt' + nr].trim()
+  }
+  if (formData['hint' + nr]) {
+    lanDoc.hint = formData['hint' + nr].trim()
+  }
+  if (formData['info' + nr]) {
+    lanDoc.info = formData['info' + nr].trim()
+  }
+  return lanDoc;
+}
+
 module.exports = {
   getWordPairs: function(req, res) {
     const query = req.query;
@@ -56,6 +72,23 @@ module.exports = {
       });
     });
   },
+  checkUniqueWordpair: function(req, res) {
+    const query = req.query,
+          lan1 = query.lanCode1,
+          lan2 = query.lanCode2,
+          word1 = query.word1,
+          word2 = query.word2,
+          wordkey1 = lan1.slice(0, 2) + '.word';
+          wordkey2 = lan2.slice(0, 2) + '.word';
+    console.log(query);
+    WordPair.findOne({docTpe:'wordpair', $and:[{lanPair:lan1}, {lanPair:lan2}], [wordkey1]:word1, [wordkey2]:word2}, {}, {}, function(err, wordpair) {
+      result = wordpair ? true : false;
+      console.log('result', result);
+      response.handleError(err, res, 500, 'Error checking wordpair uniqueness', function(){
+        response.handleSuccess(res, result, 200, 'Checked if wordpair is unique');
+      });
+    });
+  },
 /*
   getWordPairDetail: function(req, res) {
     const wordpairId = new mongoose.Types.ObjectId(req.params.id);
@@ -76,13 +109,22 @@ module.exports = {
     });
   },*/
   addWordPair: function(req, res) {
-    console.log('Form data:', req.body);
+    const formData = req.body;
+    const lankey1 = formData.lan1.split(0, 2);
+    const lankey2 = formData.lan2.split(0, 2);
+    const landoc1 = createLanDoc(formData, 1);
+    const landoc2 = createLanDoc(formData, 2);
+
     // ADD MAIN WORDPAIR DOCUMENT
-
-    // ADD WORDPAIR DETAIL DOCUMENTS 
-    // only if it doesn't exist already
-    // detail is constant, regardless of language pair!!
-
+    const newWord = {
+      docTpe: 'wordpair',
+      wordTpe: formData.wordTpe,
+      lanPair: [formData.lan1, formData.lan2],
+      [lankey1]: landoc1,
+      [lankey2]: landoc2
+    }
+    console.log('Form data:', req.body);
+    console.log('New document:', newWord);
 
     err = null;
     result = null;
