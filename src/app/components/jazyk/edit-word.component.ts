@@ -3,7 +3,7 @@ import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {JazykDetailForm} from './edit-word-detail.component';
 import {JazykService} from '../../services/jazyk.service';
 import {ErrorService} from '../../services/error.service';
-import {DetailFilterData, Filter, TpeList, Language, WordPair, WordDetail} from '../../models/jazyk.model';
+import {DetailFilterData, Filter, TpeList, Language, AltWord, WordPair, WordDetail} from '../../models/jazyk.model';
 
 interface DetailHelper {
   hasDetail: boolean;
@@ -100,7 +100,7 @@ export class JazykEditWordComponent implements OnInit, OnDestroy {
       returnTotal: false
     };
     this.jazykService
-    .fetchFilterWordDetail(filter)
+    .fetchWordDetailByFilter(filter)
     .takeWhile(() => this.componentActive)
     .subscribe(
       (data: WordDetail[]) => {
@@ -122,6 +122,10 @@ export class JazykEditWordComponent implements OnInit, OnDestroy {
       },
       error => this.errorService.handleError(error)
     );
+  }
+
+  onAltWordsUpdated(altwords: AltWord[], i: number, w: string) {
+    this.wordForms[i].patchValue({['alt' + w]: altwords});
   }
 
   onSubmit(wordForm: any, i: number) {
@@ -154,19 +158,19 @@ export class JazykEditWordComponent implements OnInit, OnDestroy {
     const lan1 = wordpair.lanPair[0].slice(0, 2),
           lan2 = wordpair.lanPair[1].slice(0, 2),
           wordpairForm = this.formBuilder.group({
-      '_id': [wordpair._id],
-      'docTpe': [wordpair.docTpe],
-      'wordTpe': [wordpair.wordTpe, [Validators.required]],
-      'lan1': [lan1],
-      'lan2': [lan2],
-      'word1': [wordpair[lan1] ? wordpair[lan1].word : '', [Validators.required]],
-      'word2': [wordpair[lan2] ? wordpair[lan2].word : '', [Validators.required]],
-      'alt1': [wordpair[lan1] ? wordpair[lan1].alt : ''],
-      'alt2': [wordpair[lan2] ? wordpair[lan2].alt : ''],
-      'hint1': [wordpair[lan1] ? wordpair[lan1].hint : ''],
-      'hint2': [wordpair[lan2] ? wordpair[lan2].hint : ''],
-      'info1': [wordpair[lan1] ? wordpair[lan1].info : ''],
-      'info2': [wordpair[lan2] ? wordpair[lan2].info : '']
+      _id: [wordpair._id],
+      docTpe: [wordpair.docTpe],
+      wordTpe: [wordpair.wordTpe, [Validators.required]],
+      lan1: [lan1],
+      lan2: [lan2],
+      word1: [wordpair[lan1] ? wordpair[lan1].word : '', [Validators.required]],
+      word2: [wordpair[lan2] ? wordpair[lan2].word : '', [Validators.required]],
+      alt1: [[]],
+      alt2: [[{word: 'test1'}, {word: 'test2', detailId: '5911b1a45b925606f0d86fc8'}]],
+      hint1: [wordpair[lan1] ? wordpair[lan1].hint : ''],
+      hint2: [wordpair[lan2] ? wordpair[lan2].hint : ''],
+      info1: [wordpair[lan1] ? wordpair[lan1].info : ''],
+      info2: [wordpair[lan2] ? wordpair[lan2].info : '']
     });
      return wordpairForm;
   }

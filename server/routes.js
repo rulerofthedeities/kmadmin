@@ -34,7 +34,8 @@ module.exports.initialize = function(app, router) {
   router.get('/jazyk/sync/removecz', jazyk_sync.removeWords);
 
   router.get('/jazyk/wordpairs', jazyk_edit.getWordPairs);
-  router.get('/jazyk/worddetail', jazyk_edit.getWordDetail);
+  router.get('/jazyk/worddetail/filter', jazyk_edit.getWordDetailByFilter);
+  router.get('/jazyk/worddetail/id', jazyk_edit.getWordDetailById);
   router.get('/jazyk/config/lan/:lan', jazyk_config.getLanConfig);
   router.get('/jazyk/wordpair/unique', jazyk_edit.checkUniqueWordpair);
 

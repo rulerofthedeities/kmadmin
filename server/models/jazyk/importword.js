@@ -1,19 +1,16 @@
 var mongoose = require('mongoose'),
     Schema = mongoose.Schema;
 
-var wordCountSchema = new Schema({
-  word: String,
-  wordCount: Number,
-  score: Number,
-  article: String,
-  genus: String
+var altWordSchema = new Schema({
+  detailId: {type: Schema.Types.ObjectId},
+  word: String
 }, {_id : false})
 
 var wordLangSchema = new Schema({
-  //detailId: {type: Schema.Types.ObjectId},
+  detailId: {type: Schema.Types.ObjectId},
   word: {type: String, required: true},
   //altLegacy: String,
-  alt: String, //[wordCountSchema],
+  alt: [altWordSchema],
   hint: String,
   info: String,
   score: Number,
@@ -40,14 +37,14 @@ wordSchema.pre('save', function (next) {
     }           
     if (this.cs && this.cs.tags) {
       this.cs.tags = undefined;       
-    }           
+    }     
+    */         
     if (this.nl.alt.length == 0) {
       this.nl.alt = undefined;       
     }            
     if (this.cs.alt.length == 0) {
       this.cs.alt = undefined;       
-    } 
-    */                                      
+    }                                    
   }
   next();
 });

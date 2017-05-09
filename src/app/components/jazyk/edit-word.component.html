@@ -109,11 +109,13 @@
               </label>
               <div class="col-xs-10">
                 <strong>
-                  <input 
-                    type="text"
-                    class="form-control"
+                  <km-alt-field
                     id="word1.alt"
-                    formControlName="alt1">
+                    (updatedWords)="onAltWordsUpdated($event, 0, '1')"
+                    [wordTpe]="wordForms[0].value.wordTpe"
+                    [lanCode]="wordForms[0].value.lan1"
+                    [words]="wordForms[0].value.alt1">
+                  </km-alt-field>
                 </strong>
               </div>
             </div>
@@ -187,11 +189,13 @@
               </label>
               <div class="col-xs-10">
                 <strong>
-                  <input 
-                    type="text"
-                    class="form-control"
+                  <km-alt-field
                     id="word2.alt"
-                    formControlName="alt2">
+                    (updatedWords)="onAltWordsUpdated($event, 0, '2')"
+                    [wordTpe]="wordForms[0].value.wordTpe"
+                    [lanCode]="wordForms[0].value.lan2"
+                    [words]="wordForms[0].value.alt2">
+                  </km-alt-field>
                 </strong>
               </div>
             </div>

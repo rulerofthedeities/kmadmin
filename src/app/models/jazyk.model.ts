@@ -17,9 +17,9 @@ export interface Filter {
   word: string;
   lanCode: string;
   wordTpe: string;
-  isFromStart: boolean;
-  isExact: boolean;
-  returnTotal: boolean;
+  isFromStart?: boolean;
+  isExact?: boolean;
+  returnTotal?: boolean;
 }
 
 export interface DetailFilterData {
@@ -36,10 +36,15 @@ export interface FilterList {
   filter: Filter;
 }
 
-interface Word {
-  // detailId?: string;
+export interface AltWord {
+  detailId?: string;
   word: string;
-  alt?: string;
+}
+
+interface Word {
+  detailId?: string;
+  word: string;
+  alt?: [AltWord];
   hint?: string;
   info?: string;
 }

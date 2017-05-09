@@ -26,7 +26,7 @@ let createLanDoc = function(formData, nr) {
     word: formData['word' + nr].trim()
   };
   if (formData['alt' + nr]) {
-    lanDoc.alt = formData['alt' + nr].trim()
+    lanDoc.alt = formData['alt' + nr]
   }
   if (formData['hint' + nr]) {
     lanDoc.hint = formData['hint' + nr].trim()
@@ -61,12 +61,20 @@ module.exports = {
       });
     });
   },
-  getWordDetail: function(req, res) {
+  getWordDetailByFilter: function(req, res) {
     const query = req.query,
           wordTpe = query.wordTpe,
           word = query.word,
           lan = query.lanCode.slice(0, 2);
     WordDetail.find({docTpe:'details', lan:lan, wordTpe: wordTpe, word:word}, {}, {limit: 5}, function(err, worddetails) {
+      response.handleError(err, res, 500, 'Error fetching worddetails', function(){
+        response.handleSuccess(res, worddetails, 200, 'Fetched worddetails');
+      });
+    });
+  },
+  getWordDetailById: function(req, res) {
+    const detailId = req.query.id;
+    WordDetail.findOne({_id:detailId}, {}, {}, function(err, worddetails) {
       response.handleError(err, res, 500, 'Error fetching worddetails', function(){
         response.handleSuccess(res, worddetails, 200, 'Fetched worddetails');
       });

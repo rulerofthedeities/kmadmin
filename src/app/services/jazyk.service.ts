@@ -72,13 +72,22 @@ export class JazykService {
     .catch(error => Observable.throw(error));
   }
 
-  fetchFilterWordDetail(filter: Filter) {
+  fetchWordDetailByFilter(filter: Filter) {
     const params = new URLSearchParams();
     params.set('word', filter.word);
     params.set('lanCode', filter.lanCode);
     params.set('wordTpe', filter.wordTpe);
     return this.http
-    .get('/api/jazyk/worddetail/', {search: params})
+    .get('/api/jazyk/worddetail/filter/', {search: params})
+    .map(response => response.json().obj)
+    .catch(error => Observable.throw(error));
+  }
+
+  fetchWordDetailById(detailId: string) {
+    const params = new URLSearchParams();
+    params.set('id', detailId);
+    return this.http
+    .get('/api/jazyk/worddetail/id/', {search: params})
     .map(response => response.json().obj)
     .catch(error => Observable.throw(error));
   }

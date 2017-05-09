@@ -300,12 +300,12 @@ let addNewWord = function(word, callback) {
           jazykDetailModel.create(newWordDetailNl, function (err, result) {
             if (!err) {
               // console.log('Added to jazyk NL Detail:', newWordDetailNl);
-              /*
+              
               newWord.nl.detailId = result._id;
               if (newWordCsP) {
                 newWordCsP.nl.detailId = result._id;
               }
-              */
+
               // Save detail Cs
               if (newWordDetailCs) {
                 saveCSDetail(newWordDetailCs, newWordDetailCsP, newWord, newWordCsP, word, function(err){
@@ -341,12 +341,12 @@ let saveCSDetail = function(newWordDetailCs, newWordDetailCsP, newWord, newWordC
   jazykDetailModel.create(newWordDetailCs, function (err, result) {
     if (!err) {
       // console.log('Added to jazyk CS Detail:', newWordDetailCs);
-      /*
+      
       newWord.cs.detailId = result._id;
       if (newWordCsP) {
         newWordCsP.cs.detailId = result._id;
       }
-      */
+      
       //saved both nl & cs detail, so I can save cs word
       if (!newWordDetailCsP) {
         saveDocs(newWord, newWordCsP, word, function(err){
@@ -425,8 +425,13 @@ let addWordData = function(word) {
   }
   if (word.otherwords) {
     reg = new RegExp(',', 'g');
-    //newlanword.altLegacy = word.otherwords.replace(reg, ';');
-    newlanword.alt = word.otherwords.replace(reg, ';');
+    //altwords = word.otherwords.replace(reg, ';');
+    altwords = word.otherwords.split(',');
+    wordArr = [];
+    altwords.forEach(word => {
+      wordArr.push({word: word.trim()})
+    })
+    newlanword.alt = wordArr;
   }
   if (word.hint) {
     newlanword.hint = word.hint;
