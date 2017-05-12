@@ -4,6 +4,8 @@ import {JazykDetailForm} from './edit-word-detail.component';
 import {JazykService} from '../../services/jazyk.service';
 import {ErrorService} from '../../services/error.service';
 import {DetailFilterData, Filter, TpeList, Language, AltWord, WordPair, WordDetail} from '../../models/jazyk.model';
+import {Observable} from 'rxjs/Observable';
+import 'rxjs/add/observable/zip';
 
 interface DetailHelper {
   hasDetail: boolean;
@@ -13,6 +15,8 @@ interface DetailHelper {
 interface FormHelper {
   detail1: DetailHelper;
   detail2: DetailHelper;
+  wordPairExists: boolean;
+  msg: string;
 }
 
 @Component({
@@ -56,6 +60,8 @@ export class JazykEditWordComponent implements OnInit, OnDestroy {
     this.formHelpers[0] = {
       detail1: { hasDetail: false, showDetail: false},
       detail2: { hasDetail: false, showDetail: false},
+      wordPairExists: false,
+      msg: ''
     };
     if (this.wordpairs) {
       this.isNew[0] = false;
@@ -74,7 +80,10 @@ export class JazykEditWordComponent implements OnInit, OnDestroy {
       docTpe: 'wordpair',
       wordTpe: '',
       lanPair: ['nl-nl', 'cs-cz'],
-      tags: []
+      tags: [],
+      nl: {
+        word: 'testword',
+        alt: [{word: 'test1'}, {word: 'test2', detailId: '5911b1a45b925606f0d86fc8'}]}
     };
     this.buildForms(wordpairs);
   }
@@ -89,7 +98,9 @@ export class JazykEditWordComponent implements OnInit, OnDestroy {
   }
 
   onWordChanged(i: number, w: string) {
+    this.formHelpers[0].msg = '';
     this.formHelpers[i]['detail' + w].hasDetail = false;
+
     // Look for a word detail document for this word
     const filter: Filter = {
       word: this.detailFilterData[i]['word' + w],
@@ -104,10 +115,19 @@ export class JazykEditWordComponent implements OnInit, OnDestroy {
     .takeWhile(() => this.componentActive)
     .subscribe(
       (data: WordDetail[]) => {
-        this['detail' + w] = data[0];
-        if (data.length > 0) {
-          this.formHelpers[i]['detail' + w].hasDetail = true;
-          this.formHelpers[i]['detail' + w].showDetail = true;
+        if (data[0]) {
+          // Set id in wordpair form
+          const lan = filter.lanCode.slice(0, 2);
+          console.log('got detail', data[0], lan, this.wordForms[i]);
+          this.wordForms[i].patchValue({['detailId' + w]: data[0]._id})
+
+          console.log('wordform', this.wordForms[i].value);
+          // Form helpers
+          this['detail' + w] = data[0];
+          if (data.length > 0) {
+            this.formHelpers[i]['detail' + w].hasDetail = true;
+            this.formHelpers[i]['detail' + w].showDetail = true;
+          }
         }
       },
       error => this.errorService.handleError(error)
@@ -117,8 +137,9 @@ export class JazykEditWordComponent implements OnInit, OnDestroy {
     .checkWordPairExists(this.detailFilterData[i])
     .takeWhile(() => this.componentActive)
     .subscribe(
-      data => {
-        console.log('check wordpair exists', data);
+      exists => {
+        console.log('check wordpair exists', exists);
+        this.formHelpers[i].wordPairExists = exists;
       },
       error => this.errorService.handleError(error)
     );
@@ -128,26 +149,112 @@ export class JazykEditWordComponent implements OnInit, OnDestroy {
     this.wordForms[i].patchValue({['alt' + w]: altwords});
   }
 
-  onSubmit(wordForm: any, i: number) {
+  onSubmit(wordFormData: any, i: number) {
+    let isvalid = true;
+    this.formHelpers[0].msg = '';
     // TODO: check if wordpair already exists
-    if (this.isNew[i]) {
-      this.addWordPair(wordForm, i);
-    } else {
-      this.updateWordPair(wordForm.value, i);
+    // TODO: get detail if new detail is added
+    console.log('validate detailform1 ', this.detailForm1.detailForm.status, this.detailForm1.detailForm.valid);
+    console.log('validate detailform2 ', this.detailForm2.detailForm.status, this.detailForm2.detailForm.valid);
+
+    if (!this.wordForms[i].valid) {
+      this.formHelpers[0].msg = 'Wordform is not valid';
+      isvalid = false;
     }
 
-    // TODO: validate detail forms
+    if (!this.detailForm1.detailForm.valid) {
+      this.formHelpers[0].msg = 'Detail form 1 is not valid';
+      isvalid = false;
+    }
 
-    this.submitDetail(this.detailForm1);
-    this.submitDetail(this.detailForm2);
+    if (!this.detailForm2.detailForm.valid) {
+      this.formHelpers[0].msg = 'Detail form 2 is not valid';
+      isvalid = false;
+    }
+
+    if (isvalid) {
+      // First save detail forms, and set detailId for wordform if new
+
+      // this.submitDetail(this.detailForm1, wordFormData);
+      // this.submitDetail(this.detailForm2, wordFormData);
+
+      const detailFormData1 = this.detailForm1.postProcessFormData(this.detailForm1.detailForm.value);
+      const detailFormData2 = this.detailForm2.postProcessFormData(this.detailForm2.detailForm.value);
+
+      console.log('zipping observables');
+      let save1, save2;
+      save1 = this.saveDetail(detailFormData1);
+      save2 = this.saveDetail(detailFormData2);
+
+      console.log('dirty', this.detailForm1.detailForm.dirty);
+      if (detailFormData1._id && this.detailForm1.detailForm.dirty) {
+        save1 = this.updateDetail(detailFormData1);
+      }
+      if (detailFormData2._id && this.detailForm2.detailForm.dirty) {
+        save2 = this.updateDetail(detailFormData2);
+      }
+
+      const source = Observable.zip(
+        save1,
+        save2
+      );
+
+      source
+      .takeWhile(() => this.componentActive)
+      .subscribe(
+        ids => {
+          console.log('GOT ID1: ' + ids[0]);
+          console.log('GOT ID2: ' + ids[1]);
+          console.log(wordFormData);
+          wordFormData.detailId1 = wordFormData.detailId1 || ids[0];
+          wordFormData.detailId2 = wordFormData.detailId2 || ids[1];
+        },
+        err => console.log('Error: %s', err)
+      );
+
+    }
   }
 
-  submitDetail(detailForm: JazykDetailForm) {
-    if (detailForm.detailExists && detailForm.detailForm.dirty) {
-      detailForm.update();
-    } else if (!detailForm.detailExists) {
-      detailForm.add();
-    }
+  saveDetail(detailFormData: any): Observable<string> {
+    return Observable.create(obs => {
+      console.log('saving detail', detailFormData);
+      if (detailFormData._id) {
+        console.log('not saving');
+        obs.next(detailFormData._id);
+      } else {
+        console.log('saving');
+        this.jazykService
+        .addWordDetail(detailFormData)
+        .takeWhile(() => this.componentActive)
+        .subscribe(
+          savedWordDetail => {
+            obs.next(savedWordDetail._id);
+          },
+          error => obs.error(error)
+        );
+      }
+    });
+  }
+
+  updateDetail(detailFormData: any): Observable<string> {
+    return Observable.create(obs => {
+      console.log('updating detail', detailFormData);
+      if (!detailFormData._id) {
+        console.log('not updating');
+        obs.next('');
+      } else {
+        console.log('updating');
+        this.jazykService
+        .updateWordDetail(detailFormData)
+        .takeWhile(() => this.componentActive)
+        .subscribe(
+          updatedWordDetail => {
+            obs.next(detailFormData._id);
+          },
+          error => obs.error(error)
+        );
+      }
+    });
   }
 
   onToggleDisplay(form_i, detail_i, show) {
@@ -163,14 +270,16 @@ export class JazykEditWordComponent implements OnInit, OnDestroy {
       wordTpe: [wordpair.wordTpe, [Validators.required]],
       lan1: [lan1],
       lan2: [lan2],
-      word1: [wordpair[lan1] ? wordpair[lan1].word : '', [Validators.required]],
-      word2: [wordpair[lan2] ? wordpair[lan2].word : '', [Validators.required]],
-      alt1: [[]],
-      alt2: [[{word: 'test1'}, {word: 'test2', detailId: '5911b1a45b925606f0d86fc8'}]],
-      hint1: [wordpair[lan1] ? wordpair[lan1].hint : ''],
-      hint2: [wordpair[lan2] ? wordpair[lan2].hint : ''],
-      info1: [wordpair[lan1] ? wordpair[lan1].info : ''],
-      info2: [wordpair[lan2] ? wordpair[lan2].info : '']
+      word1: [wordpair[lan1] ? wordpair[lan1].word || '' : '', [Validators.required]],
+      word2: [wordpair[lan2] ? wordpair[lan2].word || '' : '', [Validators.required]],
+      alt1: [wordpair[lan1] ? wordpair[lan1].alt || '' : []],
+      alt2: [wordpair[lan2] ? wordpair[lan2].alt || '' : []],
+      hint1: [wordpair[lan1] ? wordpair[lan1].hint || '' : ''],
+      hint2: [wordpair[lan2] ? wordpair[lan2].hint || '' : ''],
+      info1: [wordpair[lan1] ? wordpair[lan1].info || '' : ''],
+      info2: [wordpair[lan2] ? wordpair[lan2].info || '' : ''],
+      detailId1: [wordpair[lan1] ? wordpair[lan1].detailId || '' : ''],
+      detailId2: [wordpair[lan2] ? wordpair[lan2].detailId || '' : '']
     });
      return wordpairForm;
   }
@@ -182,7 +291,7 @@ export class JazykEditWordComponent implements OnInit, OnDestroy {
     .takeWhile(() => this.componentActive)
     .subscribe(
       result => {
-        // this.submitMessage = `Het woord ${wordPair.cz.word}/${wordPair.nl.word} is succesvol aangepast.`;
+        this.formHelpers[0].msg = `Het wordpair is succesvol toegevoegd aan de db.`;
         this.isNew[i] = false;
       },
       error => this.errorService.handleError(error)

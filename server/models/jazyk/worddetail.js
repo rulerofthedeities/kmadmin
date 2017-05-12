@@ -10,7 +10,7 @@ var detailSchema = new Schema({
     lan: {type: String, required: true},
     word: {type: String, required: true},
     docTpe: {type: String, default: 'details'},
-    wordTpe: String,
+    wordTpe: {type: String, required: true},
     article: String,
     case: String,
     followingCase: String,

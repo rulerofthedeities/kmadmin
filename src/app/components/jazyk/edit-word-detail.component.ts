@@ -3,11 +3,12 @@ import {FormBuilder, FormGroup, FormArray, FormControl, Validators} from '@angul
 import {JazykService} from '../../services/jazyk.service';
 import {ErrorService} from '../../services/error.service';
 import {WordDetail, LanConfig} from '../../models/jazyk.model';
-import {Observable, Subscription} from 'rxjs/Rx';
+import 'rxjs/add/operator/takeWhile';
 
 export abstract class JazykDetailForm implements OnChanges, OnInit {
   @Input() wordTpe: string;
   @Input() lan: string;
+  @Input() word: string;
   @Input() detail: WordDetail;
   componentActive = true;
   detailForm: FormGroup;
@@ -21,20 +22,28 @@ export abstract class JazykDetailForm implements OnChanges, OnInit {
   ) {}
 
   ngOnInit() {
-    console.log('init main', this.lan);
     this.getConfig(this.lan);
   }
 
   ngOnChanges() {
+    let detail: WordDetail;
     this.detailExists = this.detail ? true : false;
-    if (this.detail) {
-      this.buildForm(this.detail);
+    if (this.config) {
+      if (this.detail) {
+        this.buildForm(this.detail);
+      } else {
+        detail = this.getNewDetail();
+        this.buildForm(detail);
+      }
+    } else {
+      this.getConfig(this.lan);
     }
   }
 
   add() {
     const formData = this.postProcessFormData(this.detailForm.value);
     console.log('add detail form in db', this.lan, formData);
+
   }
 
   update() {
@@ -51,18 +60,28 @@ export abstract class JazykDetailForm implements OnChanges, OnInit {
     this.detailForm = this.formBuilder.group({
       '_id': [detail._id],
       'docTpe': [detail.docTpe],
-      'wordTpe': [detail._id],
+      'wordTpe': [detail.wordTpe],
       'lan': [detail.lan],
       'word': [detail.word]
     });
   }
+
+  /* 
+  // Doesn't work with conditional validators
+  updateForm() {
+    console.log('updating', this.lan, this.wordTpe, this.word);
+    this.detailForm.patchValue({wordTpe: this.wordTpe});
+    this.detailForm.patchValue({lan: this.lan});
+    this.detailForm.patchValue({word: this.word});
+  }
+  */
 
   getNewDetail(): WordDetail {
     const detail: WordDetail = {
       _id: '',
       article: 'de;het',
       lan: this.lan.slice(0, 2),
-      word: '',
+      word: this.word,
       docTpe: 'details',
       wordTpe: this.wordTpe
     };
@@ -76,7 +95,6 @@ export abstract class JazykDetailForm implements OnChanges, OnInit {
     .subscribe(
       config => {
         this.config = config;
-        console.log(config);
         this.buildForm(this.detail);
       },
       error => this.errorService.handleError(error)
@@ -103,8 +121,12 @@ export class JazykDetailFormNlComponent extends JazykDetailForm implements OnIni
   }
 
   ngOnInit() {
-    console.log('init nl', this);
     super.ngOnInit();
+  }
+
+  setDirty() {
+    // checkbox change doesn't set form as dirty
+    this.detailForm.markAsDirty();
   }
 
   buildForm(detail: WordDetail) {
@@ -119,8 +141,6 @@ export class JazykDetailFormNlComponent extends JazykDetailForm implements OnIni
         selectedArticles.filter(selArticle => selArticle === article).length > 0));
     });
 
-    console.log('detail', detail);
-
     this.detailForm = this.formBuilder.group({
       '_id': [detail._id],
       'docTpe': [detail.docTpe],
@@ -129,7 +149,6 @@ export class JazykDetailFormNlComponent extends JazykDetailForm implements OnIni
       'word': [detail.word],
       'article': [new FormArray(articleControls), detail.wordTpe === 'noun' ? [Validators.required] : []]
     });
-    console.log('detailForm', this.detailForm.value);
   }
 
   postProcessFormData(data: any): any {
@@ -153,7 +172,7 @@ export class JazykDetailFormNlComponent extends JazykDetailForm implements OnIni
   styleUrls: ['edit-word.component.css']
 })
 
-export class JazykDetailFormFrComponent extends JazykDetailForm {
+export class JazykDetailFormFrComponent extends JazykDetailForm implements OnInit {
   genera: string[];
   constructor (
     formBuilder: FormBuilder,
@@ -163,16 +182,22 @@ export class JazykDetailFormFrComponent extends JazykDetailForm {
     super(formBuilder, errorService, jazykService);
   }
 
+  ngOnInit() {
+    super.ngOnInit();
+  }
+
   buildForm(detail: WordDetail) {
     detail = detail ? detail : this.getNewDetail();
     this.genera = this.config.genera;
 
+    console.log('fr wordtpe', detail.wordTpe);
+
     this.detailForm = this.formBuilder.group({
       '_id': [detail._id],
-      'docTpe': [detail.docTpe],
-      'wordTpe': [detail._id],
-      'lan': [detail.lan],
-      'word': [detail.word],
+      'docTpe': [detail.docTpe, [Validators.required]],
+      'wordTpe': [detail.wordTpe, [Validators.required]],
+      'lan': [detail.lan, [Validators.required]],
+      'word': [detail.word, [Validators.required]],
       'genus': [detail.genus, detail.wordTpe === 'noun' ? [Validators.required] : []]
     });
   }

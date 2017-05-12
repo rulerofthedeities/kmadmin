@@ -52,7 +52,7 @@ export class JazykService {
     const headers = new Headers();
     headers.append('Content-Type', 'application/json');
     return this.http
-    .post('/api/jazyk/add/word', JSON.stringify(wordpairData), {headers})
+    .post('/api/jazyk/word', JSON.stringify(wordpairData), {headers})
     .map(response => response.json().obj)
     .catch(error => Observable.throw(error));
   }
@@ -71,6 +71,22 @@ export class JazykService {
     .map(response => response.json().obj)
     .catch(error => Observable.throw(error));
   }
+
+  checkWordPairExists(filter: DetailFilterData) {
+    const params = new URLSearchParams();
+    params.set('word1', filter.word1);
+    params.set('word2', filter.word2);
+    params.set('lanCode1', filter.lan1);
+    params.set('lanCode2', filter.lan2);
+    params.set('wordTpe', filter.tpe);
+    return this.http
+    .get('/api/jazyk/wordpair/unique', {search: params})
+    .map(response => response.json().obj)
+    .catch(error => Observable.throw(error));
+  }
+
+/* Detail */
+
 
   fetchWordDetailByFilter(filter: Filter) {
     const params = new URLSearchParams();
@@ -92,16 +108,20 @@ export class JazykService {
     .catch(error => Observable.throw(error));
   }
 
-  checkWordPairExists(filter: DetailFilterData) {
-    console.log('checkwordpair', filter);
-    const params = new URLSearchParams();
-    params.set('word1', filter.word1);
-    params.set('word2', filter.word2);
-    params.set('lanCode1', filter.lan1);
-    params.set('lanCode2', filter.lan2);
-    params.set('wordTpe', filter.tpe);
+  addWordDetail(detailFormData: any) {
+    const headers = new Headers();
+    headers.append('Content-Type', 'application/json');
     return this.http
-    .get('/api/jazyk/wordpair/unique', {search: params})
+    .post('/api/jazyk/detail', JSON.stringify(detailFormData), {headers})
+    .map(response => response.json().obj)
+    .catch(error => Observable.throw(error));
+  }
+
+  updateWordDetail(detailFormData: any) {
+    const headers = new Headers();
+    headers.append('Content-Type', 'application/json');
+    return this.http
+    .put('/api/jazyk/detail', JSON.stringify(detailFormData), {headers})
     .map(response => response.json().obj)
     .catch(error => Observable.throw(error));
   }

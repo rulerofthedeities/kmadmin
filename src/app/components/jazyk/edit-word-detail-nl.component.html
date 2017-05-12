@@ -1,12 +1,12 @@
 DETAIL NL
 
-<form *ngIf="detailForm"
+<form *ngIf="wordTpe && detailForm"
       [formGroup]="detailForm"
       class="form-horizontal"
       [ngClass]="{
-        hasDetail:detailExists,
+        exists:detailExists,
         add:!detailExists,
-        update: detailExists && detailForm.dirty
+        update: detailExists && detailForm?.dirty
       }">
   <div class="form-group">
     <label 
@@ -20,12 +20,16 @@ DETAIL NL
           type="checkbox" 
           id="checkbox-1" 
           value="value-1" 
+          (ngModelChange)="setDirty()"
           [formControl]="control" />     
         {{articles[i]}}
       </div>
     </div>
   </div>
+
+Detail exists: {{detailExists}}<br>
+    <p>Form status: {{ detailForm.status | json }}</p>
+    <p>Form dirty: {{ detailForm.dirty |json }}</p>
+
 </form>
 
-{{wordTpe}}
-Detail exists: {{detailExists}}<br>

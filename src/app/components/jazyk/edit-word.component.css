@@ -1,7 +1,7 @@
 form, .form {
   border-radius: 6px;
 }
-.hasDetail {
+.exists {
   border: 3px solid #5cb85c;
 }
 .update{
@@ -9,6 +9,10 @@ form, .form {
 }
 .add {
   border: 3px solid red;
+}
+.error {
+  color: red;
+  font-weight: bold;
 }
 h4 > .fa {
   font-size: 26px;

@@ -7,11 +7,15 @@
 <!-- WORD 0 -->
 <fieldset>
   <legend>Wordpair 0</legend>
-
+  {{formHelpers[0].wordPairExists}}
   <form *ngIf="wordForms[0]"
     [formGroup]="wordForms[0]"
     class="form-horizontal"
-     [ngClass]="{'add':isNew}">
+      [ngClass]="{
+        'exists': formHelpers[0].wordPairExists,
+        'add': !formHelpers[0].wordPairExists,
+        'update': formHelpers[0].wordPairExists && wordForms[0]?.dirty
+      }">
     <!-- LAN PAIR /  WORD TYPE -->
 
     <div class="row">
@@ -236,7 +240,7 @@
       </div>
     </div>
 
-    <p>Form value: {{ wordForms[0].value | json }}</p>
+    <pre>Form value: {{ wordForms[0].value | json }}</pre>
     <p>Form status: {{ wordForms[0].status | json }}</p>
     <p>Form dirty: {{ wordForms[0].dirty |json }}</p>
 
@@ -246,6 +250,8 @@
       [disabled]="!wordForms[0].valid || isSubmitted[0]">
       Voeg wordpair toe (first check if it already exists)
     </button>
+
+    <div class="error">{{formHelpers[0].msg}}</div>
   </form>
 
   <!-- WORD DETAILS -->
@@ -267,38 +273,44 @@
           <div [ngStyle]="{display:formHelpers[0].detail1.showDetail ? 'block' : 'none'}">
             <div [ngSwitch]="wordForms[0].value.lan1">
               <km-detail-form-nl *ngSwitchCase="'nl-nl'" #df1
-                [wordTpe]="wordForms[0].value.wordTpe"
-                [lan]="wordForms[0].value.lan1"
+                [wordTpe]="detailFilterData[0].tpe"
+                [lan]="detailFilterData[0].lan1"
+                [word]="detailFilterData[0].word1"
                 [detail]="detail1"
               >
               </km-detail-form-nl>
               <km-detail-form-fr *ngSwitchCase="'fr-fr'" #df1
-                [wordTpe]="wordForms[0].value.wordTpe"
-                [lan]="wordForms[0].value.lan1"
+                [wordTpe]="detailFilterData[0].tpe"
+                [lan]="detailFilterData[0].lan1"
+                [word]="detailFilterData[0].word1"
                 [detail]="detail1"
               >
               </km-detail-form-fr>
               <km-detail-form-de *ngSwitchCase="'de-de'" #df1
-                [wordTpe]="wordForms[0].value.wordTpe"
-                [lan]="wordForms[0].value.lan1"
+                [wordTpe]="detailFilterData[0].tpe"
+                [lan]="detailFilterData[0].lan1"
+                [word]="detailFilterData[0].word1"
                 [detail]="detail1"
               >
               </km-detail-form-de>
               <km-detail-form-en *ngSwitchCase="'en-gb'" #df1
-                [wordTpe]="wordForms[0].value.wordTpe"
-                [lan]="wordForms[0].value.lan1"
+                [wordTpe]="detailFilterData[0].tpe"
+                [lan]="detailFilterData[0].lan1"
+                [word]="detailFilterData[0].word1"
                 [detail]="detail1"
               >
               </km-detail-form-en>
               <km-detail-form-en *ngSwitchCase="'en-us'" #df1
-                [wordTpe]="wordForms[0].value.wordTpe"
-                [lan]="wordForms[0].value.lan1"
+                [wordTpe]="detailFilterData[0].tpe"
+                [lan]="detailFilterData[0].lan1"
+                [word]="detailFilterData[0].word1"
                 [detail]="detail1"
               >
               </km-detail-form-en>
               <km-detail-form-cs *ngSwitchCase="'cs-cz'" #df1
-                [wordTpe]="wordForms[0].value.wordTpe"
-                [lan]="wordForms[0].value.lan1"
+                [wordTpe]="detailFilterData[0].tpe"
+                [lan]="detailFilterData[0].lan1"
+                [word]="detailFilterData[0].word1"
                 [detail]="detail1"
               >
               </km-detail-form-cs>
@@ -334,38 +346,44 @@
           <div [ngStyle]="{display:formHelpers[0].detail2.showDetail ? 'block' : 'none'}">
             <div [ngSwitch]="wordForms[0].value.lan2">
               <km-detail-form-nl *ngSwitchCase="'nl-nl'" #df2
-                [wordTpe]="wordForms[0].value.wordTpe"
-                [lan]="wordForms[0].value.lan2"
+                [wordTpe]="detailFilterData[0].tpe"
+                [lan]="detailFilterData[0].lan2"
+                [word]="detailFilterData[0].word2"
                 [detail]="detail2"
               >
               </km-detail-form-nl>
               <km-detail-form-fr *ngSwitchCase="'fr-fr'" #df2
-                [wordTpe]="wordForms[0].value.wordTpe"
-                [lan]="wordForms[0].value.lan2"
+                [wordTpe]="detailFilterData[0].tpe"
+                [lan]="detailFilterData[0].lan2"
+                [word]="detailFilterData[0].word2"
                 [detail]="detail2"
               >
               </km-detail-form-fr>
               <km-detail-form-de *ngSwitchCase="'de-de'" #df2
-                [wordTpe]="wordForms[0].value.wordTpe"
-                [lan]="wordForms[0].value.lan2"
+                [wordTpe]="detailFilterData[0].tpe"
+                [lan]="detailFilterData[0].lan2"
+                [word]="detailFilterData[0].word2"
                 [detail]="detail2"
               >
               </km-detail-form-de>
               <km-detail-form-en *ngSwitchCase="'en-gb'" #df2
-                [wordTpe]="wordForms[0].value.wordTpe"
-                [lan]="wordForms[0].value.lan2"
+                [wordTpe]="detailFilterData[0].tpe"
+                [lan]="detailFilterData[0].lan2"
+                [word]="detailFilterData[0].word2"
                 [detail]="detail2"
               >
               </km-detail-form-en>
               <km-detail-form-en *ngSwitchCase="'en-us'" #df2
-                [wordTpe]="wordForms[0].value.wordTpe"
-                [lan]="wordForms[0].value.lan2"
+                [wordTpe]="detailFilterData[0].tpe"
+                [lan]="detailFilterData[0].lan2"
+                [word]="detailFilterData[0].word2"
                 [detail]="detail2"
               >
               </km-detail-form-en>
               <km-detail-form-cs *ngSwitchCase="'cs-cz'" #df2
-                [wordTpe]="wordForms[0].value.wordTpe"
-                [lan]="wordForms[0].value.lan2"
+                [wordTpe]="detailFilterData[0].tpe"
+                [lan]="detailFilterData[0].lan2"
+                [word]="detailFilterData[0].word2"
                 [detail]="detail2"
               >
               </km-detail-form-cs>

@@ -1,4 +1,4 @@
-import {Component, Input, Output, OnDestroy, EventEmitter} from '@angular/core';
+import {Component, Input, Output, OnDestroy, EventEmitter, ViewChild} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {JazykService} from '../../services/jazyk.service';
 import {ErrorService} from '../../services/error.service';
@@ -49,6 +49,7 @@ export class JazykEditAltFieldComponent implements OnDestroy {
   @Input() lanCode: string;
   @Input() wordTpe: string;
   // @Output() updatedWords = new EventEmitter<AltWord[]>();
+  @ViewChild('newalt') altField;
   detail: WordDetail;
   componentActive = true;
 
@@ -103,7 +104,10 @@ export class JazykEditAltFieldComponent implements OnDestroy {
     .takeWhile(() => this.componentActive)
     .subscribe(
       (data: WordDetail[]) => {
-        this.words[i].detailId = data[0]._id;
+        this.altField.nativeElement.value = '';
+        if (data[0]) {
+          this.words[i].detailId = data[0]._id;
+        }
       },
       error => this.errorService.handleError(error)
     );

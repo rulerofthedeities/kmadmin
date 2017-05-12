@@ -1,13 +1,23 @@
 DETAIL FR
 
-<form *ngIf="detailForm"
+<form *ngIf="wordTpe && detailForm"
       [formGroup]="detailForm"
       class="form-horizontal"
       [ngClass]="{
-        hasDetail:detailExists,
+        exists:detailExists,
         add:!detailExists,
-        update: detailExists && detailForm.dirty
+        update: detailExists && detailForm?.dirty
       }">
+
+  <div class="form-group">
+    <label 
+      class="control-label col-xs-2">
+      Word:
+    </label>
+    <div class="col-xs-10">
+      {{word}}
+    </div>
+  </div>
   <div class="form-group">
     <label 
       for="genus" 
@@ -23,7 +33,10 @@ DETAIL FR
       </div>
     </div>
   </div>
-</form>
 
 Detail exists: {{detailExists}}<br>
-{{wordTpe}}
+    <pre>Form value: {{ detailForm.value | json }}</pre>
+    <p>Form status: {{ detailForm.status | json }}</p>
+    <p>Form dirty: {{ detailForm.dirty |json }}</p>
+
+</form>

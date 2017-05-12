@@ -74,7 +74,7 @@ module.exports = {
   },
   getWordDetailById: function(req, res) {
     const detailId = req.query.id;
-    WordDetail.findOne({_id:detailId}, {}, {}, function(err, worddetails) {
+    WordDetail.findOne({_id:detailId}, {__v:0}, {}, function(err, worddetails) {
       response.handleError(err, res, 500, 'Error fetching worddetails', function(){
         response.handleSuccess(res, worddetails, 200, 'Fetched worddetails');
       });
@@ -117,11 +117,11 @@ module.exports = {
     });
   },*/
   addWordPair: function(req, res) {
-    const formData = req.body;
-    const lankey1 = formData.lan1.split(0, 2);
-    const lankey2 = formData.lan2.split(0, 2);
-    const landoc1 = createLanDoc(formData, 1);
-    const landoc2 = createLanDoc(formData, 2);
+    const formData = req.body,
+          lankey1 = formData.lan1.split(0, 2),
+          lankey2 = formData.lan2.split(0, 2),
+          landoc1 = createLanDoc(formData, 1),
+          landoc2 = createLanDoc(formData, 2);
 
     // ADD MAIN WORDPAIR DOCUMENT
     const newWord = {
@@ -138,6 +138,46 @@ module.exports = {
     result = null;
     response.handleError(err, res, 500, 'Error fetching wordpair', function(){
       response.handleSuccess(res, result, 200, 'Fetched wordpair');
+    });
+  },
+  addWordDetail: function(req, res) {
+    const formData = req.body;
+
+    // GET WORDCOUNT
+
+
+    // ADD WORDDETAIL DOCUMENT
+
+    const newWord = {
+      docTpe: 'details',
+      wordTpe: formData.wordTpe,
+      lan: formData.lan,
+      word: formData.word
+    }
+
+    if (formData.genus) {
+      newWord.genus = formData.genus
+    }
+
+    console.log('Form data:', req.body);
+    console.log('New document:', newWord);
+
+    WordDetail.create(newWord, function (err, result) {
+      response.handleError(err, res, 500, 'Error adding worddetail', function(){
+        response.handleSuccess(res, result, 200, 'Added worddetail');
+      });
+    });
+  },
+  updateWordDetail: function(req, res) {
+    const formData = req.body;
+    // GET WORDCOUNT
+
+    console.log('Form data:', req.body);
+
+    err = null;
+    result = null;
+    response.handleError(err, res, 500, 'Error updating wordpair', function(){
+      response.handleSuccess(res, result, 200, 'Updating wordpair');
     });
   }
 }

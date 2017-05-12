@@ -39,7 +39,10 @@ module.exports.initialize = function(app, router) {
   router.get('/jazyk/config/lan/:lan', jazyk_config.getLanConfig);
   router.get('/jazyk/wordpair/unique', jazyk_edit.checkUniqueWordpair);
 
-  router.post('/jazyk/add/word', jazyk_edit.addWordPair);
+  router.post('/jazyk/word', jazyk_edit.addWordPair);
+  router.post('/jazyk/detail', jazyk_edit.addWordDetail);
+  
+  router.put('/jazyk/detail', jazyk_edit.updateWordDetail);
 
 
 /*** AVC ADMIN ***/

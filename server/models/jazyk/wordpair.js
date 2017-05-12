@@ -2,7 +2,7 @@ var mongoose = require('mongoose'),
     Schema = mongoose.Schema;
 
 var wordLangSchema = new Schema({
-  //detailId: Schema.Types.ObjectId,
+  detailId: Schema.Types.ObjectId,
   word: {type: String, required: true},
   alt: String,
   hint: String,
