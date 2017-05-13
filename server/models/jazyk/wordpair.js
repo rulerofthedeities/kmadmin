@@ -1,10 +1,15 @@
 var mongoose = require('mongoose'),
     Schema = mongoose.Schema;
 
+var altWordSchema = new Schema({
+  detailId: {type: Schema.Types.ObjectId},
+  word: String
+}, {_id : false})
+
 var wordLangSchema = new Schema({
   detailId: Schema.Types.ObjectId,
   word: {type: String, required: true},
-  alt: String,
+  alt: [altWordSchema],
   hint: String,
   info: String
 }, {_id: false});
@@ -13,7 +18,6 @@ var wordSchema = new Schema({
   docTpe: {type: String, default: 'wordpair'},
   wordTpe: {type: String, required: true},
   lanPair: [String],
-  tags: [String],
   cs: wordLangSchema,
   de: wordLangSchema,
   fr: wordLangSchema,
@@ -21,11 +25,5 @@ var wordSchema = new Schema({
   nl: wordLangSchema,
   us: wordLangSchema
 }, {collection: 'wordpairs'});
-
-wordSchema.post('init', function(doc) {
-  if (doc.tags && doc.tags.length < 1) {
-    doc.tags = undefined;
-  }
-});
 
 module.exports = wordSchema;

@@ -40,17 +40,6 @@ export abstract class JazykDetailForm implements OnChanges, OnInit {
     }
   }
 
-  add() {
-    const formData = this.postProcessFormData(this.detailForm.value);
-    console.log('add detail form in db', this.lan, formData);
-
-  }
-
-  update() {
-    const formData = this.postProcessFormData(this.detailForm.value);
-    console.log('update detail form in db', this.lan, formData);
-  }
-
   postProcessFormData(data: any): any {
     return data;
   }
@@ -66,7 +55,7 @@ export abstract class JazykDetailForm implements OnChanges, OnInit {
     });
   }
 
-  /* 
+  /*
   // Doesn't work with conditional validators
   updateForm() {
     console.log('updating', this.lan, this.wordTpe, this.word);
@@ -134,8 +123,9 @@ export class JazykDetailFormNlComponent extends JazykDetailForm implements OnIni
     this.articles = this.config.articles;
     // PRE-PROCESS FORM DATA
     // set article field
+    console.log('article', detail.article);
     const articleControls: FormControl[] = [],
-          selectedArticles = detail.article.split(';');
+          selectedArticles = detail.article ? detail.article.split(';') : [];
     this.articles.forEach(article => {
       articleControls.push(new FormControl(
         selectedArticles.filter(selArticle => selArticle === article).length > 0));

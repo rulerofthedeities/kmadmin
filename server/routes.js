@@ -37,11 +37,12 @@ module.exports.initialize = function(app, router) {
   router.get('/jazyk/worddetail/filter', jazyk_edit.getWordDetailByFilter);
   router.get('/jazyk/worddetail/id', jazyk_edit.getWordDetailById);
   router.get('/jazyk/config/lan/:lan', jazyk_config.getLanConfig);
-  router.get('/jazyk/wordpair/unique', jazyk_edit.checkUniqueWordpair);
+  router.get('/jazyk/wordpair/exists', jazyk_edit.checkWordpairExists);
 
   router.post('/jazyk/word', jazyk_edit.addWordPair);
   router.post('/jazyk/detail', jazyk_edit.addWordDetail);
   
+  router.put('/jazyk/word', jazyk_edit.updateWordPair);
   router.put('/jazyk/detail', jazyk_edit.updateWordDetail);
 
 

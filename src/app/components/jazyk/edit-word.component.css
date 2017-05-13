@@ -14,6 +14,15 @@ form, .form {
   color: red;
   font-weight: bold;
 }
+.success {
+  color: green;
+  font-weight: bold;
+}
 h4 > .fa {
   font-size: 26px;
+}
+.legend li {
+  border-radius: 3px;
+  display: inline;
+  padding: 2px;
 }

@@ -57,17 +57,11 @@ export class JazykService {
     .catch(error => Observable.throw(error));
   }
 
-/* Filter */
-
-  fetchFilterWordPairs(filter: Filter) {
-    const params = new URLSearchParams();
-    params.set('word', filter.word);
-    params.set('lanCode', filter.lanCode);
-    params.set('isFromStart', filter.isFromStart.toString());
-    params.set('isExact', filter.isExact.toString());
-    params.set('returnTotal', filter.returnTotal.toString());
+  updateWordPair(wordpairData: any) {
+    const headers = new Headers();
+    headers.append('Content-Type', 'application/json');
     return this.http
-    .get('/api/jazyk/wordpairs/', {search: params})
+    .put('/api/jazyk/word', JSON.stringify(wordpairData), {headers})
     .map(response => response.json().obj)
     .catch(error => Observable.throw(error));
   }
@@ -80,7 +74,22 @@ export class JazykService {
     params.set('lanCode2', filter.lan2);
     params.set('wordTpe', filter.tpe);
     return this.http
-    .get('/api/jazyk/wordpair/unique', {search: params})
+    .get('/api/jazyk/wordpair/exists', {search: params})
+    .map(response => response.json().obj)
+    .catch(error => Observable.throw(error));
+  }
+
+/* Filter */
+
+  fetchFilterWordPairs(filter: Filter) {
+    const params = new URLSearchParams();
+    params.set('word', filter.word);
+    params.set('lanCode', filter.lanCode);
+    params.set('isFromStart', filter.isFromStart.toString());
+    params.set('isExact', filter.isExact.toString());
+    params.set('returnTotal', filter.returnTotal.toString());
+    return this.http
+    .get('/api/jazyk/wordpairs/', {search: params})
     .map(response => response.json().obj)
     .catch(error => Observable.throw(error));
   }

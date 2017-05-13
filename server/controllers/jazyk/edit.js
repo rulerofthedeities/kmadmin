@@ -40,6 +40,18 @@ let createLanDoc = function(formData, nr) {
   return lanDoc;
 }
 
+let updateLanDoc = function(formData, nr) {
+  let lanDoc = {
+    word: formData['word' + nr].trim()
+  };
+  lanDoc.alt = formData['alt' + nr] ? formData['alt' + nr] : undefined;
+  lanDoc.hint = formData['hint' + nr] ? formData['hint' + nr].trim() : undefined;
+  lanDoc.info = formData['info' + nr] ? formData['info' + nr].trim() : undefined;
+  lanDoc.detailId = formData['detailId' + nr] ? new mongoose.Types.ObjectId(formData['detailId' + nr]) : undefined;
+
+  return lanDoc;
+}
+
 module.exports = {
   getWordPairs: function(req, res) {
     const query = req.query;
@@ -83,18 +95,20 @@ module.exports = {
       });
     });
   },
-  checkUniqueWordpair: function(req, res) {
+  checkWordpairExists: function(req, res) {
     const query = req.query,
+          wordTpe = query.wordTpe,
           lan1 = query.lanCode1,
           lan2 = query.lanCode2,
           word1 = query.word1,
           word2 = query.word2,
-          wordkey1 = lan1.slice(0, 2) + '.word';
+          wordkey1 = lan1.slice(0, 2) + '.word',
           wordkey2 = lan2.slice(0, 2) + '.word';
-    WordPair.findOne({docTpe:'wordpair', $and:[{lanPair:lan1}, {lanPair:lan2}], [wordkey1]:word1, [wordkey2]:word2}, {}, {}, function(err, wordpair) {
-      result = wordpair ? true : false;
-      response.handleError(err, res, 500, 'Error checking wordpair uniqueness', function(){
-        response.handleSuccess(res, result, 200, 'Checked if wordpair is unique');
+
+    WordPair.findOne({docTpe:'wordpair', wordTpe: wordTpe, $and:[{lanPair:lan1}, {lanPair:lan2}], [wordkey1]:word1, [wordkey2]:word2}, {}, {}, function(err, wordpair) {
+      result = wordpair ? wordpair._id : false;
+      response.handleError(err, res, 500, 'Error checking wordpair exists', function(){
+        response.handleSuccess(res, result, 200, 'Checked if wordpair exists');
       });
     });
   },
@@ -141,6 +155,36 @@ module.exports = {
       });
     });
   },
+  updateWordPair: function(req, res) {
+    const formData = req.body,
+          lankey1 = formData.lan1.slice(0, 2),
+          lankey2 = formData.lan2.slice(0, 2),
+          landoc1 = updateLanDoc(formData, 1),
+          landoc2 = updateLanDoc(formData, 2);
+    let wordpairId;
+    // GET WORDCOUNT
+
+    console.log('update Wordpair Form data:', req.body);
+    if (mongoose.Types.ObjectId.isValid(formData._id)) {
+      wordpairId = new mongoose.Types.ObjectId(formData._id);
+    } else {
+      console.log('ERROR: invalid wordpair ID "' + formData._id + '"');
+    }
+
+    const UpdateObject = {
+      wordTpe: formData.wordTpe,
+      [lankey1]: landoc1,
+      [lankey2]: landoc2
+    }
+    console.log('Update Wordpair Object:', UpdateObject);
+
+    WordPair.findOneAndUpdate({_id: wordpairId}, {$set: UpdateObject}, function(err, result) {
+      response.handleError(err, res, 500, 'Error updating wordpair', function(){
+        response.handleSuccess(res, result, 200, 'Updating wordpair');
+      });
+    });
+
+  },
   addWordDetail: function(req, res) {
     const formData = req.body;
 
@@ -177,8 +221,8 @@ module.exports = {
 
     err = null;
     result = null;
-    response.handleError(err, res, 500, 'Error updating wordpair', function(){
-      response.handleSuccess(res, result, 200, 'Updating wordpair');
+    response.handleError(err, res, 500, 'Error updating worddetail', function(){
+      response.handleSuccess(res, result, 200, 'Updating worddetail');
     });
   }
 }

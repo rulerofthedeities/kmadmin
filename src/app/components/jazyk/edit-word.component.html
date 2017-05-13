@@ -1,13 +1,12 @@
-<ul class="list-unstyled">
-<li>Green: document exists and is unchanged</li>
-<li>Orange: document exists and will be updated</li>
-<li>Red: document does not exist and will be created</li>
+<ul class="list-unstyled legend">
+<li class="exists">Document exists and is unchanged</li>
+<li class="update">Document exists and will be updated</li>
+<li class="add">Document does not exist and will be created</li>
 </ul>
 
 <!-- WORD 0 -->
 <fieldset>
   <legend>Wordpair 0</legend>
-  {{formHelpers[0].wordPairExists}}
   <form *ngIf="wordForms[0]"
     [formGroup]="wordForms[0]"
     class="form-horizontal"
@@ -244,14 +243,14 @@
     <p>Form status: {{ wordForms[0].status | json }}</p>
     <p>Form dirty: {{ wordForms[0].dirty |json }}</p>
 
-    <button *ngIf="isNew[0]"
+    <button
       (click)="onSubmit(wordForms[0].value, 0)"
       class="btn btn-success" 
       [disabled]="!wordForms[0].valid || isSubmitted[0]">
       Voeg wordpair toe (first check if it already exists)
     </button>
 
-    <div class="error">{{formHelpers[0].msg}}</div>
+    <div class="{{formHelpers[0].msg.tpe}}">{{formHelpers[0].msg.txt}}</div>
   </form>
 
   <!-- WORD DETAILS -->

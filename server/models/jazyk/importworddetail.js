@@ -12,13 +12,13 @@ var wordNounSchema = new Schema({
   docTpe: {type: String, default: 'details'},
   wordTpe: {type: String, default: 'noun'},
   article: String,
-    tags: [String],
+  tags: [String],
   case: String,
   genus: String,
   plural: String,
   diminutive: String,
-    score: Number,
-    wordCount: Number
+  score: Number,
+  wordCount: Number
 }, {collection: 'wordpairs'});
 
 var wordAdjectiveSchema = new Schema({
@@ -27,11 +27,11 @@ var wordAdjectiveSchema = new Schema({
   docTpe: {type: String, default: 'details'},
   wordTpe: {type: String, default: 'adjective'},
   case: String,
-    tags: [String],
+  tags: [String],
   comparative: String,
   superlative: String,
-    score: Number,
-    wordCount: Number
+  score: Number,
+  wordCount: Number
 }, {collection: 'wordpairs'});
 
 var wordVerbSchema = new Schema({
@@ -39,20 +39,20 @@ var wordVerbSchema = new Schema({
   word: {type: String, required: true},
   docTpe: {type: String, default: 'details'},
   wordTpe: {type: String, default: 'verb'},
-    tags: [String],
+  tags: [String],
   aspect: String,
   aspectPair: String,
   followingCase: String,
   conjugation: [String],
-    score: Number,
-    wordCount: Number
+  score: Number,
+  wordCount: Number
 }, {collection: 'wordpairs'});
 
 wordVerbSchema.pre('save', function (next) {
   if (this.isNew) {
     if (this.conjugation.length == 0) {
       this.conjugation = undefined;       
-    }                                   
+    }                                                     
   }
   next();
 });
