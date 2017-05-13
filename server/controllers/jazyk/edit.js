@@ -26,13 +26,16 @@ let createLanDoc = function(formData, nr) {
     word: formData['word' + nr].trim()
   };
   if (formData['alt' + nr]) {
-    lanDoc.alt = formData['alt' + nr]
+    lanDoc.alt = formData['alt' + nr];
   }
   if (formData['hint' + nr]) {
-    lanDoc.hint = formData['hint' + nr].trim()
+    lanDoc.hint = formData['hint' + nr].trim();
   }
   if (formData['info' + nr]) {
-    lanDoc.info = formData['info' + nr].trim()
+    lanDoc.info = formData['info' + nr].trim();
+  }
+  if (formData['detailId' + nr]) {
+    lanDoc.detailId = new mongoose.Types.ObjectId(formData['detailId' + nr]);
   }
   return lanDoc;
 }
@@ -88,10 +91,8 @@ module.exports = {
           word2 = query.word2,
           wordkey1 = lan1.slice(0, 2) + '.word';
           wordkey2 = lan2.slice(0, 2) + '.word';
-    console.log(query);
     WordPair.findOne({docTpe:'wordpair', $and:[{lanPair:lan1}, {lanPair:lan2}], [wordkey1]:word1, [wordkey2]:word2}, {}, {}, function(err, wordpair) {
       result = wordpair ? true : false;
-      console.log('result', result);
       response.handleError(err, res, 500, 'Error checking wordpair uniqueness', function(){
         response.handleSuccess(res, result, 200, 'Checked if wordpair is unique');
       });
@@ -118,8 +119,8 @@ module.exports = {
   },*/
   addWordPair: function(req, res) {
     const formData = req.body,
-          lankey1 = formData.lan1.split(0, 2),
-          lankey2 = formData.lan2.split(0, 2),
+          lankey1 = formData.lan1.slice(0, 2),
+          lankey2 = formData.lan2.slice(0, 2),
           landoc1 = createLanDoc(formData, 1),
           landoc2 = createLanDoc(formData, 2);
 
@@ -131,13 +132,13 @@ module.exports = {
       [lankey1]: landoc1,
       [lankey2]: landoc2
     }
-    console.log('Form data:', req.body);
-    console.log('New document:', newWord);
+    console.log('Add Wordpair Form data:', req.body);
+    console.log('Add Wordpair New document:', newWord);
 
-    err = null;
-    result = null;
-    response.handleError(err, res, 500, 'Error fetching wordpair', function(){
-      response.handleSuccess(res, result, 200, 'Fetched wordpair');
+    WordPair.create(newWord, function (err, result) {
+      response.handleError(err, res, 500, 'Error adding wordpair', function(){
+        response.handleSuccess(res, result, 200, 'Added wordpair');
+      });
     });
   },
   addWordDetail: function(req, res) {
@@ -159,11 +160,11 @@ module.exports = {
       newWord.genus = formData.genus
     }
 
-    console.log('Form data:', req.body);
-    console.log('New document:', newWord);
+    console.log('Add Worddetail Form data:', req.body);
+    console.log('Add Worddetail New document:', newWord);
 
     WordDetail.create(newWord, function (err, result) {
-      response.handleError(err, res, 500, 'Error adding worddetail', function(){
+      response.handleError(err, res, 500, 'Error adding worddetail', function() {
         response.handleSuccess(res, result, 200, 'Added worddetail');
       });
     });
@@ -172,7 +173,7 @@ module.exports = {
     const formData = req.body;
     // GET WORDCOUNT
 
-    console.log('Form data:', req.body);
+    console.log('update Worddetail Form data:', req.body);
 
     err = null;
     result = null;

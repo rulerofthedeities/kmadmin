@@ -22,4 +22,10 @@ var wordSchema = new Schema({
   us: wordLangSchema
 }, {collection: 'wordpairs'});
 
+wordSchema.post('init', function(doc) {
+  if (doc.tags && doc.tags.length < 1) {
+    doc.tags = undefined;
+  }
+});
+
 module.exports = wordSchema;
