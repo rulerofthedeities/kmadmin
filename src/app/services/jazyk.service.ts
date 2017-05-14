@@ -85,6 +85,7 @@ export class JazykService {
     const params = new URLSearchParams();
     params.set('word', filter.word);
     params.set('lanCode', filter.lanCode);
+    params.set('wordTpe', filter.wordTpe);
     params.set('isFromStart', filter.isFromStart.toString());
     params.set('isExact', filter.isExact.toString());
     params.set('returnTotal', filter.returnTotal.toString());

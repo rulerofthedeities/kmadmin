@@ -21,8 +21,7 @@ import {JazykEditWordComponent} from './edit-word.component';
           ></km-filter-list>
         </div>
         <div class="col-xs-9">
-          <km-edit-word
-          [wordpairs]="wordpairs" #edit>
+          <km-edit-word #edit>
           </km-edit-word>
         </div>
       </div>
@@ -44,7 +43,6 @@ export class JazykEditComponent {
 
   onSelectedWord(filterWord: Filter) {
     // Edit selected word in all available languages
-    console.log('filterword', filterWord);
     this.editWords.editNewWords(filterWord);
   }
 }

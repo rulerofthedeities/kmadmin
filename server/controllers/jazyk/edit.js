@@ -60,8 +60,13 @@ module.exports = {
     const lan = query.lanCode;
     const key = query.lanCode.slice(0, 2) + '.word';
     const search = query.isExact === 'true' ? query.word : {$regex: word, $options:'i'};
+
+    const q = {lanPair:lan, [key]:search};
+    if (query.wordTpe) {
+      q.wordTpe = query.wordTpe;
+    }
     
-    WordPair.find({lanPair:lan, [key]:search}, {}, {limit: 50, sort:{[key]:1}}, function(err, wordpairs) {
+    WordPair.find(q, {}, {limit: 50, sort:{[key]:1, lanPair:1}}, function(err, wordpairs) {
       response.handleError(err, res, 500, 'Error fetching wordpairs', function(){
         // Count workaround until v3.4 (aggregate)
         if (returnTotal) {

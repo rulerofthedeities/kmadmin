@@ -79,7 +79,7 @@
 
   <!-- LANGUAGE 1 -->
   
-    <div class="row" *ngIf="wordTpe.value">
+    <div class="row" *ngIf="wordTpe">
       <div class="col-xs-6">
         <div class="panel panel-default">
           <div class="panel-heading">
@@ -255,7 +255,7 @@
 
   <!-- WORD DETAILS -->
 
-  <div class="row">
+  <div class="row" *ngIf="wordForms[0]">
     <div class="col-xs-6">
       <div class="panel panel-default">
         <div class="panel-body form">
