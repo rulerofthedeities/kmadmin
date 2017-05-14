@@ -9,7 +9,7 @@ var altWordSchema = new Schema({
 var wordLangSchema = new Schema({
   detailId: Schema.Types.ObjectId,
   word: {type: String, required: true},
-  alt: [altWordSchema],
+  alt: {type: [altWordSchema], default: void 0},
   hint: String,
   info: String
 }, {_id: false});

@@ -13,6 +13,7 @@ import {JazykService} from './services/jazyk.service';
 import {CznlImportComponent} from './components/jazyk/cznl-import.component';
 import {JazykMenuComponent} from './components/jazyk/menu.component';
 import {JazykEditComponent} from './components/jazyk/edit.component';
+import {JazykEditMenuComponent} from './components/jazyk/edit-menu.component';
 import {JazykEditWordComponent} from './components/jazyk/edit-word.component';
 import {JazykEditAltFieldComponent} from './components/jazyk/edit-field-alt.component';
 import {JazykEditFilterComponent} from './components/jazyk/edit-filter.component';
@@ -42,6 +43,7 @@ import {
     CznlImportComponent,
     JazykMenuComponent,
     JazykEditComponent,
+    JazykEditMenuComponent,
     JazykEditWordComponent,
     JazykEditAltFieldComponent,
     JazykEditFilterComponent,

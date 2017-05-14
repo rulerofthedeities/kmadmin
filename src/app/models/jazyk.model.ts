@@ -30,7 +30,6 @@ export interface DetailFilterData {
   tpe: string;
 }
 
-
 export interface FilterList {
   wordpairs: WordPair[];
   filter: Filter;

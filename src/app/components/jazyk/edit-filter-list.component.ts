@@ -1,5 +1,5 @@
-import {Component, Input} from '@angular/core';
-import {WordPair} from '../../models/jazyk.model';
+import {Component, Input, Output, EventEmitter} from '@angular/core';
+import {WordPair, Filter} from '../../models/jazyk.model';
 
 @Component({
   selector: 'km-filter-list',
@@ -50,6 +50,7 @@ import {WordPair} from '../../models/jazyk.model';
 export class JaykEditFilterListComponent {
   @Input() wordpairs: WordPair[];
   @Input() lan: string;
+  @Output() selectedWord = new EventEmitter<Filter>();
 
   getWord(wordpair: WordPair): string {
     const lan = this.lan.slice(0, 2);
@@ -58,5 +59,15 @@ export class JaykEditFilterListComponent {
       word = wordpair[lan].word;
     }
     return word;
+  }
+
+  selectListWord(i: number) {
+    const lan = this.lan.slice(0, 2);
+    const wordListFilter: Filter = {
+      word: this.wordpairs[i][lan].word,
+      lanCode: this.lan,
+      wordTpe: this.wordpairs[i].wordTpe
+    }
+    this.selectedWord.emit(wordListFilter);
   }
 }

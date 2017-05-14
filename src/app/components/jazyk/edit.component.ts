@@ -1,5 +1,6 @@
-import {Component} from '@angular/core';
-import {FilterList, WordPair} from '../../models/jazyk.model';
+import {Component, ViewChild} from '@angular/core';
+import {FilterList, Filter, WordPair} from '../../models/jazyk.model';
+import {JazykEditWordComponent} from './edit-word.component';
 
 @Component({
   template: `
@@ -16,31 +17,34 @@ import {FilterList, WordPair} from '../../models/jazyk.model';
           <km-filter-list
             [lan]="lan"
             [wordpairs]="wordpairs"
+            (selectedWord)="onSelectedWord($event)"
           ></km-filter-list>
         </div>
         <div class="col-xs-9">
           <km-edit-word
-            [wordpairs]="wordpairs"
-          ></km-edit-word>
+          [wordpairs]="wordpairs" #edit>
+          </km-edit-word>
         </div>
       </div>
       <div class="clearfix"></div>
     </section>
-
-
   `
 })
 
 export class JazykEditComponent {
   wordpairs: WordPair[];
   lan: string;
+  @ViewChild('edit') editWords: JazykEditWordComponent;
 
   onWordsFiltered(filterList: FilterList) {
+    // Show list of filtered words
     this.wordpairs = filterList.wordpairs;
     this.lan = filterList.filter.lanCode;
   }
 
-
-    // TODO: First get all wordpairs for the word in the language from the filter
-    // TODO: Next get the worddetails for all these wordpairs
+  onSelectedWord(filterWord: Filter) {
+    // Edit selected word in all available languages
+    console.log('filterword', filterWord);
+    this.editWords.editNewWords(filterWord);
+  }
 }

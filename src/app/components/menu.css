@@ -1,1 +1,10 @@
-.active {border:1px dashed red;}
+.active {
+  border:2px dashed red;
+  border-radius: 6px;
+}
+li {
+  margin-bottom: 4px;
+}
+li > a {
+  padding: 0 4px;
+}

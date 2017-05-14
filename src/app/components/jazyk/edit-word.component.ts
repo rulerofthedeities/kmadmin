@@ -77,6 +77,14 @@ export class JazykEditWordComponent implements OnInit, OnDestroy {
     }
   }
 
+  editNewWords(filter: Filter) {
+    // Word selected in the filter list
+    console.log('editing new words', filter);
+
+    // Search for this word in all languages
+    
+  }
+
   createNewForm() {
     const wordpairs: WordPair[] = [];
 
@@ -129,6 +137,7 @@ export class JazykEditWordComponent implements OnInit, OnDestroy {
           this['detail' + w] = data[0];
           this.formHelpers[i]['detail' + w].hasDetail = true;
           this.formHelpers[i]['detail' + w].showDetail = true;
+
         } else {
           console.log('no detail');
           this.isNew[i] = true;
