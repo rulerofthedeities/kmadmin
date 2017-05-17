@@ -81,7 +81,7 @@ export class JazykService {
 
 /* Filter */
 
-  fetchFilterWordPairs(filter: Filter) {
+  private getFilterParams(filter: Filter) {
     const params = new URLSearchParams();
     params.set('word', filter.word);
     params.set('lanCode', filter.lanCode);
@@ -89,14 +89,27 @@ export class JazykService {
     params.set('isFromStart', filter.isFromStart.toString());
     params.set('isExact', filter.isExact.toString());
     params.set('returnTotal', filter.returnTotal.toString());
+    return params;
+  }
+
+  fetchFilterWordPairs(filter: Filter) {
+    const params = this.getFilterParams(filter);
     return this.http
     .get('/api/jazyk/wordpairs/', {search: params})
     .map(response => response.json().obj)
     .catch(error => Observable.throw(error));
   }
 
-/* Detail */
+  fetchFilterWordDetails(filter: Filter) {
+    const params = this.getFilterParams(filter);
+    return this.http
+    .get('/api/jazyk/worddetails', {search: params})
+    .map(response => response.json().obj)
+    .catch(error => Observable.throw(error));
+  }
 
+
+/* Detail */
 
   fetchWordDetailByFilter(filter: Filter) {
     const params = new URLSearchParams();

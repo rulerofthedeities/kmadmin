@@ -1,0 +1,416 @@
+<ul class="list-unstyled legend">
+<li class="exists">Document exists and is unchanged</li>
+<li class="update">Document exists and will be updated</li>
+<li class="add">Document does not exist and will be created</li>
+</ul>
+
+<div class="panel-group">
+  <div *ngFor="let wordForm of wordForms; let i = index">
+    <div class="panel panel-default">
+      <div class="panel-heading accordeon" (click)="onToggleAccordeon(i)">
+        <h4 class="panel-title">
+          <span class="fa" [ngClass]="{
+          'fa-chevron-circle-right':!formHelpers[i].show,
+          'fa-chevron-circle-down':formHelpers[i].show
+          }"></span> Wordpair {{i + 1}}/{{wordForms.length}} ({{getLanguageName(wordForm.value.lan1)}} <-> {{getLanguageName(wordForm.value.lan2)}}): {{wordForm.value.word1}} - {{wordForm.value.word2}}
+        </h4>
+      </div>
+      <div id="collapseOne" class="panel-collapse collapse" [class.in]="formHelpers[i].show">
+        <div class="panel-body">
+          <form *ngIf="wordForm"
+            [formGroup]="wordForm"
+            class="form-horizontal"
+              [ngClass]="{
+                'exists': formHelpers[i].wordPairExists,
+                'add': !formHelpers[i].wordPairExists,
+                'update': formHelpers[i].wordPairExists && wordForm?.dirty
+              }">
+            <!-- LAN PAIR /  WORD TYPE -->
+
+            <div class="row">
+              <div class="col-xs-12">
+                <div class="panel panel-default">
+                  <div class="panel-body">
+                    <div class="form-group">
+                      <label 
+                        for="lanpair1" class="control-label col-xs-2">Lanpair:
+                      </label>
+                      <div class="col-xs-10">
+                        <select 
+                          #lan1
+                          class="form-control" 
+                          id="lan1"
+                          [(ngModel)]="detailFilterData[i].lan1"
+                          (ngModelChange)="onWordChanged(i, '1')"
+                          formControlName="lan1">
+                          <option *ngFor="let lan of languages" [value]="lan.code">
+                            {{lan.name}}
+                          </option>
+                        </select>
+                        <select 
+                          #lan2
+                          class="form-control" 
+                          id="lan2"
+                          [(ngModel)]="detailFilterData[i].lan2"
+                          (ngModelChange)="onWordChanged(i, '2')"
+                          formControlName="lan2">
+                          <option *ngFor="let lan of languages" [value]="lan.code">
+                            {{lan.name}}
+                          </option>
+                        </select>
+                      </div>
+                    </div>
+
+
+                    <div class="form-group">
+                      <label 
+                        for="tpe" 
+                        class="control-label col-xs-2">
+                        Word Type:
+                      </label>
+                      <div class="col-xs-10">
+                        <select 
+                          #wordTpe
+                          class="form-control" 
+                          id="tpe"
+                          [(ngModel)]="detailFilterData[i].tpe"
+                          (ngModelChange)="onWordChanged(i, '1');onWordChanged(i, '2')"
+                          formControlName="wordTpe">
+                          <option *ngFor="let t of wordTpes" [value]="t.val">
+                            {{t.label}}
+                          </option>
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          <!-- LANGUAGE 1 -->
+          
+            <div class="row" *ngIf="wordTpe">
+              <div class="col-xs-6">
+                <div class="panel panel-default">
+                  <div class="panel-heading">
+                    <h3>{{getLanguageName(lan1.value)}}</h3>
+                  </div>
+                  <div class="panel-body">
+                    <div class="form-group">
+                      <label 
+                        for="word1.word" 
+                        class="control-label col-xs-2">
+                        Woord:
+                      </label>
+                      <div class="col-xs-10">
+                        <strong>
+                          <input 
+                            type="text"
+                            class="form-control"
+                            id="word1.word"
+                            [(ngModel)]="detailFilterData[i].word1"
+                            (ngModelChange)="onWordChanged(i, '1')"
+                            formControlName="word1">
+                        </strong>
+                      </div>
+                    </div>
+                    <div class="form-group">
+                      <label 
+                        for="word1.alt" 
+                        class="control-label col-xs-2">
+                        Alt:
+                      </label>
+                      <div class="col-xs-10">
+                        <strong>
+                          <km-alt-field
+                            id="word1.alt"
+                            (updatedWords)="onAltWordsUpdated($event, i, '1')"
+                            [wordTpe]="wordForm.value.wordTpe"
+                            [lanCode]="wordForm.value.lan1"
+                            [words]="wordForm.value.alt1">
+                          </km-alt-field>
+                        </strong>
+                      </div>
+                    </div>
+                    <div class="form-group">
+                      <label 
+                        for="word1.hint" 
+                        class="control-label col-xs-2">
+                        Hint:
+                      </label>
+                      <div class="col-xs-10">
+                        <strong>
+                          <input 
+                            type="text"
+                            class="form-control"
+                            id="word1.hint"
+                            formControlName="hint1">
+                        </strong>
+                      </div>
+                    </div>
+                    <div class="form-group">
+                      <label 
+                        for="word1.info" 
+                        class="control-label col-xs-2">
+                        Info:
+                      </label>
+                      <div class="col-xs-10">
+                        <strong>
+                          <input 
+                            type="text"
+                            class="form-control"
+                            id="word1.info"
+                            formControlName="info1">
+                        </strong>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+          <!-- LANGUAGE 2 -->
+
+              <div class="col-xs-6">
+                <div class="panel panel-default">
+                  <div class="panel-heading">
+                    <h3>{{getLanguageName(lan2.value)}}</h3>
+                  </div>
+                  <div class="panel-body">
+                    <div class="form-group">
+                      <label 
+                        for="word2.word" 
+                        class="control-label col-xs-2">
+                        Woord:
+                      </label>
+                      <div class="col-xs-10">
+                        <strong>
+                          <input 
+                            type="text"
+                            class="form-control"
+                            id="word2.word"
+                            [(ngModel)]="detailFilterData[i].word2"
+                            (ngModelChange)="onWordChanged(i, '2')"
+                            formControlName="word2">
+                        </strong>
+                      </div>
+                    </div>
+                    <div class="form-group">
+                      <label 
+                        for="word2.alt" 
+                        class="control-label col-xs-2">
+                        Alt:
+                      </label>
+                      <div class="col-xs-10">
+                        <strong>
+                          <km-alt-field
+                            id="word2.alt"
+                            (updatedWords)="onAltWordsUpdated($event, i, '2')"
+                            [wordTpe]="wordForm.value.wordTpe"
+                            [lanCode]="wordForm.value.lan2"
+                            [words]="wordForm.value.alt2">
+                          </km-alt-field>
+                        </strong>
+                      </div>
+                    </div>
+                    <div class="form-group">
+                      <label 
+                        for="word2.hint" 
+                        class="control-label col-xs-2">
+                        Hint:
+                      </label>
+                      <div class="col-xs-10">
+                        <strong>
+                          <input 
+                            type="text"
+                            class="form-control"
+                            id="word2.hint"
+                            formControlName="hint2">
+                        </strong>
+                      </div>
+                    </div>
+                    <div class="form-group">
+                      <label 
+                        for="word2.info" 
+                        class="control-label col-xs-2">
+                        Info:
+                      </label>
+                      <div class="col-xs-10">
+                        <strong>
+                          <input 
+                            type="text"
+                            class="form-control"
+                            id="word2.info"
+                            formControlName="info2">
+                        </strong>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- <pre>Form value: {{ wordForm.value | json }}</pre> -->
+            <p>Form status: {{ wordForm.status | json }}</p>
+            <p>Form dirty: {{ wordForm.dirty |json }}</p>
+
+            <button
+              (click)="onSubmit(wordForm.value, i)"
+              class="btn btn-success" 
+              [disabled]="!wordForm.valid || isSubmitted[i]">
+              Add / Update
+            </button>
+
+            <div class="{{formHelpers[i].msg.tpe}}">{{formHelpers[i].msg.txt}}</div>
+          </form>
+
+          <!-- WORD DETAILS -->
+
+          <div class="row" *ngIf="wordForm">
+            <div class="col-xs-6">
+              <div class="panel panel-default">
+                <div class="panel-body form">
+                  <h4>Word Details {{getLanguageName(wordForm.value.lan1)}}
+                    <span 
+                      class="fa fa-chevron-circle-right" (click)="onToggleDisplay(i, 1, true)"
+                      [ngStyle]="{display:formHelpers[i].detail1.showDetail ? 'none' : 'inline'}">  
+                    </span>
+                    <span 
+                      class="fa fa-chevron-circle-down" (click)="onToggleDisplay(i, 1, false)"
+                      [ngStyle]="{display:formHelpers[i].detail1.showDetail ? 'inline' : 'none'}">    
+                    </span>
+                  </h4>
+                  <div [ngStyle]="{display:formHelpers[i].detail1.showDetail ? 'block' : 'none'}">
+                    <div [ngSwitch]="wordForm.value.lan1">
+                      <km-detail-form-nl *ngSwitchCase="'nl-nl'" #df1
+                        [wordTpe]="detailFilterData[i].tpe"
+                        [lan]="detailFilterData[i].lan1"
+                        [word]="detailFilterData[i].word1"
+                        [detail]="detail1"
+                      >
+                      </km-detail-form-nl>
+                      <km-detail-form-fr *ngSwitchCase="'fr-fr'" #df1
+                        [wordTpe]="detailFilterData[i].tpe"
+                        [lan]="detailFilterData[i].lan1"
+                        [word]="detailFilterData[i].word1"
+                        [detail]="detail1"
+                      >
+                      </km-detail-form-fr>
+                      <km-detail-form-de *ngSwitchCase="'de-de'" #df1
+                        [wordTpe]="detailFilterData[i].tpe"
+                        [lan]="detailFilterData[i].lan1"
+                        [word]="detailFilterData[i].word1"
+                        [detail]="detail1"
+                      >
+                      </km-detail-form-de>
+                      <km-detail-form-en *ngSwitchCase="'en-gb'" #df1
+                        [wordTpe]="detailFilterData[i].tpe"
+                        [lan]="detailFilterData[i].lan1"
+                        [word]="detailFilterData[i].word1"
+                        [detail]="detail1"
+                      >
+                      </km-detail-form-en>
+                      <km-detail-form-en *ngSwitchCase="'en-us'" #df1
+                        [wordTpe]="detailFilterData[i].tpe"
+                        [lan]="detailFilterData[i].lan1"
+                        [word]="detailFilterData[i].word1"
+                        [detail]="detail1"
+                      >
+                      </km-detail-form-en>
+                      <km-detail-form-cs *ngSwitchCase="'cs-cz'" #df1
+                        [wordTpe]="detailFilterData[i].tpe"
+                        [lan]="detailFilterData[i].lan1"
+                        [word]="detailFilterData[i].word1"
+                        [detail]="detail1"
+                      >
+                      </km-detail-form-cs>
+                      <div *ngSwitchDefault>
+                        No language selected
+                      </div>
+                    </div>
+                    <!--
+                    <input 
+                      type="text"
+                      class="form-control"
+                      id="detail1.article"
+                      formControlName="article">
+                    -->
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-xs-6">
+              <div class="panel panel-default">
+                <div class="panel-body form">
+                  <h4>Word Details {{getLanguageName(wordForm.value.lan2)}}
+                    <span 
+                      class="fa fa-chevron-circle-right" (click)="onToggleDisplay(i, 2, true)"
+                      [ngStyle]="{display:formHelpers[i].detail2.showDetail ? 'none' : 'inline'}">  
+                    </span>
+                    <span 
+                      class="fa fa-chevron-circle-down" (click)="onToggleDisplay(i, 2, false)"
+                      [ngStyle]="{display:formHelpers[i].detail2.showDetail ? 'inline' : 'none'}">    
+                    </span>
+                  </h4>
+                  <div [ngStyle]="{display:formHelpers[i].detail2.showDetail ? 'block' : 'none'}">
+                    <div [ngSwitch]="wordForm.value.lan2">
+                      <km-detail-form-nl *ngSwitchCase="'nl-nl'" #df2
+                        [wordTpe]="detailFilterData[i].tpe"
+                        [lan]="detailFilterData[i].lan2"
+                        [word]="detailFilterData[i].word2"
+                        [detail]="detail2"
+                      >
+                      </km-detail-form-nl>
+                      <km-detail-form-fr *ngSwitchCase="'fr-fr'" #df2
+                        [wordTpe]="detailFilterData[i].tpe"
+                        [lan]="detailFilterData[i].lan2"
+                        [word]="detailFilterData[i].word2"
+                        [detail]="detail2"
+                      >
+                      </km-detail-form-fr>
+                      <km-detail-form-de *ngSwitchCase="'de-de'" #df2
+                        [wordTpe]="detailFilterData[i].tpe"
+                        [lan]="detailFilterData[i].lan2"
+                        [word]="detailFilterData[i].word2"
+                        [detail]="detail2"
+                      >
+                      </km-detail-form-de>
+                      <km-detail-form-en *ngSwitchCase="'en-gb'" #df2
+                        [wordTpe]="detailFilterData[i].tpe"
+                        [lan]="detailFilterData[i].lan2"
+                        [word]="detailFilterData[i].word2"
+                        [detail]="detail2"
+                      >
+                      </km-detail-form-en>
+                      <km-detail-form-en *ngSwitchCase="'en-us'" #df2
+                        [wordTpe]="detailFilterData[i].tpe"
+                        [lan]="detailFilterData[i].lan2"
+                        [word]="detailFilterData[i].word2"
+                        [detail]="detail2"
+                      >
+                      </km-detail-form-en>
+                      <km-detail-form-cs *ngSwitchCase="'cs-cz'" #df2
+                        [wordTpe]="detailFilterData[i].tpe"
+                        [lan]="detailFilterData[i].lan2"
+                        [word]="detailFilterData[i].word2"
+                        [detail]="detail2"
+                      >
+                      </km-detail-form-cs>
+                      <div *ngSwitchDefault>
+                        No language selected
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="btn btn-success" (click)="onAddNewWordPair()">
+  Add new wordpair
+</div>

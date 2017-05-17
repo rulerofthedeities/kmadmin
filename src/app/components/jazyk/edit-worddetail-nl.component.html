@@ -1,6 +1,6 @@
 DETAIL NL
 
-<form *ngIf="wordTpe && detailForm"
+<form *ngIf="detailForm"
       [formGroup]="detailForm"
       class="form-horizontal"
       [ngClass]="{
@@ -27,6 +27,14 @@ DETAIL NL
     </div>
   </div>
 
+  <div 
+    class="btn btn-success" 
+    *ngIf="detailOnly && detailExists && detailForm?.dirty" 
+    (click)="updateDetail(detailForm.value)">
+    Update
+  </div>
+
+detail Only: {{detailOnly}}<br>
 Detail exists: {{detailExists}}<br>
     <p>Form status: {{ detailForm.status | json }}</p>
     <p>Form dirty: {{ detailForm.dirty |json }}</p>

@@ -14,7 +14,7 @@ import {CznlImportComponent} from './components/jazyk/cznl-import.component';
 import {JazykMenuComponent} from './components/jazyk/menu.component';
 import {JazykEditComponent} from './components/jazyk/edit.component';
 import {JazykEditMenuComponent} from './components/jazyk/edit-menu.component';
-import {JazykEditWordComponent} from './components/jazyk/edit-word.component';
+import {JazykEditWordPairComponent} from './components/jazyk/edit-wordpair.component';
 import {JazykEditAltFieldComponent} from './components/jazyk/edit-field-alt.component';
 import {JazykEditFilterComponent} from './components/jazyk/edit-filter.component';
 import {JaykEditFilterListComponent} from './components/jazyk/edit-filter-list.component';
@@ -24,7 +24,7 @@ import {
   JazykDetailFormDeComponent,
   JazykDetailFormEnComponent,
   JazykDetailFormCsComponent
-} from './components/jazyk/edit-word-detail.component';
+} from './components/jazyk/edit-worddetail.component';
 
 @NgModule({
   imports: [
@@ -44,7 +44,7 @@ import {
     JazykMenuComponent,
     JazykEditComponent,
     JazykEditMenuComponent,
-    JazykEditWordComponent,
+    JazykEditWordPairComponent,
     JazykEditAltFieldComponent,
     JazykEditFilterComponent,
     JaykEditFilterListComponent,

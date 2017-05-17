@@ -31,7 +31,8 @@ export interface DetailFilterData {
 }
 
 export interface FilterList {
-  wordpairs: WordPair[];
+  wordpairs?: WordPair[];
+  worddetails?: WordDetail[];
   filter: Filter;
 }
 

@@ -24,6 +24,7 @@ import 'rxjs/add/operator/takeWhile';
 export class JazykEditFilterComponent implements OnInit, OnDestroy {
   @Input() isFromStart = false;
   @Input() isExact = false;
+  @Input() tpe = 'wordpairs';
   @Output() filteredWords = new EventEmitter<FilterList>();
   languages: Language[];
   componentActive = true;
@@ -48,10 +49,14 @@ export class JazykEditFilterComponent implements OnInit, OnDestroy {
   }
 
   onFilterChanged() {
-    this.getWordList(this.filter);
+    if (this.tpe === 'wordpairs') {
+      this.getWordPairList(this.filter);
+    } else {
+      this.getWordDetailList(this.filter);
+    }
   }
 
-  getWordList(filter: Filter) {
+  getWordPairList(filter: Filter) {
     this.jazykService
     .fetchFilterWordPairs(filter)
     .takeWhile(() => this.componentActive)
@@ -59,6 +64,19 @@ export class JazykEditFilterComponent implements OnInit, OnDestroy {
       (data) => {
         this.filteredWords.emit({wordpairs: data.wordpairs, filter});
         this.totalWords = data.wordpairs.length + '/' + data.total;
+      },
+      error => this.errorService.handleError(error)
+    );
+  }
+
+  getWordDetailList(filter: Filter) {
+    this.jazykService
+    .fetchFilterWordDetails(filter)
+    .takeWhile(() => this.componentActive)
+    .subscribe(
+      (data) => {
+        this.filteredWords.emit({worddetails: data.worddetails, filter});
+        this.totalWords = data.worddetails.length + '/' + data.total;
       },
       error => this.errorService.handleError(error)
     );

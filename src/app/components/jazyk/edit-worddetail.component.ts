@@ -2,7 +2,7 @@ import {Component, Input, OnChanges, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, FormArray, FormControl, Validators} from '@angular/forms';
 import {JazykService} from '../../services/jazyk.service';
 import {ErrorService} from '../../services/error.service';
-import {WordDetail, LanConfig} from '../../models/jazyk.model';
+import {WordDetail, LanConfig, Filter} from '../../models/jazyk.model';
 import 'rxjs/add/operator/takeWhile';
 
 export abstract class JazykDetailForm implements OnChanges, OnInit {
@@ -10,6 +10,7 @@ export abstract class JazykDetailForm implements OnChanges, OnInit {
   @Input() lan: string;
   @Input() word: string;
   @Input() detail: WordDetail;
+  @Input() detailOnly = false;
   componentActive = true;
   detailForm: FormGroup;
   detailExists = false;
@@ -40,10 +41,6 @@ export abstract class JazykDetailForm implements OnChanges, OnInit {
     }
   }
 
-  postProcessFormData(data: any): any {
-    return data;
-  }
-
   buildForm(detail: WordDetail) {
     detail = detail ? detail : this.getNewDetail();
     this.detailForm = this.formBuilder.group({
@@ -53,6 +50,10 @@ export abstract class JazykDetailForm implements OnChanges, OnInit {
       'lan': [detail.lan],
       'word': [detail.word]
     });
+  }
+
+  updateWordDetail(worddetail: WordDetail) {
+    console.log('updating', worddetail, 'in db');
   }
 
   /*
@@ -68,13 +69,17 @@ export abstract class JazykDetailForm implements OnChanges, OnInit {
   getNewDetail(): WordDetail {
     const detail: WordDetail = {
       _id: '',
-      article: 'de;het',
-      lan: this.lan.slice(0, 2),
-      word: this.word,
+      lan: this.lan ? this.lan.slice(0, 2) : '',
+      word: this.word ? this.word : '',
       docTpe: 'details',
-      wordTpe: this.wordTpe
+      wordTpe: this.wordTpe ? this.wordTpe : ''
     };
     return detail;
+  }
+
+  postProcessFormData(data: any): WordDetail {
+    console.log('post processing main');
+    return data;
   }
 
   getConfig(lanCode: string) {
@@ -83,8 +88,10 @@ export abstract class JazykDetailForm implements OnChanges, OnInit {
     .takeWhile(() => this.componentActive)
     .subscribe(
       config => {
-        this.config = config;
-        this.buildForm(this.detail);
+        if (config) {
+          this.config = config;
+          this.buildForm(this.detail);
+        }
       },
       error => this.errorService.handleError(error)
     );
@@ -93,7 +100,7 @@ export abstract class JazykDetailForm implements OnChanges, OnInit {
 
 @Component({
   selector: 'km-detail-form-nl',
-  templateUrl: 'edit-word-detail-nl.component.html',
+  templateUrl: 'edit-worddetail-nl.component.html',
   styleUrls: ['edit-word.component.css']
 })
 
@@ -123,7 +130,7 @@ export class JazykDetailFormNlComponent extends JazykDetailForm implements OnIni
     this.articles = this.config.articles;
     // PRE-PROCESS FORM DATA
     // set article field
-    console.log('article', detail.article);
+    console.log('detail', detail);
     const articleControls: FormControl[] = [],
           selectedArticles = detail.article ? detail.article.split(';') : [];
     this.articles.forEach(article => {
@@ -141,7 +148,15 @@ export class JazykDetailFormNlComponent extends JazykDetailForm implements OnIni
     });
   }
 
-  postProcessFormData(data: any): any {
+  updateDetail(formdetail: any) {
+    console.log('updating worddetail', formdetail);
+    const worddetail = this.postProcessFormData(formdetail);
+    console.log('done postprocess');
+    super.updateWordDetail(worddetail);
+  }
+
+  postProcessFormData(data: any): WordDetail {
+    console.log('post processing nl');
     // Articles - transform array of bools into string of articles
     const articleArr = [];
     for (let i = 0; i < this.articles.length; i++) {
@@ -153,12 +168,13 @@ export class JazykDetailFormNlComponent extends JazykDetailForm implements OnIni
 
     return data;
   }
+
 }
 
 
 @Component({
   selector: 'km-detail-form-fr',
-  templateUrl: 'edit-word-detail-fr.component.html',
+  templateUrl: 'edit-worddetail-fr.component.html',
   styleUrls: ['edit-word.component.css']
 })
 

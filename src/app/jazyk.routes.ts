@@ -14,8 +14,8 @@ export const routes: Routes = [
         path: 'edit',
         component: JazykEditMenuComponent,
         children: [
-          {path: 'wordpairs', component: JazykEditComponent},
-          {path: 'worddetails', component: JazykEditComponent}
+          {path: 'wordpairs', component: JazykEditComponent, data : {tpe : 'wordpairs'}},
+          {path: 'worddetails', component: JazykEditComponent, data : {tpe : 'worddetails'}}
         ]
       }
     ]

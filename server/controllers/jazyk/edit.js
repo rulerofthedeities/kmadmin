@@ -54,6 +54,7 @@ let updateLanDoc = function(formData, nr) {
 
 module.exports = {
   getWordPairs: function(req, res) {
+    //For wordpair list
     const query = req.query;
     const returnTotal = query.returnTotal === 'true' ? true : false;
     const word = query.isFromStart === 'true' ? "^" + query.word : query.word;
@@ -61,7 +62,7 @@ module.exports = {
     const key = query.lanCode.slice(0, 2) + '.word';
     const search = query.isExact === 'true' ? query.word : {$regex: word, $options:'i'};
 
-    const q = {lanPair:lan, [key]:search};
+    const q = {docTpe:'wordpair', lanPair:lan, [key]:search};
     if (query.wordTpe) {
       q.wordTpe = query.wordTpe;
     }
@@ -70,13 +71,41 @@ module.exports = {
       response.handleError(err, res, 500, 'Error fetching wordpairs', function(){
         // Count workaround until v3.4 (aggregate)
         if (returnTotal) {
-          WordPair.count({lanPair: lan, [key]:search}, function(err, total) {
+          WordPair.count(q, function(err, total) {
             response.handleError(err, res, 500, 'Error fetching wordpairs total', function(){
               response.handleSuccess(res, {wordpairs, total}, 200, 'Fetched wordpairs');
             });
           });
         } else {
           response.handleSuccess(res, {wordpairs, total:0}, 200, 'Fetched wordpairs');
+        }
+      });
+    });
+  },
+  getWordDetails: function(req, res) {
+    //For worddetail list
+    const query = req.query;
+    const returnTotal = query.returnTotal === 'true' ? true : false;
+    const word = query.isFromStart === 'true' ? "^" + query.word : query.word;
+    const lan = query.lanCode.slice(0, 2);
+    const search = query.isExact === 'true' ? query.word : {$regex: word, $options:'i'};
+
+    const q = {docTpe:'details', lan:lan, word:search};
+    if (query.wordTpe) {
+      q.wordTpe = query.wordTpe;
+    }
+    
+    WordDetail.find(q, {}, {limit: 50, sort:{word:1}}, function(err, worddetails) {
+      response.handleError(err, res, 500, 'Error fetching worddetails', function(){
+        // Count workaround until v3.4 (aggregate)
+        if (returnTotal) {
+          WordDetail.count(q, function(err, total) {
+            response.handleError(err, res, 500, 'Error fetching worddetails total', function(){
+              response.handleSuccess(res, {worddetails, total}, 200, 'Fetched worddetails');
+            });
+          });
+        } else {
+          response.handleSuccess(res, {worddetails, total:0}, 200, 'Fetched worddetails');
         }
       });
     });

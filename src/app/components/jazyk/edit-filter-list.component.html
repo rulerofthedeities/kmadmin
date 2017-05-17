@@ -1,0 +1,47 @@
+<ul class="list-group wordList" *ngIf="tpe==='wordpairs'">
+  <li *ngFor="let wordpair of wordpairs; let i = index"
+    class="list-group-item"
+    (click)="selectListWordPair(i)"
+    [ngClass]="{'active': i === selectedListWord,'inactive': i !== selectedListWord}">
+     
+    <div [tooltip]="wordpairTooltip" tooltipPlacement="top">
+      {{getWordPair(wordpair)}}
+    </div>
+
+    <tooltip-content #wordpairTooltip>
+      <ul class="list-unstyled">
+        <li class="wordpairTT">
+          {{wordpair.wordTpe}}
+        </li>
+        <li class="wordpairTT">
+          <span class="ttLbl">{{wordpair.lanPair[0]}}:</span> {{wordpair[wordpair.lanPair[0].slice(0,2)].word}}
+        </li>
+        <li class="wordpairTT">
+          <span class="ttLbl">{{wordpair.lanPair[1]}}:</span> {{wordpair[wordpair.lanPair[1].slice(0,2)].word}}
+        </li>
+      </ul>
+    </tooltip-content>
+  </li>
+</ul>
+<ul class="list-group wordList" *ngIf="tpe==='worddetails'">
+  <li *ngFor="let worddetail of worddetails; let i = index"
+    class="list-group-item"
+    (click)="selectListWordDetail(i)"
+    [ngClass]="{'active': i === selectedListWord,'inactive': i !== selectedListWord}">
+
+    <div [tooltip]="worddetailTooltip" tooltipPlacement="top">
+      {{getWordDetail(worddetail)}}
+    </div>
+
+    <tooltip-content #worddetailTooltip>
+      <ul class="list-unstyled">
+        <li class="wordpairTT">
+          {{worddetail.wordTpe}}
+        </li>
+        <li class="wordpairTT">
+          <span class="ttLbl">score:</span> {{worddetail.score}}
+        </li>
+      </ul>
+    </tooltip-content>
+  </li>
+</ul>

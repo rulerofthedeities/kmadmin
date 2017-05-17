@@ -1,6 +1,6 @@
-import {Component, Input, OnInit, OnDestroy, ViewChild, ChangeDetectorRef} from '@angular/core';
+import {Component, Input, OnInit, OnDestroy, ViewChildren, QueryList} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {JazykDetailForm} from './edit-word-detail.component';
+import {JazykDetailForm} from './edit-worddetail.component';
 import {JazykService} from '../../services/jazyk.service';
 import {ErrorService} from '../../services/error.service';
 import {DetailFilterData, Filter, TpeList, Language, AltWord, WordPair, WordDetail} from '../../models/jazyk.model';
@@ -22,17 +22,18 @@ interface FormHelper {
   detail2: DetailHelper;
   wordPairExists: boolean;
   msg: Msg;
+  show: boolean;
 }
 
 @Component({
-  selector: 'km-edit-word',
-  templateUrl: 'edit-word.component.html',
+  selector: 'km-edit-wordpair',
+  templateUrl: 'edit-wordpair.component.html',
   styleUrls: ['edit-word.component.css']
 })
 
-export class JazykEditWordComponent implements OnInit, OnDestroy {
-  @ViewChild('df1') detailForm1: JazykDetailForm;
-  @ViewChild('df2') detailForm2: JazykDetailForm;
+export class JazykEditWordPairComponent implements OnInit, OnDestroy {
+  @ViewChildren('df1') detailForms1: QueryList<JazykDetailForm>;
+  @ViewChildren('df2') detailForms2: QueryList<JazykDetailForm>;
   componentActive = true;
   wordForms: FormGroup[] = [];
   detail1: WordDetail;
@@ -47,8 +48,7 @@ export class JazykEditWordComponent implements OnInit, OnDestroy {
   constructor(
     private formBuilder: FormBuilder,
     private errorService: ErrorService,
-    private jazykService: JazykService,
-    private cdr: ChangeDetectorRef
+    private jazykService: JazykService
   ) {}
 
   ngOnInit() {
@@ -65,18 +65,19 @@ export class JazykEditWordComponent implements OnInit, OnDestroy {
       lan1 = wordpair.lanPair[0].slice(0, 2);
       lan2 = wordpair.lanPair[1].slice(0, 2);
     }
-      this.detailFilterData[i] = {
-        word1: wordpair ? wordpair[lan1].word : '',
-        lan1: wordpair ? wordpair.lanPair[0] : 'nl-nl',
-        word2: wordpair ? wordpair[lan2].word : '',
-        lan2: wordpair ? wordpair.lanPair[1] : 'fr-fr',
-        tpe: wordpair ? wordpair.wordTpe : ''
-      };
+    this.detailFilterData[i] = {
+      word1: wordpair ? wordpair[lan1].word : '',
+      lan1: wordpair ? wordpair.lanPair[0] : 'nl-nl',
+      word2: wordpair ? wordpair[lan2].word : '',
+      lan2: wordpair ? wordpair.lanPair[1] : 'fr-fr',
+      tpe: wordpair ? wordpair.wordTpe : ''
+    };
     this.formHelpers[i] = {
       detail1: {hasDetail: false, showDetail: false},
       detail2: {hasDetail: false, showDetail: false},
       wordPairExists: wordpair ? true : false,
-      msg: {txt: '', tpe: ''}
+      msg: {txt: '', tpe: ''},
+      show: i === 0 ? true : false
     };
     this.isNew[i] = wordpair ? false : true;
 
@@ -186,12 +187,16 @@ export class JazykEditWordComponent implements OnInit, OnDestroy {
       isvalid = false;
     }
 
-    if (!this.detailForm1.detailForm.valid) {
+    const detailForm1 = this.getDetailForm(i, 1);
+    const detailForm2 = this.getDetailForm(i, 2);
+    this.detailForms2.forEach(detailform => {console.log(detailform); });
+
+    if (!detailForm1.detailForm.valid) {
       this.formHelpers[i].msg = {txt: 'Detail form 1 is not valid', tpe: 'error'};
       isvalid = false;
     }
 
-    if (!this.detailForm2.detailForm.valid) {
+    if (!detailForm2.detailForm.valid) {
       this.formHelpers[i].msg = {txt: 'Detail form 2 is not valid', tpe: 'error'};
       isvalid = false;
     }
@@ -199,17 +204,17 @@ export class JazykEditWordComponent implements OnInit, OnDestroy {
     if (isvalid) {
       // First save detail forms, and set detailId for wordform if new
 
-      const detailFormData1 = this.detailForm1.postProcessFormData(this.detailForm1.detailForm.value);
-      const detailFormData2 = this.detailForm2.postProcessFormData(this.detailForm2.detailForm.value);
+      const detailFormData1 = detailForm1.postProcessFormData(detailForm1.detailForm.value);
+      const detailFormData2 = detailForm2.postProcessFormData(detailForm2.detailForm.value);
 
       let save1, save2;
-      save1 = this.addDetail(detailFormData1, this.detailForm1);
-      save2 = this.addDetail(detailFormData2, this.detailForm2);
+      save1 = this.addDetail(detailFormData1, detailForm1);
+      save2 = this.addDetail(detailFormData2, detailForm2);
 
-      if (detailFormData1._id && this.detailForm1.detailForm.dirty) {
+      if (detailFormData1._id && detailForm1.detailForm.dirty) {
         save1 = this.updateDetail(detailFormData1);
       }
-      if (detailFormData2._id && this.detailForm2.detailForm.dirty) {
+      if (detailFormData2._id && detailForm2.detailForm.dirty) {
         save2 = this.updateDetail(detailFormData2);
       }
 
@@ -243,6 +248,12 @@ export class JazykEditWordComponent implements OnInit, OnDestroy {
       );
 
     }
+  }
+
+  getDetailForm(i: number, w: number) {
+    const detailForms = w === 1 ? this.detailForms1 : this.detailForms2;
+    const detailForm = detailForms.filter( (detailform, j) => i === j ? true : false)[0];
+    return detailForm;
   }
 
   addDetail(detailFormData: any, df: JazykDetailForm): Observable<string> {
@@ -329,6 +340,16 @@ export class JazykEditWordComponent implements OnInit, OnDestroy {
     this.formHelpers[form_i]['detail' + detail_i].showDetail = show;
   }
 
+  onToggleAccordeon(i) {
+    this.formHelpers[i].show = !this.formHelpers[i].show;
+  }
+
+  onAddNewWordPair() {
+    console.log('adding new wordpair');
+    const i = this.wordForms.length;
+    this.createNewWordPair(null, i);
+  }
+
   buildWordpairForm(wordpair: WordPair): FormGroup {
     console.log('wordpair', wordpair.wordTpe);
     const lan1 = wordpair.lanPair[0].slice(0, 2),
@@ -355,7 +376,11 @@ export class JazykEditWordComponent implements OnInit, OnDestroy {
   }
 
   getLanguageName(lanCode: string) {
-    return this.jazykService.getLanguageName(lanCode);
+    let name = '';
+    if (lanCode) {
+      name = this.jazykService.getLanguageName(lanCode);
+    }
+    return name;
   }
 
   ngOnDestroy() {

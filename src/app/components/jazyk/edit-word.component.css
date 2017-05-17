@@ -26,3 +26,6 @@ h4 > .fa {
   display: inline;
   padding: 2px;
 }
+.accordeon {
+  cursor: pointer;
+}
