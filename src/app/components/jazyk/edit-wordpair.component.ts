@@ -189,7 +189,6 @@ export class JazykEditWordPairComponent implements OnInit, OnDestroy {
 
     const detailForm1 = this.getDetailForm(i, 1);
     const detailForm2 = this.getDetailForm(i, 2);
-    this.detailForms2.forEach(detailform => {console.log(detailform); });
 
     if (!detailForm1.detailForm.valid) {
       this.formHelpers[i].msg = {txt: 'Detail form 1 is not valid', tpe: 'error'};
@@ -212,10 +211,10 @@ export class JazykEditWordPairComponent implements OnInit, OnDestroy {
       save2 = this.addDetail(detailFormData2, detailForm2);
 
       if (detailFormData1._id && detailForm1.detailForm.dirty) {
-        save1 = this.updateDetail(detailFormData1);
+        save1 = this.updateDetail(detailFormData1, detailForm1);
       }
       if (detailFormData2._id && detailForm2.detailForm.dirty) {
-        save2 = this.updateDetail(detailFormData2);
+        save2 = this.updateDetail(detailFormData2, detailForm2);
       }
 
       const source = Observable.zip(
@@ -279,7 +278,7 @@ export class JazykEditWordPairComponent implements OnInit, OnDestroy {
     });
   }
 
-  updateDetail(detailFormData: any): Observable<string> {
+  updateDetail(detailFormData: any, df: JazykDetailForm): Observable<string> {
     return Observable.create(obs => {
       console.log('updating detail', detailFormData);
       if (!detailFormData._id) {
@@ -293,6 +292,7 @@ export class JazykEditWordPairComponent implements OnInit, OnDestroy {
         .subscribe(
           updatedWordDetail => {
             obs.next(detailFormData._id);
+            df.detailForm.markAsPristine();
           },
           error => obs.error(error)
         );

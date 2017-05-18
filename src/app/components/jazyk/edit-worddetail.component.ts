@@ -54,17 +54,37 @@ export abstract class JazykDetailForm implements OnChanges, OnInit {
 
   updateWordDetail(worddetail: WordDetail) {
     console.log('updating', worddetail, 'in db');
+    
   }
 
-  /*
-  // Doesn't work with conditional validators
-  updateForm() {
-    console.log('updating', this.lan, this.wordTpe, this.word);
-    this.detailForm.patchValue({wordTpe: this.wordTpe});
-    this.detailForm.patchValue({lan: this.lan});
-    this.detailForm.patchValue({word: this.word});
+  postProcessFormData(data: any): any {
+    return data;
   }
-  */
+
+  copyDetail(data: any): WordDetail {
+    const detail: WordDetail = {
+      _id: data._id,
+      docTpe: data.docTpe,
+      lan: data.lan,
+      word: data.word,
+      wordTpe: data.wordTpe
+    };
+    return detail;
+  }
+
+  processArticle(formData: any, detailData: WordDetail, articles: string[]) {
+    // transform array of bools into string of articles
+    if (formData.article) {
+      const articleArr = [];
+      const articleControls: FormArray = formData.article;
+      articles.forEach((articleItem, i) => {
+        if (articleControls.value[i]) {
+          articleArr.push(articleItem);
+        }
+      });
+      detailData.article = articleArr.join(';');
+    }
+  }
 
   getNewDetail(): WordDetail {
     const detail: WordDetail = {
@@ -75,11 +95,6 @@ export abstract class JazykDetailForm implements OnChanges, OnInit {
       wordTpe: this.wordTpe ? this.wordTpe : ''
     };
     return detail;
-  }
-
-  postProcessFormData(data: any): WordDetail {
-    console.log('post processing main');
-    return data;
   }
 
   getConfig(lanCode: string) {
@@ -149,26 +164,18 @@ export class JazykDetailFormNlComponent extends JazykDetailForm implements OnIni
   }
 
   updateDetail(formdetail: any) {
-    console.log('updating worddetail', formdetail);
+    console.log('updating worddetail nl', formdetail);
     const worddetail = this.postProcessFormData(formdetail);
-    console.log('done postprocess');
     super.updateWordDetail(worddetail);
   }
 
   postProcessFormData(data: any): WordDetail {
-    console.log('post processing nl');
-    // Articles - transform array of bools into string of articles
-    const articleArr = [];
-    for (let i = 0; i < this.articles.length; i++) {
-      if (data.article[i]) {
-        articleArr.push(this.articles[i]);
-      }
-    }
-    data.article = articleArr.join(';');
+    console.log('post processing nl', data);
+    const newData: WordDetail = super.copyDetail(data);
+    super.processArticle(data, newData, this.articles);
 
-    return data;
+    return newData;
   }
-
 }
 
 
@@ -206,6 +213,13 @@ export class JazykDetailFormFrComponent extends JazykDetailForm implements OnIni
       'word': [detail.word, [Validators.required]],
       'genus': [detail.genus, detail.wordTpe === 'noun' ? [Validators.required] : []]
     });
+  }
+
+  postProcessFormData(data: any): WordDetail {
+    console.log('post processing fr');
+    const newData: WordDetail = super.copyDetail(data);
+
+    return newData;
   }
 }
 

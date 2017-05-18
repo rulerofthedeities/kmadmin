@@ -249,14 +249,41 @@ module.exports = {
   },
   updateWordDetail: function(req, res) {
     const formData = req.body;
-    // GET WORDCOUNT
+    let worddetailId;
+
+    if (mongoose.Types.ObjectId.isValid(formData._id)) {
+      worddetailId = new mongoose.Types.ObjectId(formData._id);
+    } else {
+      console.log('ERROR: invalid worddetail ID "' + formData._id + '"');
+    }
 
     console.log('update Worddetail Form data:', req.body);
 
-    err = null;
-    result = null;
-    response.handleError(err, res, 500, 'Error updating worddetail', function(){
-      response.handleSuccess(res, result, 200, 'Updating worddetail');
+    const updateObject = {wordTpe: formData.wordTpe},
+          removeObject = {};
+
+    // ADD VALUES
+
+    if (formData.article !== undefined) {
+      updateObject.article = formData.article;
+    }
+    if (formData.genus !== undefined) {
+      updateObject.genus = formData.genus;
+    }
+
+    // REMOVE VALUES
+
+    if (formData.article === undefined) {
+      removeObject.article = formData.article;
+    }
+    if (formData.genus === undefined) {
+      removeObject.genus = formData.genus;
+    }
+
+    WordDetail.findOneAndUpdate({_id: worddetailId}, {$set: updateObject, $unset: removeObject}, function(err, result) {
+      response.handleError(err, res, 500, 'Error updating worddetail', function(){
+        response.handleSuccess(res, result, 200, 'Updated worddetail');
+      });
     });
   }
 }
