@@ -83,7 +83,7 @@ export class JazykEditFilterComponent implements OnInit, OnDestroy {
   }
 
   getLanguagePairs() {
-    this.languages = this.jazykService.getLanguages();
+    this.languages = this.jazykService.getLanguages(false);
   }
 
   ngOnDestroy() {

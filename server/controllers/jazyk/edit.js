@@ -234,6 +234,9 @@ module.exports = {
       word: formData.word
     }
 
+    if (formData.article) {
+      newWord.article = formData.article
+    }
     if (formData.genus) {
       newWord.genus = formData.genus
     }

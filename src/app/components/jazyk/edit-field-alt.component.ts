@@ -45,10 +45,10 @@ import {AltWord, WordDetail, Filter} from '../../models/jazyk.model';
 
 
 export class JazykEditAltFieldComponent implements OnDestroy {
-  @Input() words: AltWord[];
+  @Input() words: AltWord[] = [];
   @Input() lanCode: string;
   @Input() wordTpe: string;
-  // @Output() updatedWords = new EventEmitter<AltWord[]>();
+  @Output() updatedWords = new EventEmitter<AltWord[]>();
   @ViewChild('newalt') altField;
   detail: WordDetail;
   componentActive = true;
@@ -72,12 +72,16 @@ export class JazykEditAltFieldComponent implements OnDestroy {
 
   remove(i: number) {
     this.words.splice(i, 1);
-    // this.updatedWords.emit(this.words);
+    this.updatedWords.emit(this.words);
   }
 
   addNewWord(word: string) {
     word = word.trim();
+    if (!this.words) {
+      this.words = [];
+    }
     this.words.push({word: word});
+    this.updatedWords.emit(this.words);
     this.fetchWordDetailByWord(word, this.words.length - 1);
   }
 

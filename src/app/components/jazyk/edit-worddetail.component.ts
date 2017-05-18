@@ -2,7 +2,7 @@ import {Component, Input, OnChanges, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, FormArray, FormControl, Validators} from '@angular/forms';
 import {JazykService} from '../../services/jazyk.service';
 import {ErrorService} from '../../services/error.service';
-import {WordDetail, LanConfig, Filter} from '../../models/jazyk.model';
+import {WordDetail, LanConfig, Filter, TpeList, Language} from '../../models/jazyk.model';
 import 'rxjs/add/operator/takeWhile';
 
 export abstract class JazykDetailForm implements OnChanges, OnInit {
@@ -15,6 +15,8 @@ export abstract class JazykDetailForm implements OnChanges, OnInit {
   detailForm: FormGroup;
   detailExists = false;
   config: LanConfig;
+  languages: Language[];
+  wordTpes: TpeList[];
 
   constructor(
     public formBuilder: FormBuilder,
@@ -23,6 +25,8 @@ export abstract class JazykDetailForm implements OnChanges, OnInit {
   ) {}
 
   ngOnInit() {
+    this.languages = this.jazykService.getLanguages(true);
+    this.wordTpes = this.jazykService.getWordTypes();
     this.getConfig(this.lan);
   }
 
@@ -54,7 +58,28 @@ export abstract class JazykDetailForm implements OnChanges, OnInit {
 
   updateWordDetail(worddetail: WordDetail) {
     console.log('updating', worddetail, 'in db');
-    
+    this.jazykService
+    .updateWordDetail(worddetail)
+    .takeWhile(() => this.componentActive)
+    .subscribe(
+      updatedWordDetail => {
+        this.detailForm.markAsPristine();
+      },
+      error => this.errorService.handleError(error)
+    );
+  }
+
+  addWordDetail(worddetail: WordDetail) {
+    console.log('adding', worddetail, 'to db');
+    this.jazykService
+    .addWordDetail(worddetail)
+    .takeWhile(() => this.componentActive)
+    .subscribe(
+      addedWordDetail => {
+        this.detailForm.markAsPristine();
+      },
+      error => this.errorService.handleError(error)
+    );
   }
 
   postProcessFormData(data: any): any {
@@ -145,7 +170,6 @@ export class JazykDetailFormNlComponent extends JazykDetailForm implements OnIni
     this.articles = this.config.articles;
     // PRE-PROCESS FORM DATA
     // set article field
-    console.log('detail', detail);
     const articleControls: FormControl[] = [],
           selectedArticles = detail.article ? detail.article.split(';') : [];
     this.articles.forEach(article => {
@@ -159,18 +183,25 @@ export class JazykDetailFormNlComponent extends JazykDetailForm implements OnIni
       'wordTpe': [detail.wordTpe],
       'lan': [detail.lan],
       'word': [detail.word],
-      'article': [new FormArray(articleControls), detail.wordTpe === 'noun' ? [Validators.required] : []]
-    });
+      });
+
+    if (detail.wordTpe === 'noun') {
+      const control = new FormControl(new FormArray(articleControls), Validators.minLength(1));
+      this.detailForm.addControl('article', control);
+    }
   }
 
   updateDetail(formdetail: any) {
-    console.log('updating worddetail nl', formdetail);
     const worddetail = this.postProcessFormData(formdetail);
     super.updateWordDetail(worddetail);
   }
 
+  addDetail(formdetail: any) {
+    const worddetail = this.postProcessFormData(formdetail);
+    super.addWordDetail(worddetail);
+  }
+
   postProcessFormData(data: any): WordDetail {
-    console.log('post processing nl', data);
     const newData: WordDetail = super.copyDetail(data);
     super.processArticle(data, newData, this.articles);
 
@@ -203,8 +234,6 @@ export class JazykDetailFormFrComponent extends JazykDetailForm implements OnIni
     detail = detail ? detail : this.getNewDetail();
     this.genera = this.config.genera;
 
-    console.log('fr wordtpe', detail.wordTpe);
-
     this.detailForm = this.formBuilder.group({
       '_id': [detail._id],
       'docTpe': [detail.docTpe, [Validators.required]],
@@ -215,9 +244,22 @@ export class JazykDetailFormFrComponent extends JazykDetailForm implements OnIni
     });
   }
 
+  updateDetail(formdetail: any) {
+    const worddetail = this.postProcessFormData(formdetail);
+    super.updateWordDetail(worddetail);
+  }
+
+  addDetail(formdetail: any) {
+    const worddetail = this.postProcessFormData(formdetail);
+    super.addWordDetail(worddetail);
+  }
+
   postProcessFormData(data: any): WordDetail {
     console.log('post processing fr');
     const newData: WordDetail = super.copyDetail(data);
+    if (data.genus) {
+      newData.genus = data.genus;
+    }
 
     return newData;
   }

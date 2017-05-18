@@ -39,6 +39,10 @@ import {
     ErrorService,
     JazykService
   ],
+  entryComponents: [
+    JazykDetailFormFrComponent,
+    JazykDetailFormNlComponent
+  ],
   declarations: [
     CznlImportComponent,
     JazykMenuComponent,

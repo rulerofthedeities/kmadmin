@@ -52,7 +52,7 @@ export class JazykEditWordPairComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
-    this.languages = this.jazykService.getLanguages();
+    this.languages = this.jazykService.getLanguages(false);
     this.wordTpes = this.jazykService.getWordTypes();
 
     this.createNewWordPair(null, 0);
@@ -175,7 +175,9 @@ export class JazykEditWordPairComponent implements OnInit, OnDestroy {
   }
 
   onAltWordsUpdated(altwords: AltWord[], i: number, w: string) {
+    console.log('marking as dirty');
     this.wordForms[i].patchValue({['alt' + w]: altwords});
+    this.wordForms[i].markAsDirty();
   }
 
   onSubmit(wordFormData: any, i: number) {
@@ -371,7 +373,6 @@ export class JazykEditWordPairComponent implements OnInit, OnDestroy {
       detailId1: [wordpair[lan1] ? wordpair[lan1].detailId || '' : ''],
       detailId2: [wordpair[lan2] ? wordpair[lan2].detailId || '' : '']
     });
-    console.log('form', wordpairForm);
     return wordpairForm;
   }
 

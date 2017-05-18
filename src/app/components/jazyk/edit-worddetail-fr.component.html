@@ -34,9 +34,26 @@ DETAIL FR
     </div>
   </div>
 
+  <div 
+    class="btn btn-success" 
+    *ngIf="detailOnly && detailExists && detailForm?.dirty" 
+    (click)="updateDetail(detailForm.value)">
+    Update
+  </div>
+
+  <div 
+    class="btn btn-success" 
+    *ngIf="detailOnly && !detailExists && detailForm?.dirty" 
+    (click)="addDetail(detailForm.value)">
+    Add
+  </div>
+  
 Detail exists: {{detailExists}}<br>
     <pre>Form value: {{ detailForm.value | json }}</pre>
     <p>Form status: {{ detailForm.status | json }}</p>
     <p>Form dirty: {{ detailForm.dirty |json }}</p>
 
 </form>
+
+<pre>{{detail|json}}</pre>
+wordtpe: {{wordTpe}}

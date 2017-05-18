@@ -170,23 +170,28 @@ export class JazykService {
 
 /* Data */
 
-  getLanguages() {
+  getLanguages(short: boolean) {
     let languages: Language[];
 
     languages = [
-      {code: 'en-us', name: 'Amerikaans Engels'},
-      {code: 'en-gb', name: 'Brits Engels'},
-      {code: 'de-de', name: 'Duits'},
-      {code: 'nl-nl', name: 'Nederlands'},
-      {code: 'fr-fr', name: 'Frans'},
-      {code: 'cs-cz', name: 'Tsjechisch'}
+      {code: this.getShortLanguage('en-us', short), name: 'Amerikaans Engels'},
+      {code: this.getShortLanguage('en-gb', short), name: 'Brits Engels'},
+      {code: this.getShortLanguage('de-de', short), name: 'Duits'},
+      {code: this.getShortLanguage('nl-nl', short), name: 'Nederlands'},
+      {code: this.getShortLanguage('fr-fr', short), name: 'Frans'},
+      {code: this.getShortLanguage('cs-cz', short), name: 'Tsjechisch'}
     ];
 
     return languages;
   }
 
+  getShortLanguage(lan: string, short: boolean): string {
+    const lanCode = short ? lan.slice(0, 2) : lan;
+    return lanCode;
+  }
+
   getLanguageName(lanCode: string) {
-    return this.getLanguages().filter(lan => lan.code === lanCode)[0].name;
+    return this.getLanguages(false).filter(lan => lan.code === lanCode)[0].name;
   }
 
   getWordTypes() {
