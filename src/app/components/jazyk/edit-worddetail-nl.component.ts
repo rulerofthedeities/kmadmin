@@ -27,18 +27,14 @@ export class JazykDetailFormNlComponent extends JazykDetailForm implements OnIni
     super.ngOnInit();
   }
 
-  setDirty() {
-    // checkbox change doesn't set form as dirty
-    this.detailForm.markAsDirty();
-  }
-
   buildForm() {
     super.buildForm();
-    this.articles = this.config.articles;
     // PRE-PROCESS FORM DATA
     // set article field
+    this.articles = this.config.articles;
     const articleControls: FormControl[] = [],
-          selectedArticles = this.detail.article ? this.detail.article.split(';') : [];
+          articleFld = this.detail.article,
+          selectedArticles = articleFld ? articleFld.split(';') : [];
     this.articles.forEach(article => {
       articleControls.push(new FormControl(
         selectedArticles.filter(selArticle => selArticle === article).length > 0));
@@ -48,25 +44,10 @@ export class JazykDetailFormNlComponent extends JazykDetailForm implements OnIni
     this.detailForm.addControl('article', control);
   }
 
-  updateDetail(formdetail: any) {
-    const worddetail = this.postProcessFormData(formdetail);
-    super.updateWordDetail(worddetail);
-  }
-
-  addDetail(formdetail: any) {
-    const worddetail = this.postProcessFormData(formdetail);
-    super.addWordDetail(worddetail);
-  }
-
-  newDetail() {
-    this.detail = null;
-    this.detailExists = false;
-    this.buildForm();
-  }
-
-  postProcessFormData(data: any): WordDetail {
-    const newData: WordDetail = super.copyDetail(data);
-    super.processArticle(data, newData, this.articles);
+  postProcessFormData(formData: any): WordDetail {
+    console.log('post processing nl');
+    const newData: WordDetail = super.copyDetail(formData);
+    super.processArticle(formData, newData, this.articles);
 
     return newData;
   }

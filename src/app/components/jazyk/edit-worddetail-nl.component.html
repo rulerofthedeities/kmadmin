@@ -17,18 +17,8 @@ DETAIL NL
       class="control-label col-xs-2">
       Language:
     </label>
-    <div class="col-xs-10" *ngIf="detailOnly && !detailExists">
-      <select 
-        class="form-control" 
-        id="lan"
-        formControlName="lan">
-        <option *ngFor="let lan of languages" [value]="lan.code">
-          {{lan.name}}
-        </option>
-      </select>
-    </div>
-    <div class="col-xs-10" *ngIf="!detailOnly || detailExists">
-      {{detail?.lan}}
+    <div class="col-xs-10">
+      {{detailForm?.value['lan']}}
     </div>
   </div>
 
@@ -49,7 +39,24 @@ DETAIL NL
       </select>
     </div>
     <div class="col-xs-10" *ngIf="!detailOnly || detailExists">
-      {{detail?.wordTpe}}
+      {{detailForm?.value['wordTpe']}}
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label 
+      for="word" 
+      class="control-label col-xs-2">
+      Word:
+    </label>
+    <div class="col-xs-10" *ngIf="detailOnly && !detailExists">
+      <input 
+        class="form-control" 
+        id="word"
+        formControlName="word">
+    </div>
+    <div class="col-xs-10" *ngIf="!detailOnly || detailExists">
+      {{detailForm?.value['word']}}
     </div>
   </div>
 
@@ -83,21 +90,23 @@ DETAIL NL
 
   <div 
     class="btn btn-success" 
-    *ngIf="detailOnly" 
-    (click)="newDetail()">
-    New Detail
-  </div>
-
-  <div 
-    class="btn btn-success" 
     *ngIf="detailOnly && !detailExists" 
     (click)="addDetail(detailForm.value)">
     Add
   </div>
 
+  <div 
+    class="btn btn-warning" 
+    *ngIf="detailOnly" 
+    (click)="newDetail()">
+    New Detail
+  </div>
+
+  <div>
     Detail Only: {{detailOnly}}<br>
     Detail exists: {{detailExists}}<br>
     Form status: {{ detailForm.status | json }}<br>
-    Form dirty: {{ detailForm.dirty |json }}<br>
+    Form dirty: {{ detailForm.dirty |json }}
+  </div>
 
 </form>

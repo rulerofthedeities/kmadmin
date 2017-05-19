@@ -65,7 +65,8 @@ export abstract class JazykDetailForm implements OnChanges, OnInit {
     });
   }
 
-  updateWordDetail(worddetail: WordDetail) {
+  updateDetail(formdetail: WordDetail) {
+    const worddetail = this.postProcessFormData(formdetail);
     console.log('updating', worddetail, 'in db');
     this.jazykService
     .updateWordDetail(worddetail)
@@ -78,14 +79,17 @@ export abstract class JazykDetailForm implements OnChanges, OnInit {
     );
   }
 
-  addWordDetail(worddetail: WordDetail) {
+  addDetail(formdetail: WordDetail) {
+    const worddetail = this.postProcessFormData(formdetail);
     console.log('adding', worddetail, 'to db');
     this.jazykService
     .addWordDetail(worddetail)
     .takeWhile(() => this.componentActive)
     .subscribe(
       addedWordDetail => {
+        this.detail._id = addedWordDetail._id;
         this.detailForm.markAsPristine();
+        this.detailExists = true;
       },
       error => this.errorService.handleError(error)
     );
@@ -93,6 +97,11 @@ export abstract class JazykDetailForm implements OnChanges, OnInit {
 
   postProcessFormData(data: any): any {
     return data;
+  }
+
+  setDirty() {
+    // checkbox change doesn't set form as dirty
+    this.detailForm.markAsDirty();
   }
 
   copyDetail(data: any): WordDetail {
@@ -104,6 +113,12 @@ export abstract class JazykDetailForm implements OnChanges, OnInit {
       wordTpe: data.wordTpe
     };
     return detail;
+  }
+
+  newDetail() {
+    this.detail = null;
+    this.detailExists = false;
+    this.buildForm();
   }
 
   processArticle(formData: any, detailData: WordDetail, articles: string[]) {
@@ -148,25 +163,5 @@ export abstract class JazykDetailForm implements OnChanges, OnInit {
       },
       error => this.errorService.handleError(error)
     );
-  }
-}
-
-@Component({
-  selector: 'km-detail-form-cs',
-  template: `
-    DETAIL CS
-    {{wordTpe}}
-    detail:<pre>{{detail|json}}</pre>
-  `,
-  styleUrls: ['edit-word.component.css']
-})
-
-export class JazykDetailFormCsComponent extends JazykDetailForm {
-  constructor (
-    formBuilder: FormBuilder,
-    errorService: ErrorService,
-    jazykService: JazykService
-  ) {
-    super(formBuilder, errorService, jazykService);
   }
 }
