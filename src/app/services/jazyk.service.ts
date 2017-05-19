@@ -1,4 +1,4 @@
-import {Injectable} from '@angular/core';
+import {Injectable, EventEmitter} from '@angular/core';
 import {Http, Headers, URLSearchParams} from '@angular/http';
 import {Observable} from 'rxjs/Observable';
 import {DetailFilterData, TpeList, Filter, LanPair, Language} from '../models/jazyk.model';
@@ -8,6 +8,7 @@ import 'rxjs/add/observable/throw';
 
 @Injectable()
 export class JazykService {
+  detailChanged = new EventEmitter<boolean>();
 
   constructor(
     private http: Http

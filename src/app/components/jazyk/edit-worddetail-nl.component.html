@@ -28,7 +28,7 @@ DETAIL NL
       </select>
     </div>
     <div class="col-xs-10" *ngIf="!detailOnly || detailExists">
-      {{detail.lan}}
+      {{detail?.lan}}
     </div>
   </div>
 
@@ -49,13 +49,13 @@ DETAIL NL
       </select>
     </div>
     <div class="col-xs-10" *ngIf="!detailOnly || detailExists">
-      {{detail.wordTpe}}
+      {{detail?.wordTpe}}
     </div>
   </div>
 
 <!-- UPDATE FIELDS -->
 
-  <div class="form-group" *ngIf="detailForm.value['article']">
+  <div class="form-group" *ngIf="isNoun()">
     <label 
       for="article" 
       class="control-label col-xs-2">
@@ -83,11 +83,17 @@ DETAIL NL
 
   <div 
     class="btn btn-success" 
+    *ngIf="detailOnly" 
+    (click)="newDetail()">
+    New Detail
+  </div>
+
+  <div 
+    class="btn btn-success" 
     *ngIf="detailOnly && !detailExists" 
     (click)="addDetail(detailForm.value)">
     Add
   </div>
-
 
     Detail Only: {{detailOnly}}<br>
     Detail exists: {{detailExists}}<br>
@@ -95,4 +101,3 @@ DETAIL NL
     Form dirty: {{ detailForm.dirty |json }}<br>
 
 </form>
-<pre>{{detail|json}}</pre>

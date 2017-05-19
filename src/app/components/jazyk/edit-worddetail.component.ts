@@ -27,32 +27,41 @@ export abstract class JazykDetailForm implements OnChanges, OnInit {
   ngOnInit() {
     this.languages = this.jazykService.getLanguages(true);
     this.wordTpes = this.jazykService.getWordTypes();
+    this.jazykService.detailChanged.subscribe( detailOnly => {
+      this.detailOnly = detailOnly;
+      this.processChanges();
+    });
     this.getConfig(this.lan);
   }
 
   ngOnChanges() {
-    let detail: WordDetail;
-    this.detailExists = this.detail ? true : false;
+    this.processChanges();
+  }
+
+  processChanges() {
+    this.detailExists = this.detail && this.detail._id ? true : false;
     if (this.config) {
-      if (this.detail) {
-        this.buildForm(this.detail);
-      } else {
-        detail = this.getNewDetail();
-        this.buildForm(detail);
-      }
+      this.buildForm();
     } else {
       this.getConfig(this.lan);
     }
   }
 
-  buildForm(detail: WordDetail) {
-    detail = detail ? detail : this.getNewDetail();
+  buildForm() {
+    this.detail = this.detail ? this.detail : this.getNewDetail();
+    this.buildDetailForm();
+  }
+
+  buildDetailForm() {
+    this.detail.wordTpe = this.detail.wordTpe ? this.detail.wordTpe : this.wordTpe;
+    this.detail.lan = this.detail.lan ? this.detail.lan : this.lan;
+    this.detail.word = this.detail.word ? this.detail.word : this.word;
     this.detailForm = this.formBuilder.group({
-      '_id': [detail._id],
-      'docTpe': [detail.docTpe],
-      'wordTpe': [detail.wordTpe],
-      'lan': [detail.lan],
-      'word': [detail.word]
+      '_id': [this.detail._id],
+      'docTpe': ['details'],
+      'wordTpe': [this.detail.wordTpe],
+      'lan': [this.detail.lan],
+      'word': [this.detail.word]
     });
   }
 
@@ -111,6 +120,10 @@ export abstract class JazykDetailForm implements OnChanges, OnInit {
     }
   }
 
+  isNoun() {
+    return this.detailForm.value['wordTpe'] === 'noun';
+  }
+
   getNewDetail(): WordDetail {
     const detail: WordDetail = {
       _id: '',
@@ -130,178 +143,11 @@ export abstract class JazykDetailForm implements OnChanges, OnInit {
       config => {
         if (config) {
           this.config = config;
-          this.buildForm(this.detail);
+          this.buildForm();
         }
       },
       error => this.errorService.handleError(error)
     );
-  }
-}
-
-@Component({
-  selector: 'km-detail-form-nl',
-  templateUrl: 'edit-worddetail-nl.component.html',
-  styleUrls: ['edit-word.component.css']
-})
-
-export class JazykDetailFormNlComponent extends JazykDetailForm implements OnInit {
-  checkboxArray: FormArray;
-  articles: string[];
-
-  constructor (
-    formBuilder: FormBuilder,
-    errorService: ErrorService,
-    jazykService: JazykService
-  ) {
-    super(formBuilder, errorService, jazykService);
-  }
-
-  ngOnInit() {
-    super.ngOnInit();
-  }
-
-  setDirty() {
-    // checkbox change doesn't set form as dirty
-    this.detailForm.markAsDirty();
-  }
-
-  buildForm(detail: WordDetail) {
-    detail = detail ? detail : this.getNewDetail();
-    this.articles = this.config.articles;
-    // PRE-PROCESS FORM DATA
-    // set article field
-    const articleControls: FormControl[] = [],
-          selectedArticles = detail.article ? detail.article.split(';') : [];
-    this.articles.forEach(article => {
-      articleControls.push(new FormControl(
-        selectedArticles.filter(selArticle => selArticle === article).length > 0));
-    });
-
-    this.detailForm = this.formBuilder.group({
-      '_id': [detail._id],
-      'docTpe': [detail.docTpe],
-      'wordTpe': [detail.wordTpe],
-      'lan': [detail.lan],
-      'word': [detail.word],
-      });
-
-    if (detail.wordTpe === 'noun') {
-      const control = new FormControl(new FormArray(articleControls), Validators.minLength(1));
-      this.detailForm.addControl('article', control);
-    }
-  }
-
-  updateDetail(formdetail: any) {
-    const worddetail = this.postProcessFormData(formdetail);
-    super.updateWordDetail(worddetail);
-  }
-
-  addDetail(formdetail: any) {
-    const worddetail = this.postProcessFormData(formdetail);
-    super.addWordDetail(worddetail);
-  }
-
-  postProcessFormData(data: any): WordDetail {
-    const newData: WordDetail = super.copyDetail(data);
-    super.processArticle(data, newData, this.articles);
-
-    return newData;
-  }
-}
-
-
-@Component({
-  selector: 'km-detail-form-fr',
-  templateUrl: 'edit-worddetail-fr.component.html',
-  styleUrls: ['edit-word.component.css']
-})
-
-export class JazykDetailFormFrComponent extends JazykDetailForm implements OnInit {
-  genera: string[];
-  constructor (
-    formBuilder: FormBuilder,
-    errorService: ErrorService,
-    jazykService: JazykService
-  ) {
-    super(formBuilder, errorService, jazykService);
-  }
-
-  ngOnInit() {
-    super.ngOnInit();
-  }
-
-  buildForm(detail: WordDetail) {
-    detail = detail ? detail : this.getNewDetail();
-    this.genera = this.config.genera;
-
-    this.detailForm = this.formBuilder.group({
-      '_id': [detail._id],
-      'docTpe': [detail.docTpe, [Validators.required]],
-      'wordTpe': [detail.wordTpe, [Validators.required]],
-      'lan': [detail.lan, [Validators.required]],
-      'word': [detail.word, [Validators.required]],
-      'genus': [detail.genus, detail.wordTpe === 'noun' ? [Validators.required] : []]
-    });
-  }
-
-  updateDetail(formdetail: any) {
-    const worddetail = this.postProcessFormData(formdetail);
-    super.updateWordDetail(worddetail);
-  }
-
-  addDetail(formdetail: any) {
-    const worddetail = this.postProcessFormData(formdetail);
-    super.addWordDetail(worddetail);
-  }
-
-  postProcessFormData(data: any): WordDetail {
-    console.log('post processing fr');
-    const newData: WordDetail = super.copyDetail(data);
-    if (data.genus) {
-      newData.genus = data.genus;
-    }
-
-    return newData;
-  }
-}
-
-@Component({
-  selector: 'km-detail-form-de',
-  template: `
-    DETAIL DE
-    {{wordTpe}}
-    detail:<pre>{{detail|json}}</pre>
-  `,
-  styleUrls: ['edit-word.component.css']
-})
-
-export class JazykDetailFormDeComponent extends JazykDetailForm {
-  constructor (
-    formBuilder: FormBuilder,
-    errorService: ErrorService,
-    jazykService: JazykService
-  ) {
-    super(formBuilder, errorService, jazykService);
-  }
-}
-
-@Component({
-  selector: 'km-detail-form-en',
-  template: `
-    DETAIL EN
-    {{wordTpe}}
-    detail:<pre>{{detail|json}}</pre>
-  `,
-  styleUrls: ['edit-word.component.css']
-})
-
-export class JazykDetailFormEnComponent extends JazykDetailForm {
-  constructor (
-    formBuilder: FormBuilder,
-    errorService: ErrorService,
-    jazykService: JazykService
-  ) {
-    super(formBuilder, errorService, jazykService);
   }
 }
 

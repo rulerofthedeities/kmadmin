@@ -1,11 +1,14 @@
 import {Component, ViewChild, OnInit, OnDestroy, ComponentFactory, ComponentFactoryResolver, ViewContainerRef} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {FilterList, Filter, WordPair, WordDetail} from '../../models/jazyk.model';
+import {JazykService} from '../../services/jazyk.service';
 import {JazykEditWordPairComponent} from './edit-wordpair.component';
-import {JazykDetailForm,
-        JazykDetailFormFrComponent,
-        JazykDetailFormNlComponent
-       } from './edit-worddetail.component';
+import {JazykDetailForm} from './edit-worddetail.component';
+import {JazykDetailFormNlComponent} from './edit-worddetail-nl.component';
+import {JazykDetailFormCsComponent} from './edit-worddetail-cs.component';
+import {JazykDetailFormDeComponent} from './edit-worddetail-de.component';
+import {JazykDetailFormEnComponent} from './edit-worddetail-en.component';
+import {JazykDetailFormFrComponent} from './edit-worddetail-fr.component';
 import 'rxjs/add/operator/takeWhile';
 
 @Component({
@@ -65,7 +68,8 @@ export class JazykEditComponent implements OnInit, OnDestroy {
 
   constructor(
     private route: ActivatedRoute,
-    private componentFactoryResolver: ComponentFactoryResolver
+    private componentFactoryResolver: ComponentFactoryResolver,
+    private jazykService: JazykService
   ) {}
 
   ngOnInit() {
@@ -99,10 +103,11 @@ export class JazykEditComponent implements OnInit, OnDestroy {
 
   onSelectedWordDetail(worddetail: WordDetail) {
     this.detail = worddetail;
-    console.log('selected word detail', this.cmpRef);
     if (this.cmpRef) {
       this.cmpRef.instance['detail'] = this.detail;
-      this.cmpRef.instance['detailOnly'] = false;
+      this.cmpRef.instance['detailOnly'] = true;
+      this.cmpRef.instance['detailExists'] = true;
+      this.jazykService.detailChanged.emit(true);
     }
   }
 
@@ -112,7 +117,11 @@ export class JazykEditComponent implements OnInit, OnDestroy {
     switch (lan) {
       case 'nl-nl': comp = JazykDetailFormNlComponent; break;
       case 'fr-fr': comp = JazykDetailFormFrComponent; break;
-      default: comp = JazykDetailForm;
+      case 'de-de': comp = JazykDetailFormDeComponent; break;
+      case 'cs-cz': comp = JazykDetailFormCsComponent; break;
+      case 'en-gb':
+      case 'en-us': comp = JazykDetailFormEnComponent; break;
+      default: comp = JazykDetailFormNlComponent;
     }
 
     return comp;

@@ -18,13 +18,11 @@ import {JazykEditWordPairComponent} from './components/jazyk/edit-wordpair.compo
 import {JazykEditAltFieldComponent} from './components/jazyk/edit-field-alt.component';
 import {JazykEditFilterComponent} from './components/jazyk/edit-filter.component';
 import {JaykEditFilterListComponent} from './components/jazyk/edit-filter-list.component';
-import {
-  JazykDetailFormNlComponent,
-  JazykDetailFormFrComponent,
-  JazykDetailFormDeComponent,
-  JazykDetailFormEnComponent,
-  JazykDetailFormCsComponent
-} from './components/jazyk/edit-worddetail.component';
+import {JazykDetailFormNlComponent} from './components/jazyk/edit-worddetail-nl.component';
+import {JazykDetailFormFrComponent} from './components/jazyk/edit-worddetail-fr.component';
+import {JazykDetailFormDeComponent} from './components/jazyk/edit-worddetail-de.component';
+import {JazykDetailFormEnComponent} from './components/jazyk/edit-worddetail-en.component';
+import {JazykDetailFormCsComponent} from './components/jazyk/edit-worddetail-cs.component';
 
 @NgModule({
   imports: [
@@ -41,7 +39,10 @@ import {
   ],
   entryComponents: [
     JazykDetailFormFrComponent,
-    JazykDetailFormNlComponent
+    JazykDetailFormNlComponent,
+    JazykDetailFormDeComponent,
+    JazykDetailFormEnComponent,
+    JazykDetailFormCsComponent
   ],
   declarations: [
     CznlImportComponent,
