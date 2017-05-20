@@ -1,10 +1,13 @@
 const response = require('../../response'),
       mongoose = require('mongoose'),
+      wordCount = require('./edit_wordcount'),
       WordPairModel = require('../../models/jazyk/wordpair'),
       WordDetailModel = require('../../models/jazyk/worddetail');
 // connect to jazyk db 
 const jazykUri = 'mongodb://127.0.0.1:27017/km-jazyk',
+      countUri = 'mongodb://127.0.0.1:27017/km-wordcounts',
       jazykConn = mongoose.createConnection(jazykUri),
+      countConn = mongoose.createConnection(countUri),
       WordPair = jazykConn.model('WordPair', WordPairModel, "wordpairs"),
       WordDetail = jazykConn.model('WordDetail', WordDetailModel, "wordpairs");
 
@@ -241,12 +244,18 @@ module.exports = {
       newWord.genus = formData.genus
     }
 
-    console.log('Add Worddetail Form data:', req.body);
-    console.log('Add Worddetail New document:', newWord);
-
-    WordDetail.create(newWord, function (err, result) {
-      response.handleError(err, res, 500, 'Error adding worddetail', function() {
-        response.handleSuccess(res, result, 200, 'Added worddetail');
+    // Add wordcount
+    wordCount.getWordCount(formData, countConn, function(err, countData){
+      if (!err) {
+        newWord.wordCount = countData.wordCount;
+        newWord.score = countData.score;
+      } 
+      console.log('Add Worddetail Form data:', req.body);
+      console.log('Add Worddetail New document:', newWord);
+      WordDetail.create(newWord, function (err, result) {
+        response.handleError(err, res, 500, 'Error adding worddetail', function() {
+          response.handleSuccess(res, result, 200, 'Added worddetail');
+        });
       });
     });
   },
