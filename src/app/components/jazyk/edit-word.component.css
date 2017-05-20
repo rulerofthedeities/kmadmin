@@ -29,3 +29,7 @@ h4 > .fa {
 .accordeon {
   cursor: pointer;
 }
+/* Override bootstrap */
+.read .control-label {
+  padding-top: 0;
+}

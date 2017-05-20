@@ -139,6 +139,10 @@ export abstract class JazykDetailForm implements OnChanges, OnInit {
     return this.detailForm.value['wordTpe'] === 'noun';
   }
 
+  isRead() {
+    return !this.detailOnly || this.detailExists;
+  }
+
   getNewDetail(): WordDetail {
     const detail: WordDetail = {
       _id: '',

@@ -266,7 +266,13 @@
           <!-- WORD DETAILS -->
 
           <div class="row" *ngIf="wordForm">
-            <div class="col-xs-6">
+            <div class="col-xs-6" *ngIf="formHelpers[i].detail1.hasMultiple">
+              <km-multiple-details 
+                [details]="formHelpers[i].detail1.details"
+                (selectedDetail)="onDetailSelected($event, i, '1')"
+              ></km-multiple-details>
+            </div>
+            <div class="col-xs-6" *ngIf="!formHelpers[i].detail1.hasMultiple">
               <div class="panel panel-default">
                 <div class="panel-body form">
                   <h4>Word Details {{getLanguageName(wordForm.value.lan1)}}
@@ -339,7 +345,13 @@
               </div>
             </div>
 
-            <div class="col-xs-6">
+            <div class="col-xs-6" *ngIf="formHelpers[i].detail2.hasMultiple">
+              <km-multiple-details 
+                [details]="formHelpers[i].detail2.details"
+                (selectedDetail)="onDetailSelected($event, i, '2')"
+              ></km-multiple-details>
+            </div>
+            <div class="col-xs-6" *ngIf="!formHelpers[i].detail2.hasMultiple">
               <div class="panel panel-default">
                 <div class="panel-body form">
                   <h4>Word Details {{getLanguageName(wordForm.value.lan2)}}

@@ -15,6 +15,7 @@ import {JazykMenuComponent} from './components/jazyk/menu.component';
 import {JazykEditComponent} from './components/jazyk/edit.component';
 import {JazykEditMenuComponent} from './components/jazyk/edit-menu.component';
 import {JazykEditWordPairComponent} from './components/jazyk/edit-wordpair.component';
+import {JazykEditWordPairMultipleComponent} from './components/jazyk/edit-wordpair-multiple.component';
 import {JazykEditAltFieldComponent} from './components/jazyk/edit-field-alt.component';
 import {JazykEditFilterComponent} from './components/jazyk/edit-filter.component';
 import {JaykEditFilterListComponent} from './components/jazyk/edit-filter-list.component';
@@ -50,6 +51,7 @@ import {JazykDetailFormCsComponent} from './components/jazyk/edit-worddetail-cs.
     JazykEditComponent,
     JazykEditMenuComponent,
     JazykEditWordPairComponent,
+    JazykEditWordPairMultipleComponent,
     JazykEditAltFieldComponent,
     JazykEditFilterComponent,
     JaykEditFilterListComponent,
