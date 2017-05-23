@@ -30,7 +30,6 @@ export class JazykDetailFormFrComponent extends JazykDetailForm implements OnIni
     super.buildForm();
 
     this.genera = this.config.genera;
-    console.log('adding controller genera', this.detail);
     if (this.detail.wordTpe === 'noun') {
       control = new FormControl(this.detail.genus, Validators.required);
       this.detailForm.addControl('genus', control);

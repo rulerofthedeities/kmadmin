@@ -7,20 +7,31 @@ import {JazykDetailForm} from '../worddetail/edit-worddetail.component';
 
 @Component({
   selector: 'km-detail-form-en',
-  template: `
-    DETAIL EN
-    {{wordTpe}}
-    detail:<pre>{{detail|json}}</pre>
-  `,
+  templateUrl: 'edit-worddetail-en.component.html',
   styleUrls: ['../edit-word.component.css']
 })
 
-export class JazykDetailFormEnComponent extends JazykDetailForm {
+export class JazykDetailFormEnComponent extends JazykDetailForm implements OnInit {
   constructor (
     formBuilder: FormBuilder,
     errorService: ErrorService,
     jazykService: JazykService
   ) {
     super(formBuilder, errorService, jazykService);
+  }
+
+  ngOnInit() {
+    super.ngOnInit();
+  }
+
+  buildForm() {
+    super.buildForm();
+  }
+
+  postProcessFormData(formData: any): WordDetail {
+    console.log('post processing en');
+    const newData: WordDetail = super.copyDetail(formData);
+
+    return newData;
   }
 }

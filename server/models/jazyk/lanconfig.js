@@ -12,8 +12,7 @@ var lanConfigSchema = new Schema({
     _id: String,
     tpe: {type: String, required: true},
     code: {type: String, required: true},
-    name: lanSchema,
-    articles: [String],
+    name: lanSchema
   }, {collection: 'config'}
 );
 module.exports = lanConfigSchema;

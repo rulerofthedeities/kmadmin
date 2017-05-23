@@ -1,4 +1,4 @@
-DETAIL CS
+DETAIL EN
 
 <form *ngIf="detailForm"
       [formGroup]="detailForm"
@@ -8,7 +8,7 @@ DETAIL CS
         add:!detailExists,
         update: detailExists && detailForm?.dirty
       }">
-      
+
   <km-detail-fields-basic [detail]="detail" *ngIf="isRead()">
   </km-detail-fields-basic>
 
@@ -50,21 +50,6 @@ DETAIL CS
 
 <!-- DYNAMIC FIELDS -->
 
-  <div class="form-group" *ngIf="isNoun()">
-    <label 
-      for="genus" 
-      class="control-label col-xs-2">
-      Genus:
-    </label>
-    <div class="col-xs-10">
-      <div *ngFor="let genus of genera">
-        <input type="radio" 
-          formControlName="genus" 
-          name="genus" 
-          [value]="genus">{{genus}}
-      </div>
-    </div>
-  </div>
 
 <!-- INFO FIELDS -->
 

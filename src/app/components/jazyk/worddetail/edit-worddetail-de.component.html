@@ -1,4 +1,4 @@
-DETAIL CS
+DETAIL DE
 
 <form *ngIf="detailForm"
       [formGroup]="detailForm"
@@ -8,7 +8,7 @@ DETAIL CS
         add:!detailExists,
         update: detailExists && detailForm?.dirty
       }">
-      
+
   <km-detail-fields-basic [detail]="detail" *ngIf="isRead()">
   </km-detail-fields-basic>
 

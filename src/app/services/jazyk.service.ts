@@ -175,11 +175,10 @@ export class JazykService {
     let languages: Language[];
 
     languages = [
-      {code: this.getShortLanguage('en-us', short), name: 'Amerikaans Engels'},
-      {code: this.getShortLanguage('en-gb', short), name: 'Brits Engels'},
       {code: this.getShortLanguage('de-de', short), name: 'Duits'},
-      {code: this.getShortLanguage('nl-nl', short), name: 'Nederlands'},
+      {code: this.getShortLanguage('en-en', short), name: 'Engels'},
       {code: this.getShortLanguage('fr-fr', short), name: 'Frans'},
+      {code: this.getShortLanguage('nl-nl', short), name: 'Nederlands'},
       {code: this.getShortLanguage('cs-cz', short), name: 'Tsjechisch'}
     ];
 

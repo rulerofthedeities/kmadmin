@@ -38,8 +38,8 @@ export class JazykEditWordPairComponent implements OnInit, OnDestroy {
   @ViewChildren('df2') detailForms2: QueryList<JazykDetailForm>;
   componentActive = true;
   wordForms: FormGroup[] = [];
-  detail1: WordDetail;
-  detail2: WordDetail;
+  detail1: WordDetail[] = [];
+  detail2: WordDetail[] = [];
   formHelpers: FormHelper[] = [];
   isNew: boolean[] = [];
   isSubmitted: boolean[] = [];
@@ -79,7 +79,7 @@ export class JazykEditWordPairComponent implements OnInit, OnDestroy {
       detail2: {hasDetail: false, hasMultiple: false, showDetail: false, details: null},
       wordPairExists: wordpair ? true : false,
       msg: {txt: '', tpe: ''},
-      show: i === 0 ? true : false
+      show: false
     };
     this.isNew[i] = wordpair ? false : true;
 
@@ -126,7 +126,7 @@ export class JazykEditWordPairComponent implements OnInit, OnDestroy {
     this.formHelpers[i]['detail' + w].hasDetail = false;
 
     if (this.wordForms[i].value['detailId' + w]) {
-      if  (!this['detail' + w] || this['detail' + w]['_id'] !== this.wordForms[i].value['detailId' + w]) {
+      if  (!this['detail' + w][i] || this['detail' + w][i]['_id'] !== this.wordForms[i].value['detailId' + w]) {
         this.getDetailById(i, w, this.wordForms[i].value['detailId' + w]);
       }
     } else {
@@ -178,6 +178,7 @@ export class JazykEditWordPairComponent implements OnInit, OnDestroy {
           this.formHelpers[i]['detail' + w].hasMultiple = true;
           this.formHelpers[i]['detail' + w].details = data;
         } else {
+          console.log('worddetail from db', data[0]);
           this.formHelpers[i]['detail' + w].hasMultiple = false;
           this.formHelpers[i]['detail' + w].details = null;
           if (data[0]) {
@@ -200,7 +201,7 @@ export class JazykEditWordPairComponent implements OnInit, OnDestroy {
     // Set id in wordpair form
     this.wordForms[i].patchValue({['detailId' + w]: detail._id});
     // Form helpers
-    this['detail' + w] = detail;
+    this['detail' + w][i] = detail;
     this.formHelpers[i]['detail' + w].hasDetail = true;
     this.formHelpers[i]['detail' + w].showDetail = true;
     this.formHelpers[i]['detail' + w].hasMultiple = false;
@@ -212,7 +213,7 @@ export class JazykEditWordPairComponent implements OnInit, OnDestroy {
     this.isNew[i] = true;
     this.wordForms[i].patchValue({['detailId' + w]: ''});
     this.formHelpers[i]['detail' + w].hasDetail = false;
-    this['detail' + w] = null;
+    this['detail' + w][i] = null;
   }
 
   private checkIfWordpairExists(i: number) {

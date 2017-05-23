@@ -81,8 +81,7 @@ export class JazykEditComponent implements OnInit, OnDestroy {
       case 'fr-fr': comp = JazykDetailFormFrComponent; break;
       case 'de-de': comp = JazykDetailFormDeComponent; break;
       case 'cs-cz': comp = JazykDetailFormCsComponent; break;
-      case 'en-gb':
-      case 'en-us': comp = JazykDetailFormEnComponent; break;
+      case 'en-en': comp = JazykDetailFormEnComponent; break;
       default: comp = JazykDetailFormNlComponent;
     }
 
