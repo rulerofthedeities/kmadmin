@@ -58,9 +58,8 @@ export interface WordPair {
   cs?: Word;
   de?: Word;
   fr?: Word;
-  gb?: Word;
+  en?: Word;
   nl?: Word;
-  us?: Word;
   tags?: string[];
   author?: string;
 }
@@ -88,19 +87,6 @@ export interface WordDetail {
   wordCount?: number;
   score?: number;
 }
-
-/*
-export interface WordPairDetail {
-  _id?: string; // equals wordpair id
-  wordPair: WordPair;
-  cs?: WordDetail;
-  de?: WordDetail;
-  fr?: WordDetail;
-  gb?: WordDetail;
-  nl?: WordDetail;
-  us?: WordDetail;
-}
-*/
 
 interface Lans {
   de: string;

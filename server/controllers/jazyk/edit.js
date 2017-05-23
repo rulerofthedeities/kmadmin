@@ -62,7 +62,7 @@ module.exports = {
     const returnTotal = query.returnTotal === 'true' ? true : false;
     const word = query.isFromStart === 'true' ? "^" + query.word : query.word;
     const lan = query.lanCode;
-    const key = query.lanCode.slice(0, 2) + '.word';
+    const key = lan + '.word';
     const search = query.isExact === 'true' ? query.word : {$regex: word, $options:'i'};
 
     const q = {docTpe:'wordpair', lanPair:lan, [key]:search};
@@ -90,7 +90,7 @@ module.exports = {
     const query = req.query;
     const returnTotal = query.returnTotal === 'true' ? true : false;
     const word = query.isFromStart === 'true' ? "^" + query.word : query.word;
-    const lan = query.lanCode.slice(0, 2);
+    const lan = query.lanCode;
     const search = query.isExact === 'true' ? query.word : {$regex: word, $options:'i'};
 
     const q = {docTpe:'details', lan:lan, word:search};
@@ -117,7 +117,7 @@ module.exports = {
     const query = req.query,
           wordTpe = query.wordTpe,
           word = query.word,
-          lan = query.lanCode.slice(0, 2);
+          lan = query.lanCode;
     WordDetail.find({docTpe:'details', lan:lan, wordTpe: wordTpe, word:word}, {}, {limit: 5}, function(err, worddetails) {
       response.handleError(err, res, 500, 'Error fetching worddetails', function(){
         response.handleSuccess(res, worddetails, 200, 'Fetched worddetails');
@@ -139,8 +139,8 @@ module.exports = {
           lan2 = query.lanCode2,
           word1 = query.word1,
           word2 = query.word2,
-          wordkey1 = lan1.slice(0, 2) + '.word',
-          wordkey2 = lan2.slice(0, 2) + '.word';
+          wordkey1 = lan1 + '.word',
+          wordkey2 = lan2 + '.word';
 
     WordPair.findOne({docTpe:'wordpair', wordTpe: wordTpe, $and:[{lanPair:lan1}, {lanPair:lan2}], [wordkey1]:word1, [wordkey2]:word2}, {}, {}, function(err, wordpair) {
       result = wordpair ? wordpair._id : false;
@@ -149,29 +149,10 @@ module.exports = {
       });
     });
   },
-/*
-  getWordPairDetail: function(req, res) {
-    const wordpairId = new mongoose.Types.ObjectId(req.params.id);
-    WordPair.findOne({_id: wordpairId}, {}, function(err, wordpair) {
-      //get detail docs
-      languages = [];
-      languages[0] = wordpair.lanPair[0].slice(0, 2);
-      languages[1] = wordpair.lanPair[1].slice(0, 2);
-      getDetailById(wordpair[languages[0]], function(err, detail0) {
-        getDetailById(wordpair[languages[1]], function(err, detail1) {
-          words = {wordPair:wordpair, [languages[0]]:detail0, [languages[1]]:detail1};
-          response.handleError(err, res, 500, 'Error fetching wordpair', function(){
-            response.handleSuccess(res, words, 200, 'Fetched wordpair');
-          });
-        });
-      });
-
-    });
-  },*/
   addWordPair: function(req, res) {
     const formData = req.body,
-          lankey1 = formData.lan1.slice(0, 2),
-          lankey2 = formData.lan2.slice(0, 2),
+          lankey1 = formData.lan1,
+          lankey2 = formData.lan2,
           landoc1 = createLanDoc(formData, 1),
           landoc2 = createLanDoc(formData, 2);
 
@@ -194,8 +175,8 @@ module.exports = {
   },
   updateWordPair: function(req, res) {
     const formData = req.body,
-          lankey1 = formData.lan1.slice(0, 2),
-          lankey2 = formData.lan2.slice(0, 2),
+          lankey1 = formData.lan1,
+          lankey2 = formData.lan2,
           landoc1 = updateLanDoc(formData, 1),
           landoc2 = updateLanDoc(formData, 2);
     let wordpairId;
@@ -233,7 +214,7 @@ module.exports = {
     const newWord = {
       docTpe: 'details',
       wordTpe: formData.wordTpe,
-      lan: formData.lan.slice(0, 2),
+      lan: formData.lan,
       word: formData.word
     }
 

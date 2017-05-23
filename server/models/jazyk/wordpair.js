@@ -21,9 +21,8 @@ var wordSchema = new Schema({
   cs: wordLangSchema,
   de: wordLangSchema,
   fr: wordLangSchema,
-  gb: wordLangSchema,
-  nl: wordLangSchema,
-  us: wordLangSchema
+  en: wordLangSchema,
+  nl: wordLangSchema
 }, {collection: 'wordpairs'});
 
 module.exports = wordSchema;

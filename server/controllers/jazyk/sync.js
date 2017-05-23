@@ -173,7 +173,7 @@ let addNewWord = function(word, callback) {
   let newWord = {
     _id: word._id,
     wordTpe: setWordTpe(word.tpe),
-    lanPair: ['nl-nl', 'cs-cz']
+    lanPair: ['nl', 'cs']
   }
 
   //Add word data
@@ -200,7 +200,7 @@ let addNewWord = function(word, callback) {
   if (newWordDetailCsP) {
     newWordCsP = {
       wordTpe: word.tpe,
-      lanPair: ['nl-nl', 'cs-cz']
+      lanPair: ['nl', 'cs']
     }
 
     //Add word data

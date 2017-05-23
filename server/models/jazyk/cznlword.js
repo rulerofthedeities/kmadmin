@@ -36,8 +36,7 @@ var cznlWordSchema = new Schema({
     czP: wordLangSchema, //Backward compatibility
     cs: [wordLangSchema],
     fr: [wordLangSchema],
-    gb: [wordLangSchema],
-    us: [wordLangSchema],
+    en: [wordLangSchema],
     de: [wordLangSchema]
   }, {collection: 'wordpairs'}
 );

@@ -77,11 +77,11 @@ export class JazykEditComponent implements OnInit, OnDestroy {
     console.log(lan);
     let comp: any;
     switch (lan) {
-      case 'nl-nl': comp = JazykDetailFormNlComponent; break;
-      case 'fr-fr': comp = JazykDetailFormFrComponent; break;
-      case 'de-de': comp = JazykDetailFormDeComponent; break;
-      case 'cs-cz': comp = JazykDetailFormCsComponent; break;
-      case 'en-en': comp = JazykDetailFormEnComponent; break;
+      case 'nl': comp = JazykDetailFormNlComponent; break;
+      case 'fr': comp = JazykDetailFormFrComponent; break;
+      case 'de': comp = JazykDetailFormDeComponent; break;
+      case 'cs': comp = JazykDetailFormCsComponent; break;
+      case 'en': comp = JazykDetailFormEnComponent; break;
       default: comp = JazykDetailFormNlComponent;
     }
 

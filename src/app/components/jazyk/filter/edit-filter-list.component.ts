@@ -16,7 +16,7 @@ export class JaykEditFilterListComponent {
   @Output() selectedWordDetail = new EventEmitter<WordDetail>();
 
   getWordPair(wordpair: WordPair): string {
-    const lan = this.lan.slice(0, 2);
+    const lan = this.lan;
     let word = '';
     if (wordpair && wordpair[lan]) {
       word = wordpair[lan].word;
@@ -33,9 +33,8 @@ export class JaykEditFilterListComponent {
   }
 
   selectListWordPair(i: number) {
-    const lan = this.lan.slice(0, 2);
     const wordListFilter: Filter = {
-      word: this.wordpairs[i][lan].word,
+      word: this.wordpairs[i][this.lan].word,
       lanCode: this.lan,
       wordTpe: this.wordpairs[i].wordTpe
     };

@@ -25,7 +25,7 @@ export abstract class JazykDetailForm implements OnChanges, OnInit {
   ) {}
 
   ngOnInit() {
-    this.languages = this.jazykService.getLanguages(true);
+    this.languages = this.jazykService.getLanguages();
     this.wordTpes = this.jazykService.getWordTypes();
     this.jazykService.detailChanged.subscribe( detailOnly => {
       this.detailOnly = detailOnly;
@@ -56,7 +56,7 @@ export abstract class JazykDetailForm implements OnChanges, OnInit {
     if (!this.detailOnly) {
       // get data from wordpair
       this.detail.wordTpe = this.wordTpe;
-      this.detail.lan = this.lan.slice(0, 2);
+      this.detail.lan = this.lan;
       this.detail.word = this.word;
     }
     this.detailForm = this.formBuilder.group({
@@ -150,7 +150,7 @@ export abstract class JazykDetailForm implements OnChanges, OnInit {
     console.log('new detail - word:', this.word);
     const detail: WordDetail = {
       _id: '',
-      lan: this.lan ? this.lan.slice(0, 2) : '',
+      lan: this.lan ? this.lan : '',
       word: this.word ? this.word : '',
       docTpe: 'details',
       wordTpe: this.wordTpe ? this.wordTpe : ''

@@ -54,7 +54,7 @@ export class JazykEditWordPairComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
-    this.languages = this.jazykService.getLanguages(false);
+    this.languages = this.jazykService.getLanguages();
     this.wordTpes = this.jazykService.getWordTypes();
 
     this.createNewWordPair(null, 0);
@@ -64,14 +64,14 @@ export class JazykEditWordPairComponent implements OnInit, OnDestroy {
     let lan1, lan2;
     this.isSubmitted[i] = false;
     if (wordpair) {
-      lan1 = wordpair.lanPair[0].slice(0, 2);
-      lan2 = wordpair.lanPair[1].slice(0, 2);
+      lan1 = wordpair.lanPair[0];
+      lan2 = wordpair.lanPair[1];
     }
     this.detailFilterData[i] = {
       word1: wordpair ? wordpair[lan1].word : '',
-      lan1: wordpair ? wordpair.lanPair[0] : 'nl-nl',
+      lan1: wordpair ? wordpair.lanPair[0] : 'nl',
       word2: wordpair ? wordpair[lan2].word : '',
-      lan2: wordpair ? wordpair.lanPair[1] : 'fr-fr',
+      lan2: wordpair ? wordpair.lanPair[1] : 'fr',
       tpe: wordpair ? wordpair.wordTpe : ''
     };
     this.formHelpers[i] = {
@@ -87,7 +87,7 @@ export class JazykEditWordPairComponent implements OnInit, OnDestroy {
       _id: '',
       docTpe: 'wordpair',
       wordTpe: '',
-      lanPair: ['nl-nl', 'cs-cz'],
+      lanPair: ['nl', 'cs'],
       tags: [],
       nl: {
         word: 'testword'
@@ -414,8 +414,8 @@ export class JazykEditWordPairComponent implements OnInit, OnDestroy {
   }
 
   buildWordpairForm(wordpair: WordPair): FormGroup {
-    const lan1 = wordpair.lanPair[0].slice(0, 2),
-          lan2 = wordpair.lanPair[1].slice(0, 2);
+    const lan1 = wordpair.lanPair[0],
+          lan2 = wordpair.lanPair[1];
     const wordpairForm = this.formBuilder.group({
       _id: [wordpair._id],
       docTpe: [wordpair.docTpe],
