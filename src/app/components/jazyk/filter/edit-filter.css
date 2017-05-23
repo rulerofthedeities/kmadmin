@@ -1,0 +1,17 @@
+.wordList li{
+  cursor: pointer;
+  padding: 2px 5px;
+}
+.wordpairList li{
+  padding: 2px 5px;
+  width: 220px;
+}
+.wordList li:hover {
+  background-color: #eee;
+}
+.wordpairTT {
+  text-align: left;
+}
+.ttLbl{
+  color: #00b3ee;
+}

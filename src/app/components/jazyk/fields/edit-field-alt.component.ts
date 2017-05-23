@@ -1,8 +1,8 @@
 import {Component, Input, Output, OnDestroy, EventEmitter, ViewChild} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {JazykService} from '../../services/jazyk.service';
-import {ErrorService} from '../../services/error.service';
-import {AltWord, WordDetail, Filter} from '../../models/jazyk.model';
+import {JazykService} from '../../../services/jazyk.service';
+import {ErrorService} from '../../../services/error.service';
+import {AltWord, WordDetail, Filter} from '../../../models/jazyk.model';
 
 @Component({
   selector: 'km-alt-field',
@@ -109,8 +109,11 @@ export class JazykEditAltFieldComponent implements OnDestroy {
     .subscribe(
       (data: WordDetail[]) => {
         this.altField.nativeElement.value = '';
-        if (data[0]) {
+        if (data.length === 1) {
           this.words[i].detailId = data[0]._id;
+          this.updatedWords.emit(this.words);
+        } else {
+          console.log('WARNING: Multiple words found for this alt word!! (none set)');
         }
       },
       error => this.errorService.handleError(error)

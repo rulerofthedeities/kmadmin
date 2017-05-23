@@ -1,0 +1,92 @@
+DETAIL CS
+
+<form *ngIf="detailForm"
+      [formGroup]="detailForm"
+      class="form-horizontal"
+      [ngClass]="{
+        exists:detailExists,
+        add:!detailExists,
+        update: detailExists && detailForm?.dirty
+      }">
+
+  <km-detail-fields-basic [detail]="detail" *ngIf="isRead()">
+  </km-detail-fields-basic>
+
+<!-- NEW DETAIL ONLY -->
+
+  <div *ngIf="!isRead()">
+    <div class="form-group">
+      <label 
+        for="tpe" 
+        class="control-label col-xs-2">
+        Word Type:
+      </label>
+      <div class="col-xs-10">
+        <select 
+          class="form-control" 
+          id="tpe"
+          formControlName="wordTpe">
+          <option *ngFor="let t of wordTpes" [value]="t.val">
+            {{t.label}}
+          </option>
+        </select>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label 
+        for="word" 
+        class="control-label col-xs-2">
+        Word:
+      </label>
+      <div class="col-xs-10">
+        <input 
+          class="form-control" 
+          id="word"
+          formControlName="word">
+      </div>
+    </div>
+  </div>
+
+<!-- DYNAMIC FIELDS -->
+
+
+<!-- INFO FIELDS -->
+
+  <km-detail-fields-info [detail]="detail" *ngIf="detailExists">
+  </km-detail-fields-info>
+
+<!-- BUTTONS -->
+
+  <div 
+    class="btn btn-success" 
+    *ngIf="detailOnly && detailExists && detailForm?.dirty" 
+    (click)="updateDetail(detailForm.value)">
+    Update
+  </div>
+
+  <div 
+    class="btn btn-success" 
+    *ngIf="detailOnly && !detailExists" 
+    (click)="addDetail(detailForm.value)">
+    Add
+  </div>
+
+
+  <div>
+    Detail Only: {{detailOnly}}<br>
+    Detail exists: {{detailExists}}<br>
+    Form status: {{ detailForm.status | json }}<br>
+    Form dirty: {{ detailForm.dirty |json }}
+  </div>
+
+</form>
+
+  <div 
+    class="btn btn-warning" 
+    *ngIf="detailOnly && detailExists" 
+    (click)="newDetail()">
+    New Detail
+  </div>
+
+<pre>{{detail|json}}</pre>

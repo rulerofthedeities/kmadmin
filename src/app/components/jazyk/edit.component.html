@@ -1,0 +1,30 @@
+<section>
+  <div class="row">
+    <div class="col-xs-12">
+      <km-filter-word
+        [tpe]="tpe"
+        (filteredWords)="onWordsFiltered($event)">
+      </km-filter-word>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-xs-3">
+      <km-filter-list
+        [lan]="lan"
+        [wordpairs]="wordpairs"
+        [worddetails]="worddetails"
+        [tpe]="tpe"
+        (selectedWordPair)="onSelectedWordPair($event)"
+        (selectedWordDetail)="onSelectedWordDetail($event)"
+      ></km-filter-list>
+    </div>
+    <div class="col-xs-9" *ngIf="tpe==='wordpairs'">
+      <km-edit-wordpair #edit>
+      </km-edit-wordpair>
+    </div>
+    <div class="col-xs-9" *ngIf="tpe==='worddetails'">
+      <ng-template #placeholder></ng-template>
+    </div>
+  </div>
+  <div class="clearfix"></div>
+</section>

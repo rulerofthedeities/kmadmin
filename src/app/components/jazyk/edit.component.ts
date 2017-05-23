@@ -2,56 +2,17 @@ import {Component, ViewChild, OnInit, OnDestroy, ComponentFactory, ComponentFact
 import {ActivatedRoute} from '@angular/router';
 import {FilterList, Filter, WordPair, WordDetail} from '../../models/jazyk.model';
 import {JazykService} from '../../services/jazyk.service';
-import {JazykEditWordPairComponent} from './edit-wordpair.component';
-import {JazykDetailForm} from './edit-worddetail.component';
-import {JazykDetailFormNlComponent} from './edit-worddetail-nl.component';
-import {JazykDetailFormCsComponent} from './edit-worddetail-cs.component';
-import {JazykDetailFormDeComponent} from './edit-worddetail-de.component';
-import {JazykDetailFormEnComponent} from './edit-worddetail-en.component';
-import {JazykDetailFormFrComponent} from './edit-worddetail-fr.component';
+import {JazykEditWordPairComponent} from './wordpair/edit-wordpair.component';
+import {JazykDetailForm} from './worddetail/edit-worddetail.component';
+import {JazykDetailFormNlComponent} from './worddetail/edit-worddetail-nl.component';
+import {JazykDetailFormCsComponent} from './worddetail/edit-worddetail-cs.component';
+import {JazykDetailFormDeComponent} from './worddetail/edit-worddetail-de.component';
+import {JazykDetailFormEnComponent} from './worddetail/edit-worddetail-en.component';
+import {JazykDetailFormFrComponent} from './worddetail/edit-worddetail-fr.component';
 import 'rxjs/add/operator/takeWhile';
 
 @Component({
-  template: `
-    <section>
-      <div class="row">
-        <div class="col-xs-12">
-          <km-filter-word
-            [tpe]="tpe"
-            (filteredWords)="onWordsFiltered($event)">
-          </km-filter-word>
-        </div>
-      </div>
-      <div class="row">
-        <div class="col-xs-3">
-          <km-filter-list
-            [lan]="lan"
-            [wordpairs]="wordpairs"
-            [worddetails]="worddetails"
-            [tpe]="tpe"
-            (selectedWordPair)="onSelectedWordPair($event)"
-            (selectedWordDetail)="onSelectedWordDetail($event)"
-          ></km-filter-list>
-        </div>
-        <div class="col-xs-9" *ngIf="tpe==='wordpairs'">
-          <km-edit-wordpair #edit>
-          </km-edit-wordpair>
-        </div>
-        <div class="col-xs-9" *ngIf="tpe==='worddetails'">
-          <!--
-          <km-detail-form-nl
-            [lan]="'nl-nl'"
-            [detailOnly]="true"
-            [detail]="detail"
-            #edit>
-          </km-detail-form-nl>
-          -->
-          <ng-template #placeholder></ng-template>
-        </div>
-      </div>
-      <div class="clearfix"></div>
-    </section>
-  `
+  templateUrl: 'edit.component.html'
 })
 
 export class JazykEditComponent implements OnInit, OnDestroy {
@@ -62,7 +23,6 @@ export class JazykEditComponent implements OnInit, OnDestroy {
   tpe: string;
   componentActive = true;
   @ViewChild('edit') editWordPairs: JazykEditWordPairComponent;
-  // @ViewChild('edit') editWordDetails: JazykDetailForm;
   @ViewChild('placeholder', {read: ViewContainerRef}) viewContainerRef: ViewContainerRef;
   cmpRef: any;
 
@@ -86,13 +46,15 @@ export class JazykEditComponent implements OnInit, OnDestroy {
     if (this.lan !== filterList.filter.lanCode) {
       // Language changed -> load different component
       this.lan = filterList.filter.lanCode;
-      this.viewContainerRef.clear();
-      const factory = this.componentFactoryResolver.resolveComponentFactory(this.getDetailComponent(this.lan));
-      const cmpRef = this.viewContainerRef.createComponent(factory);
-      cmpRef.instance['detail'] = this.detail;
-      cmpRef.instance['lan'] = this.lan;
-      cmpRef.instance['detailOnly'] = true;
-      this.cmpRef = cmpRef;
+      if (this.viewContainerRef) {
+        this.viewContainerRef.clear();
+        const factory = this.componentFactoryResolver.resolveComponentFactory(this.getDetailComponent(this.lan));
+        const cmpRef = this.viewContainerRef.createComponent(factory);
+        cmpRef.instance['detail'] = this.detail;
+        cmpRef.instance['lan'] = this.lan;
+        cmpRef.instance['detailOnly'] = true;
+        this.cmpRef = cmpRef;
+      }
     }
   }
 

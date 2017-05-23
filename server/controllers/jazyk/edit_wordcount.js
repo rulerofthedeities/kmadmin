@@ -1,7 +1,7 @@
 let async = require('async'),
     countModel = require('../../models/jazyk/count'),
     countData = null,
-    countWord, searchwords;
+    countWord, searchwords, CountModel;
 
 getSingleWordCount = function(word, callback) {
   countWord = word.toLowerCase();

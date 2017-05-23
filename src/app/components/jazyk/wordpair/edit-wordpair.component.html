@@ -166,6 +166,7 @@
                     </div>
                   </div>
                 </div>
+                detail: {{wordForm.value.detailId1}}
               </div>
 
           <!-- LANGUAGE 2 -->
@@ -246,6 +247,7 @@
                     </div>
                   </div>
                 </div>
+                detail2: {{wordForm.value.detailId2}}
               </div>
             </div>
 
@@ -286,6 +288,7 @@
                     </span>
                   </h4>
                   <div [ngStyle]="{display:formHelpers[i].detail1.showDetail ? 'block' : 'none'}">
+                    <div class="btn btn-danger" *ngIf="formHelpers[i].detail1.hasDetail" (click)="onRemoveDetail(i, '1')">Remove</div>
                     <div [ngSwitch]="wordForm.value.lan1">
                       <km-detail-form-nl *ngSwitchCase="'nl-nl'" #df1
                         [wordTpe]="detailFilterData[i].tpe"
@@ -365,6 +368,7 @@
                     </span>
                   </h4>
                   <div [ngStyle]="{display:formHelpers[i].detail2.showDetail ? 'block' : 'none'}">
+                    <div class="btn btn-danger" *ngIf="formHelpers[i].detail2.hasDetail" (click)="onRemoveDetail(i, '2')">Remove</div>
                     <div [ngSwitch]="wordForm.value.lan2">
                       <km-detail-form-nl *ngSwitchCase="'nl-nl'" #df2
                         [wordTpe]="detailFilterData[i].tpe"

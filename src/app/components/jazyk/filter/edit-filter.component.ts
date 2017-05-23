@@ -1,24 +1,13 @@
 import {Component, Input, Output, OnInit, OnDestroy, EventEmitter} from '@angular/core';
-import {JazykService} from '../../services/jazyk.service';
-import {ErrorService} from '../../services/error.service';
-import {Language, Filter, FilterList, WordPair} from '../../models/jazyk.model';
+import {JazykService} from '../../../services/jazyk.service';
+import {ErrorService} from '../../../services/error.service';
+import {Language, Filter, FilterList, WordPair} from '../../../models/jazyk.model';
 import 'rxjs/add/operator/takeWhile';
 
 @Component({
   selector: 'km-filter-word',
   templateUrl: 'edit-filter.component.html',
-  styles: [`
-    .wordpairList li{
-      width: 220px;
-      padding: 2px 5px;
-    }
-    .wordpairTT {
-      text-align: left;
-    }
-    .ttLbl{
-      color: #00b3ee;
-    }
-  `]
+  styleUrls: ['./edit-filter.css']
 })
 
 export class JazykEditFilterComponent implements OnInit, OnDestroy {

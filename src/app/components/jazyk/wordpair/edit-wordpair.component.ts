@@ -1,9 +1,9 @@
 import {Component, Input, OnInit, OnDestroy, ViewChildren, QueryList} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {JazykDetailForm} from './edit-worddetail.component';
-import {JazykService} from '../../services/jazyk.service';
-import {ErrorService} from '../../services/error.service';
-import {DetailFilterData, Filter, TpeList, Language, AltWord, WordPair, WordDetail} from '../../models/jazyk.model';
+import {JazykDetailForm} from '../worddetail/edit-worddetail.component';
+import {JazykService} from '../../../services/jazyk.service';
+import {ErrorService} from '../../../services/error.service';
+import {DetailFilterData, Filter, TpeList, Language, AltWord, WordPair, WordDetail} from '../../../models/jazyk.model';
 import {Observable} from 'rxjs/Observable';
 import 'rxjs/add/observable/zip';
 
@@ -30,7 +30,7 @@ interface FormHelper {
 @Component({
   selector: 'km-edit-wordpair',
   templateUrl: 'edit-wordpair.component.html',
-  styleUrls: ['edit-word.component.css']
+  styleUrls: ['../edit-word.component.css']
 })
 
 export class JazykEditWordPairComponent implements OnInit, OnDestroy {
@@ -90,8 +90,8 @@ export class JazykEditWordPairComponent implements OnInit, OnDestroy {
       lanPair: ['nl-nl', 'cs-cz'],
       tags: [],
       nl: {
-        word: 'testword',
-        alt: [{word: 'test1'}, {word: 'test2', detailId: '5911b1a45b925606f0d86fc8'}]}
+        word: 'testword'
+      }
     };
     this.wordForms[i] = this.buildWordpairForm(wordpair);
   }
@@ -104,7 +104,6 @@ export class JazykEditWordPairComponent implements OnInit, OnDestroy {
     console.log('editing new words', filter);
     // Clear wordforms
     this.wordForms = [];
-    // this.detailFilterData = [];
 
     // Search for this word in all languages
 
@@ -113,7 +112,6 @@ export class JazykEditWordPairComponent implements OnInit, OnDestroy {
       .takeWhile(() => this.componentActive)
       .subscribe(
         result => {
-          console.log('result', result.wordpairs);
           result.wordpairs.forEach((wordpair, i) => {
             this.createNewWordPair(wordpair, i);
           });
@@ -127,6 +125,38 @@ export class JazykEditWordPairComponent implements OnInit, OnDestroy {
     this.formHelpers[i].msg = {txt: '', tpe: ''};
     this.formHelpers[i]['detail' + w].hasDetail = false;
 
+    if (this.wordForms[i].value['detailId' + w]) {
+      if  (!this['detail' + w] || this['detail' + w]['_id'] !== this.wordForms[i].value['detailId' + w]) {
+        this.getDetailById(i, w, this.wordForms[i].value['detailId' + w]);
+      }
+    } else {
+      this.getDetailByFilter(i, w);
+    }
+
+    if (!this.wordForms[i].value['_id']) {
+      // This wordpair has no id; check if this wordpair already exists
+      this.checkIfWordpairExists(i);
+    }
+  }
+
+  getDetailById(i: number, w: string, id: string) {
+    this.jazykService
+    .fetchWordDetailById(id)
+    .takeWhile(() => this.componentActive)
+    .subscribe((detail: WordDetail) => {
+        if (detail) {
+          this.formHelpers[i]['detail' + w].hasMultiple = false;
+          this.formHelpers[i]['detail' + w].details = null;
+          this.setExistingDetail(detail, i, w);
+        } else {
+          this.getDetailByFilter(i, w);
+        }
+      },
+      error => this.errorService.handleError(error)
+    );
+  }
+
+  getDetailByFilter(i: number, w: string) {
     // Look for a word detail document for this word
     const filter: Filter = {
       word: this.detailFilterData[i]['word' + w],
@@ -141,8 +171,7 @@ export class JazykEditWordPairComponent implements OnInit, OnDestroy {
     .takeWhile(() => this.componentActive)
     .subscribe(
       (data: WordDetail[]) => {
-        console.log('number of detail docs:', data.length);
-        if (data.length > 0) {
+        if (data.length > 1) {
           // More than 1 detail document found for this word!
           // Let user select the correct detail document
           this.formHelpers[i]['detail' + w].hasDetail = false;
@@ -160,11 +189,6 @@ export class JazykEditWordPairComponent implements OnInit, OnDestroy {
       },
       error => this.errorService.handleError(error)
     );
-
-    if (!this.wordForms[i].value['_id']) {
-      // This wordpair has no id; check if this wordpair already exists
-      this.checkIfWordpairExists(i);
-    }
   }
 
   onDetailSelected(detail: WordDetail, i: number, w: string) {
@@ -184,6 +208,7 @@ export class JazykEditWordPairComponent implements OnInit, OnDestroy {
   }
 
   private setNewDetail(i: number, w: string) {
+    console.log('setting new detail');
     this.isNew[i] = true;
     this.wordForms[i].patchValue({['detailId' + w]: ''});
     this.formHelpers[i]['detail' + w].hasDetail = false;
@@ -280,6 +305,10 @@ export class JazykEditWordPairComponent implements OnInit, OnDestroy {
       );
 
     }
+  }
+
+  onRemoveDetail(i: number, w: string) {
+    this.setNewDetail(i, w);
   }
 
   getDetailForm(i: number, w: number) {
@@ -384,7 +413,6 @@ export class JazykEditWordPairComponent implements OnInit, OnDestroy {
   }
 
   buildWordpairForm(wordpair: WordPair): FormGroup {
-    console.log('wordpair', wordpair.wordTpe);
     const lan1 = wordpair.lanPair[0].slice(0, 2),
           lan2 = wordpair.lanPair[1].slice(0, 2);
     const wordpairForm = this.formBuilder.group({

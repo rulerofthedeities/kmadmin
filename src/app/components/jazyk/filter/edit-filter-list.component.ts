@@ -1,24 +1,10 @@
 import {Component, Input, Output, EventEmitter} from '@angular/core';
-import {WordPair, WordDetail, Filter} from '../../models/jazyk.model';
+import {WordPair, WordDetail, Filter} from '../../../models/jazyk.model';
 
 @Component({
   selector: 'km-filter-list',
   templateUrl: 'edit-filter-list.component.html',
-  styles: [`
-    .wordList li{
-      padding: 2px 5px;
-      cursor: pointer;
-    }
-    .wordList li:hover {
-      background-color: #eee;
-    }
-    .wordpairTT {
-      text-align: left;
-    }
-    .ttLbl{
-      color: #00b3ee;
-    }
-  `]
+  styleUrls: ['./edit-filter.css']
 })
 
 export class JaykEditFilterListComponent {

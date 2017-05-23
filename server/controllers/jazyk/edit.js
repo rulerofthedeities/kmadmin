@@ -233,7 +233,7 @@ module.exports = {
     const newWord = {
       docTpe: 'details',
       wordTpe: formData.wordTpe,
-      lan: formData.lan,
+      lan: formData.lan.slice(0, 2),
       word: formData.word
     }
 
@@ -245,7 +245,7 @@ module.exports = {
     }
 
     // Add wordcount
-    wordCount.getWordCount(formData, countConn, function(err, countData){
+    wordCount.getWordCount(newWord, countConn, function(err, countData){
       if (!err) {
         newWord.wordCount = countData.wordCount;
         newWord.score = countData.score;

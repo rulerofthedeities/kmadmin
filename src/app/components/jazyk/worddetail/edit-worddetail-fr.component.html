@@ -1,6 +1,6 @@
 DETAIL FR
 
-<form *ngIf="wordTpe && detailForm"
+<form *ngIf="detailForm"
       [formGroup]="detailForm"
       class="form-horizontal"
       [ngClass]="{
@@ -9,16 +9,48 @@ DETAIL FR
         update: detailExists && detailForm?.dirty
       }">
 
-  <div class="form-group">
-    <label 
-      class="control-label col-xs-2">
-      Word:
-    </label>
-    <div class="col-xs-10">
-      {{word}}
+  <km-detail-fields-basic [detail]="detail" *ngIf="isRead()">
+  </km-detail-fields-basic>
+
+<!-- NEW DETAIL ONLY -->
+
+  <div *ngIf="!isRead()">
+    <div class="form-group">
+      <label 
+        for="tpe" 
+        class="control-label col-xs-2">
+        Word Type:
+      </label>
+      <div class="col-xs-10">
+        <select 
+          class="form-control" 
+          id="tpe"
+          formControlName="wordTpe">
+          <option *ngFor="let t of wordTpes" [value]="t.val">
+            {{t.label}}
+          </option>
+        </select>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label 
+        for="word" 
+        class="control-label col-xs-2">
+        Word:
+      </label>
+      <div class="col-xs-10">
+        <input 
+          class="form-control" 
+          id="word"
+          formControlName="word">
+      </div>
     </div>
   </div>
-  <div class="form-group" *ngIf="wordTpe==='noun'">
+
+<!-- DYNAMIC FIELDS -->
+
+  <div class="form-group" *ngIf="isNoun()">
     <label 
       for="genus" 
       class="control-label col-xs-2">
@@ -33,6 +65,13 @@ DETAIL FR
       </div>
     </div>
   </div>
+
+<!-- INFO FIELDS -->
+
+  <km-detail-fields-info [detail]="detail" *ngIf="detailExists">
+  </km-detail-fields-info>
+
+<!-- BUTTONS -->
 
   <div 
     class="btn btn-success" 
@@ -56,4 +95,3 @@ Detail exists: {{detailExists}}<br>
 </form>
 
 <pre>{{detail|json}}</pre>
-wordtpe: {{wordTpe}}

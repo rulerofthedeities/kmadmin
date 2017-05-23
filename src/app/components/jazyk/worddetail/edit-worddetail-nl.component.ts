@@ -1,14 +1,14 @@
 import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormArray, FormControl, Validators} from '@angular/forms';
-import {JazykService} from '../../services/jazyk.service';
-import {ErrorService} from '../../services/error.service';
-import {JazykDetailForm} from './edit-worddetail.component';
-import {WordDetail} from '../../models/jazyk.model';
+import {JazykService} from '../../../services/jazyk.service';
+import {ErrorService} from '../../../services/error.service';
+import {WordDetail} from '../../../models/jazyk.model';
+import {JazykDetailForm} from '../worddetail/edit-worddetail.component';
 
 @Component({
   selector: 'km-detail-form-nl',
   templateUrl: 'edit-worddetail-nl.component.html',
-  styleUrls: ['edit-word.component.css']
+  styleUrls: ['../edit-word.component.css']
 })
 
 export class JazykDetailFormNlComponent extends JazykDetailForm implements OnInit {

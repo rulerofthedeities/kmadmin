@@ -2,7 +2,7 @@ let async = require('async'),
     countModel = null,
     countData = null;
 
-getSingleWordCount = function(word, callback) {
+getSingleWordCountSync = function(word, callback) {
   let countWord = word.toLowerCase();
   countModel.findOne({_id: countWord}, {_id:0, score:1}, function(err, count) {
     countData.wordCount = countData.wordCount + 1;
@@ -26,7 +26,7 @@ module.exports = {
       /*if (searchwords.length > 1) {
         console.log('multiple words', searchwords);
       }*/
-      async.eachSeries(searchwords, getSingleWordCount, function (err, count) {
+      async.eachSeries(searchwords, getSingleWordCountSync, function (err, count) {
       //average score
         if (countData.wordCount > 1) {
           countData.score = Math.round(countData.score / countData.wordCount);

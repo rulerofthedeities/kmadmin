@@ -1,8 +1,8 @@
 import {Component, Input, OnChanges, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, FormArray, FormControl, Validators} from '@angular/forms';
-import {JazykService} from '../../services/jazyk.service';
-import {ErrorService} from '../../services/error.service';
-import {WordDetail, LanConfig, Filter, TpeList, Language} from '../../models/jazyk.model';
+import {JazykService} from '../../../services/jazyk.service';
+import {ErrorService} from '../../../services/error.service';
+import {WordDetail, LanConfig, Filter, TpeList, Language} from '../../../models/jazyk.model';
 import 'rxjs/add/operator/takeWhile';
 
 export abstract class JazykDetailForm implements OnChanges, OnInit {
@@ -53,9 +53,12 @@ export abstract class JazykDetailForm implements OnChanges, OnInit {
   }
 
   buildDetailForm() {
-    this.detail.wordTpe = this.detail.wordTpe ? this.detail.wordTpe : this.wordTpe;
-    this.detail.lan = this.detail.lan ? this.detail.lan : this.lan;
-    this.detail.word = this.detail.word ? this.detail.word : this.word;
+    if (!this.detailOnly) {
+      // get data from wordpair
+      this.detail.wordTpe = this.wordTpe;
+      this.detail.lan = this.lan.slice(0, 2);
+      this.detail.word = this.word;
+    }
     this.detailForm = this.formBuilder.group({
       '_id': [this.detail._id],
       'docTpe': ['details'],
@@ -144,6 +147,7 @@ export abstract class JazykDetailForm implements OnChanges, OnInit {
   }
 
   getNewDetail(): WordDetail {
+    console.log('new detail - word:', this.word);
     const detail: WordDetail = {
       _id: '',
       lan: this.lan ? this.lan.slice(0, 2) : '',
@@ -151,6 +155,7 @@ export abstract class JazykDetailForm implements OnChanges, OnInit {
       docTpe: 'details',
       wordTpe: this.wordTpe ? this.wordTpe : ''
     };
+    console.log('new detail:', detail);
     return detail;
   }
 

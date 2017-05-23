@@ -71,9 +71,12 @@ let addWordDocs = function(req, res, callback) {
   addedWords = [];
   cznlModel.find({tpe:{$ne:'zin'}}, {tpe:1, nl:1, cz:1, nlP:1, czP:1, categories:1}, function(err, cznlWords) {
     //cznlWords = cznlWords.slice(0, 500);
+    //cznlWords = cznlWords.filter(word => word.nl.word ==='mooi');
+
     async.eachSeries(cznlWords, addWord, function (err) {
       callback(err, {added:addedWords.length});
     });
+
   });
 }
 
@@ -140,48 +143,6 @@ let fetchGenusArticle = function(lan, word, callback) {
     callback(err, genusArticle);
   })
 }
-/*
-let saveAltWords = function(lan, word, countData, wordData, callback) {
-  key = lan + '.alt';
-  legacyKey = lan + '.altLegacy';
-  altObj = {
-          word: word.word,
-          wordCount: countData.wordCount,
-          score: countData.score
-        }
-  if (wordData.genus) {
-    altObj.genus = wordData.genus;
-  }
-  if (wordData.article) {
-    altObj.article = wordData.article;
-  }
-
-  jazykWordModel.findOneAndUpdate(
-    {_id:word._id},
-    {
-      $addToSet: {
-        [key]: altObj
-      },
-      $unset:{[legacyKey]:""}
-    },
-    function(err,result){
-      callback(err);
-    }
-  )
-}
-let updateAltWord = function(word, callback) {
-  const lan = word.lan === 'nl' ? 'nl' : 'cs';
-  const model = lan === 'nl' ? countModelNl : countModelCs;
-  wordCount.getWordCount(word.word, model, function(err, countData){
-    //Fetch genus (cs) or article (en)
-    fetchGenusArticle(lan, word, function(err, wordData) {
-      saveAltWords(lan, word, countData, wordData, function(err){
-        callback(err);
-      })
-    });
-  });
-}
-*/
 
 let addWord = function(word, callback) {
   //console.log('Trying to add word', word);
@@ -211,7 +172,7 @@ let addNewWord = function(word, callback) {
   //Create new word
   let newWord = {
     _id: word._id,
-    wordTpe: word.tpe,
+    wordTpe: setWordTpe(word.tpe),
     lanPair: ['nl-nl', 'cs-cz']
   }
 
@@ -220,7 +181,6 @@ let addNewWord = function(word, callback) {
   newWord.nl = nlword;
   let csword = addWordData(word.cz);
   newWord.cs = csword;
-
 
   //Add word details
   let newWordDetailNl = getWordDetail(word, 'nl');
@@ -492,6 +452,7 @@ let getWordDetail = function(word, lan) {
       }
     break;
   }
+  newdetails.wordTpe = setWordTpe(word.tpe);
   return add ? newdetails : null;
 }
 
@@ -503,7 +464,7 @@ let getEmptyWordDetail = function(word, lan) {
   newdetails = {
     word: lanWord.word,
     lan: lan === 'nl' ? 'nl' : 'cs',
-    wordTpe: word.tpe
+    wordTpe: setWordTpe(word.tpe)
   };
 
   return newdetails;
@@ -562,6 +523,26 @@ let addNewSentence = function(sentence, callback) {
       });
     });
   });
+}
+
+let setWordTpe = function(tpe) {
+  let newTpe = '';
+  switch (tpe) {
+    case 'noun': newTpe = 'noun'; break;
+    case 'adj': newTpe = 'adjective'; break;
+    case 'adv': newTpe = 'adverb'; break;
+    case 'verb': newTpe = 'verb'; break;
+    case 'conj': newTpe = 'conjunction'; break;
+    case 'prep': newTpe = 'preposition'; break;
+    case 'interj': newTpe = 'interjection'; break;
+    case 'pronoun': newTpe = 'pronoun'; break;
+    case 'propernoun': newTpe = 'propernoun'; break;
+    case 'part': newTpe = 'particle'; break;
+    case 'numeral': newTpe = 'numeral'; break;
+    case 'phrase': newTpe = 'phrase'; break;
+    default: console.log('Unknown word type:', tpe)
+  }
+  return newTpe;
 }
 
 module.exports = {

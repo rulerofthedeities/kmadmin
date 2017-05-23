@@ -1,5 +1,5 @@
 import {Component, Input, Output, EventEmitter} from '@angular/core';
-import {WordDetail} from '../../models/jazyk.model';
+import {WordDetail} from '../../../models/jazyk.model';
 
 @Component({
   selector: 'km-multiple-details',
