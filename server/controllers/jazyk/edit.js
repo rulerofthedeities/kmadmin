@@ -55,6 +55,14 @@ let updateLanDoc = function(formData, nr) {
   return lanDoc;
 }
 
+let addRemoveValue = function(formData, updateObject, removeObject, field) {
+  if (formData[field] === undefined) {
+    removeObject[field] = formData[field];
+  } else {
+    updateObject[field] = formData[field];
+  }
+}
+
 module.exports = {
   getWordPairs: function(req, res) {
     //For wordpair list
@@ -255,23 +263,12 @@ module.exports = {
     const updateObject = {wordTpe: formData.wordTpe},
           removeObject = {};
 
-    // ADD VALUES
+    // ADD & REMOVE VALUES
 
-    if (formData.article !== undefined) {
-      updateObject.article = formData.article;
-    }
-    if (formData.genus !== undefined) {
-      updateObject.genus = formData.genus;
-    }
-
-    // REMOVE VALUES
-
-    if (formData.article === undefined) {
-      removeObject.article = formData.article;
-    }
-    if (formData.genus === undefined) {
-      removeObject.genus = formData.genus;
-    }
+    addRemoveValue(formData, updateObject, removeObject, 'article');
+    addRemoveValue(formData, updateObject, removeObject, 'genus');
+    addRemoveValue(formData, updateObject, removeObject, 'diminutive');
+    addRemoveValue(formData, updateObject, removeObject, 'plural');
 
     WordDetail.findOneAndUpdate({_id: worddetailId}, {$set: updateObject, $unset: removeObject}, function(err, result) {
       response.handleError(err, res, 500, 'Error updating worddetail', function(){

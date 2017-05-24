@@ -18,10 +18,10 @@ DETAIL NL
     <div class="form-group">
       <label 
         for="tpe" 
-        class="control-label col-xs-2">
+        class="control-label col-xs-3">
         Word Type:
       </label>
-      <div class="col-xs-10">
+      <div class="col-xs-9">
         <select 
           class="form-control" 
           id="tpe"
@@ -36,10 +36,10 @@ DETAIL NL
     <div class="form-group">
       <label 
         for="word" 
-        class="control-label col-xs-2">
+        class="control-label col-xs-3">
         Word:
       </label>
-      <div class="col-xs-10">
+      <div class="col-xs-9">
         <input 
           class="form-control" 
           id="word"
@@ -53,19 +53,44 @@ DETAIL NL
   <div class="form-group" *ngIf="isNoun()">
     <label 
       for="article" 
-      class="control-label col-xs-2">
-      Article: 
+      class="control-label col-xs-3">
+      Genus:
     </label>
-    <div class="col-xs-10">
-      <div *ngFor="let control of detailForm.value['article'].controls; let i=index">
-        <input 
-          type="checkbox" 
-          id="checkbox-1" 
-          value="value-1" 
-          (ngModelChange)="setDirty()"
-          [formControl]="control" />     
-        {{articles[i]}}
+    <div class="col-xs-9">
+      <div *ngFor="let article of articles">
+        <input type="radio" 
+          formControlName="article" 
+          name="article" 
+          [value]="article">{{article}}
       </div>
+    </div>
+  </div>
+
+  <div class="form-group" *ngIf="isNoun()">
+    <label 
+      for="diminutive" 
+      class="control-label col-xs-3">
+      Diminutive:
+    </label>
+    <div class="col-xs-9">
+      <input 
+        type="text"
+        formControlName="diminutive" 
+        name="diminutive">
+    </div>
+  </div>
+
+  <div class="form-group" *ngIf="isNoun()">
+    <label 
+      for="plural" 
+      class="control-label col-xs-3">
+      Plural:
+    </label>
+    <div class="col-xs-9">
+      <input 
+        type="text"
+        formControlName="plural" 
+        name="plural">
     </div>
   </div>
 

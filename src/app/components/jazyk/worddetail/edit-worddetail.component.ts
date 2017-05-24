@@ -102,6 +102,13 @@ export abstract class JazykDetailForm implements OnChanges, OnInit {
     return data;
   }
 
+  addNewField(formData: any, newData: any, field: string) {
+    // Postprocess
+    if (formData[field]) {
+      newData[field] = formData[field];
+    }
+  }
+
   setDirty() {
     // checkbox change doesn't set form as dirty
     this.detailForm.markAsDirty();
@@ -122,20 +129,6 @@ export abstract class JazykDetailForm implements OnChanges, OnInit {
     this.detail = null;
     this.detailExists = false;
     this.buildForm();
-  }
-
-  processArticle(formData: any, detailData: WordDetail, articles: string[]) {
-    // transform array of bools into string of articles
-    if (formData.article) {
-      const articleArr = [];
-      const articleControls: FormArray = formData.article;
-      articles.forEach((articleItem, i) => {
-        if (articleControls.value[i]) {
-          articleArr.push(articleItem);
-        }
-      });
-      detailData.article = articleArr.join(';');
-    }
   }
 
   isNoun() {

@@ -20,7 +20,7 @@ var wordLangSchema = new Schema({
   aspect: String,
   aspectPair: String,
   firstpersonsingular: String,
-  dimitutive: String,
+  diminutive: String,
   plural: String,
   score: Number,
   wordCount: Number

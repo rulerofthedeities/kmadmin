@@ -57,7 +57,7 @@ let compareSentenceDocs = function(req, res, callback) {
 
 let removeDocs = function(req, res, callback) {
   console.log('removing cs-cz words + cs details + nl details');
-  jazykWordModel.remove({lanPair:'cs-cz', docTpe:'wordpair'}, function(err, cznlWords) {
+  jazykWordModel.remove({lanPair:'cs', docTpe:'wordpair'}, function(err, cznlWords) {
     jazykWordModel.remove({lan:'cs', docTpe:'details'}, function(err, cznlDetailsCz) {
       jazykWordModel.remove({lan:'nl', docTpe:'details'}, function(err, cznlDetailsNl) {
         callback(err, {wordpairs: cznlWords, details: {cz: cznlDetailsCz, nl: cznlDetailsNl}});

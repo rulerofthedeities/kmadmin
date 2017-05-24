@@ -28,26 +28,26 @@ export class JazykDetailFormNlComponent extends JazykDetailForm implements OnIni
   }
 
   buildForm() {
+    let control: FormControl;
     super.buildForm();
-    // PRE-PROCESS FORM DATA
-    // set article field
-    this.articles = this.config.articles;
-    const articleControls: FormControl[] = [],
-          articleFld = this.detail.article,
-          selectedArticles = articleFld ? articleFld.split(';') : [];
-    this.articles.forEach(article => {
-      articleControls.push(new FormControl(
-        selectedArticles.filter(selArticle => selArticle === article).length > 0));
-    });
 
-    const control = new FormControl(new FormArray(articleControls), Validators.minLength(1));
-    this.detailForm.addControl('article', control);
+    this.articles = this.config.articles;
+    if (this.detail.wordTpe === 'noun') {
+      control = new FormControl(this.detail.article, Validators.required);
+      this.detailForm.addControl('article', control);
+      control = new FormControl(this.detail.diminutive);
+      this.detailForm.addControl('diminutive', control);
+      control = new FormControl(this.detail.plural);
+      this.detailForm.addControl('plural', control);
+    }
   }
 
   postProcessFormData(formData: any): WordDetail {
     console.log('post processing nl');
     const newData: WordDetail = super.copyDetail(formData);
-    super.processArticle(formData, newData, this.articles);
+    this.addNewField(formData, newData, 'article');
+    this.addNewField(formData, newData, 'diminutive');
+    this.addNewField(formData, newData, 'plural');
 
     return newData;
   }

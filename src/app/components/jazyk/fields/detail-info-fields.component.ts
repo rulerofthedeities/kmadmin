@@ -8,20 +8,20 @@ import {WordDetail} from '../../../models/jazyk.model';
       <div class="form-group">
         <label 
           for="lan" 
-          class="control-label col-xs-2">
+          class="control-label col-xs-3">
           Score:
         </label>
-        <div class="col-xs-10">
+        <div class="col-xs-9">
           {{detail.score}}
         </div>
       </div>
       <div class="form-group">
         <label 
           for="lan" 
-          class="control-label col-xs-2">
+          class="control-label col-xs-3">
           Words:
         </label>
-        <div class="col-xs-10">
+        <div class="col-xs-9">
           {{detail.wordCount}}
         </div>
       </div>

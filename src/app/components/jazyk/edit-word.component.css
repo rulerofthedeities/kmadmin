@@ -32,4 +32,6 @@ h4 > .fa {
 /* Override bootstrap */
 .read .control-label {
   padding-top: 0;
+  color: #999;
+  font-style: italic;
 }
