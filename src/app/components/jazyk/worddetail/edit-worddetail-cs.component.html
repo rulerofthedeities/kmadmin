@@ -18,10 +18,10 @@ DETAIL CS
     <div class="form-group">
       <label 
         for="tpe" 
-        class="control-label col-xs-2">
+        class="control-label col-xs-3">
         Word Type:
       </label>
-      <div class="col-xs-10">
+      <div class="col-xs-9">
         <select 
           class="form-control" 
           id="tpe"
@@ -36,10 +36,10 @@ DETAIL CS
     <div class="form-group">
       <label 
         for="word" 
-        class="control-label col-xs-2">
+        class="control-label col-xs-3">
         Word:
       </label>
-      <div class="col-xs-10">
+      <div class="col-xs-9">
         <input 
           class="form-control" 
           id="word"
@@ -50,18 +50,153 @@ DETAIL CS
 
 <!-- DYNAMIC FIELDS -->
 
-  <div class="form-group" *ngIf="isNoun()">
-    <label 
-      for="genus" 
-      class="control-label col-xs-2">
-      Genus:
-    </label>
-    <div class="col-xs-10">
-      <div *ngFor="let genus of genera">
-        <input type="radio" 
-          formControlName="genus" 
-          name="genus" 
-          [value]="genus">{{genus}}
+<!-- noun -->
+  <div *ngIf="isNoun()">
+    <div class="form-group">
+      <label 
+        for="genus" 
+        class="control-label col-xs-2">
+        Genus:
+      </label>
+      <div class="col-xs-10">
+        <div *ngFor="let genus of genera">
+          <input type="radio" 
+            formControlName="genus" 
+            name="genus" 
+            [value]="genus">{{genus}}
+        </div>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label 
+        for="diminutive" 
+        class="control-label col-xs-3">
+        Diminutive:
+      </label>
+      <div class="col-xs-9">
+        <input 
+          type="text"
+          formControlName="diminutive" 
+          name="diminutive">
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label 
+        for="plural" 
+        class="control-label col-xs-3">
+        Plural:
+      </label>
+      <div class="col-xs-9">
+        <input 
+          type="text"
+          formControlName="plural" 
+          name="plural">
+      </div>
+    </div>
+  </div>
+
+
+<!-- adjective -->
+  <div *ngIf="isAdjective()">
+    <div class="form-group">
+      <label 
+        for="comparative" 
+        class="control-label col-xs-3">
+        Comparative:
+      </label>
+      <div class="col-xs-9">
+        <input 
+          type="text"
+          formControlName="comparative" 
+          name="comparative">
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label 
+        for="superlative" 
+        class="control-label col-xs-3">
+        Superlative:
+      </label>
+      <div class="col-xs-9">
+        <input 
+          type="text"
+          formControlName="superlative" 
+          name="superlative">
+      </div>
+    </div>
+  </div>
+
+<!-- verb -->
+  <div *ngIf="isVerb()">
+    <div class="form-group">
+      <label 
+        for="aspect" 
+        class="control-label col-xs-3">
+        Aspect:
+      </label>
+      <div class="col-xs-9">
+        <div *ngFor="let aspect of aspects">
+          <input type="radio" 
+            formControlName="aspect" 
+            name="aspect" 
+            [value]="aspect">{{aspect}}
+        </div>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label 
+        for="aspectpair" 
+        class="control-label col-xs-3">
+        Aspect pair:
+      </label>
+      <div class="col-xs-9">
+        <input 
+          type="text"
+          formControlName="aspectPair" 
+          name="aspectpair">
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label 
+        for="fcase" 
+        class="control-label col-xs-3">
+        +Case:
+      </label>
+      <div class="col-xs-9">
+        <select 
+          class="form-control" 
+          id="fcase"
+          formControlName="followingCase">
+          <option *ngFor="let case of cases" [value]="case.value">
+            {{case.code}}
+          </option>
+        </select>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label 
+        for="conjugation1" 
+        class="control-label col-xs-3">
+        Conj.:
+      </label>
+      <div class="col-xs-9">
+        <div *ngFor="let pronoun of config.subjectPronouns; let i = index">
+          <div class="col-xs-3">
+          {{pronoun}}
+          </div>
+          <div class="col-xs-9">
+            <input 
+            type="text"
+            [formControlName]="'conjugation' + i" 
+            [name]="'conjugation' + i">
+          </div>
+        </div>
       </div>
     </div>
   </div>

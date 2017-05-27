@@ -84,6 +84,11 @@ export interface WordDetail {
   images?: string[];
   audio?: string[];
   conjugation?: string[];
+  tags?: string[];
+  isDiminutive?: boolean;
+  isPlural?: boolean;
+  isComparative?: boolean;
+  isSuperlative?: boolean;
   wordCount?: number;
   score?: number;
 }
@@ -95,10 +100,17 @@ interface Lans {
   nl: string;
 }
 
+export interface Case {
+  value: string;
+  code: string;
+}
+
 export interface LanConfig  {
   tpe: string;
   code: string;
   articles: string[];
   genera: string[];
+  aspects: string[];
+  cases: Case[];
   name: Lans;
 }

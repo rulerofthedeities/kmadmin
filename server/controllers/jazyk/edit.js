@@ -159,6 +159,7 @@ module.exports = {
   },
   addWordPair: function(req, res) {
     const formData = req.body,
+          tags = formData.tags ? formData.tags.split(';') : [];
           lankey1 = formData.lan1,
           lankey2 = formData.lan2,
           landoc1 = createLanDoc(formData, 1),
@@ -169,6 +170,7 @@ module.exports = {
       docTpe: 'wordpair',
       wordTpe: formData.wordTpe,
       lanPair: [formData.lan1, formData.lan2],
+      tags,
       [lankey1]: landoc1,
       [lankey2]: landoc2
     }
@@ -183,6 +185,7 @@ module.exports = {
   },
   updateWordPair: function(req, res) {
     const formData = req.body,
+          tags = formData.tags ? formData.tags.split(';') : [];
           lankey1 = formData.lan1,
           lankey2 = formData.lan2,
           landoc1 = updateLanDoc(formData, 1),
@@ -199,6 +202,7 @@ module.exports = {
 
     const UpdateObject = {
       wordTpe: formData.wordTpe,
+      tags,
       [lankey1]: landoc1,
       [lankey2]: landoc2
     }
@@ -212,14 +216,8 @@ module.exports = {
 
   },
   addWordDetail: function(req, res) {
-    const formData = req.body;
-
-    // GET WORDCOUNT
-
-
-    // ADD WORDDETAIL DOCUMENT
-
-    const newWord = {
+    const formData = req.body,
+          newWord = {
       docTpe: 'details',
       wordTpe: formData.wordTpe,
       lan: formData.lan,
@@ -269,10 +267,38 @@ module.exports = {
     addRemoveValue(formData, updateObject, removeObject, 'genus');
     addRemoveValue(formData, updateObject, removeObject, 'diminutive');
     addRemoveValue(formData, updateObject, removeObject, 'plural');
+    addRemoveValue(formData, updateObject, removeObject, 'comparative');
+    addRemoveValue(formData, updateObject, removeObject, 'superlative');
+    addRemoveValue(formData, updateObject, removeObject, 'conjugation');
+    addRemoveValue(formData, updateObject, removeObject, 'aspect');
+    addRemoveValue(formData, updateObject, removeObject, 'aspectPair');
+    addRemoveValue(formData, updateObject, removeObject, 'followingCase');
+    addRemoveValue(formData, updateObject, removeObject, 'tags');
+
+    console.log('update', updateObject);
+    console.log('remove', removeObject);
 
     WordDetail.findOneAndUpdate({_id: worddetailId}, {$set: updateObject, $unset: removeObject}, function(err, result) {
       response.handleError(err, res, 500, 'Error updating worddetail', function(){
         response.handleSuccess(res, result, 200, 'Updated worddetail');
+      });
+    });
+  },
+  getTags: function(req, res) {
+    let query = req.query.search
+        lanpair = req.query.lanpair.split(';'),
+        max = 20;
+    const pipeline = [
+      {$unwind: "$tags" },
+      {$match:{$or: [{lanPair:lanpair[0]}, {lanPair:lanpair[1]}],tags: {$regex:query, $options:"i"}}},
+      {$group:{_id:"$tags", total:{$sum:1}}},
+      {$sort:{_id: 1}},
+      {$limit:max},
+      {$project:{_id:0,name:"$_id", total:1}}
+    ];
+    WordDetail.aggregate(pipeline, function(err, docs) {
+      response.handleError(err, res, 500, 'Error fetching tags', function(){
+        response.handleSuccess(res, docs, 200, 'Fetched tags');
       });
     });
   }

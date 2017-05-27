@@ -39,13 +39,13 @@ module.exports.initialize = function(app, router) {
   router.get('/jazyk/worddetail/id', jazyk_edit.getWordDetailById);
   router.get('/jazyk/config/lan/:lan', jazyk_config.getLanConfig);
   router.get('/jazyk/wordpair/exists', jazyk_edit.checkWordpairExists);
+  router.get('/jazyk/tags', jazyk_edit.getTags);
 
   router.post('/jazyk/word', jazyk_edit.addWordPair);
   router.post('/jazyk/detail', jazyk_edit.addWordDetail);
   
   router.put('/jazyk/word', jazyk_edit.updateWordPair);
   router.put('/jazyk/detail', jazyk_edit.updateWordDetail);
-
 
 /*** AVC ADMIN ***/
   router.get('/avc/cities/:lan', avc_cities.getCityList);

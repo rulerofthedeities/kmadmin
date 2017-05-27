@@ -40,6 +40,21 @@ export class JazykDetailFormNlComponent extends JazykDetailForm implements OnIni
       control = new FormControl(this.detail.plural);
       this.detailForm.addControl('plural', control);
     }
+    if (this.detail.wordTpe === 'adjective') {
+      control = new FormControl(this.detail.comparative);
+      this.detailForm.addControl('comparative', control);
+      control = new FormControl(this.detail.superlative);
+      this.detailForm.addControl('superlative', control);
+    }
+    if (this.detail.wordTpe === 'verb') {
+      let conj;
+      for (let i = 0; i < 6; i++) {
+        conj = this.detail.conjugation ? this.detail.conjugation[i] : '';
+        control = new FormControl(conj);
+        this.detailForm.addControl('conjugation' + i, control);
+      }
+    }
+    // this.addTagControl();
   }
 
   postProcessFormData(formData: any): WordDetail {
@@ -48,6 +63,10 @@ export class JazykDetailFormNlComponent extends JazykDetailForm implements OnIni
     this.addNewField(formData, newData, 'article');
     this.addNewField(formData, newData, 'diminutive');
     this.addNewField(formData, newData, 'plural');
+    this.addNewField(formData, newData, 'comparative');
+    this.addNewField(formData, newData, 'superlative');
+    this.addNewArray(formData, newData, 'conjugation', 6);
+    // this.addNewArray(formData, newData, 'tags', 1);
 
     return newData;
   }

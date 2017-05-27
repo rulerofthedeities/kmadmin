@@ -150,14 +150,18 @@ export class JazykService {
     .catch(error => Observable.throw(error));
   }
 
-/*
-  fetchWordPairDetail(wordpairId: string) {
+/* Tags */
+
+  searchTags(search: string, lanPair: string[]) {
+    console.log(search, lanPair);
+    const params = new URLSearchParams();
+    params.set('lanpair', lanPair.join(';'));
+    params.set('search', search);
     return this.http
-    .get('/api/jazyk/wordpair/' + wordpairId)
-    .map(response => response.json().obj)
-    .catch(error => Observable.throw(error));
+      .get('/api/jazyk/tags', {search: params})
+      .map(response => response.json().obj)
+      .catch(error => Observable.throw(error));
   }
-  */
 
 /* Config */
 

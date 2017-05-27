@@ -29,7 +29,7 @@ export class JazykEditFilterComponent implements OnInit, OnDestroy {
     this.getLanguagePairs();
     this.filter = {
       word: '',
-      lanCode: this.languages[0].code,
+      lanCode: 'nl',
       wordTpe: '', // only used for worddetail
       isFromStart: this.isFromStart,
       isExact: this.isExact,

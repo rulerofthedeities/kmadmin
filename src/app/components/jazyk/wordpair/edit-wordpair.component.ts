@@ -36,7 +36,7 @@ interface FormHelper {
 export class JazykEditWordPairComponent implements OnInit, OnDestroy {
   @ViewChildren('df1') detailForms1: QueryList<JazykDetailForm>;
   @ViewChildren('df2') detailForms2: QueryList<JazykDetailForm>;
-  componentActive = true;
+  private componentActive = true;
   wordForms: FormGroup[] = [];
   detail1: WordDetail[] = [];
   detail2: WordDetail[] = [];
@@ -45,6 +45,7 @@ export class JazykEditWordPairComponent implements OnInit, OnDestroy {
   isSubmitted: boolean[] = [];
   languages: Language[];
   wordTpes: TpeList[];
+  searchTags: string[] = [];
   detailFilterData: DetailFilterData[] = []; // Bound with ngmodel to get the data to find the word details
 
   constructor(
@@ -232,7 +233,6 @@ export class JazykEditWordPairComponent implements OnInit, OnDestroy {
   }
 
   onAltWordsUpdated(altwords: AltWord[], i: number, w: string) {
-    console.log('marking as dirty');
     this.wordForms[i].patchValue({['alt' + w]: altwords});
     this.wordForms[i].markAsDirty();
   }
@@ -420,6 +420,7 @@ export class JazykEditWordPairComponent implements OnInit, OnDestroy {
       _id: [wordpair._id],
       docTpe: [wordpair.docTpe],
       wordTpe: [wordpair.wordTpe, [Validators.required]],
+      tags: [wordpair.tags ? wordpair.tags.join(';') : ''],
       lan1: [wordpair.lanPair[0]],
       lan2: [wordpair.lanPair[1]],
       word1: [wordpair[lan1] ? wordpair[lan1].word || '' : '', [Validators.required]],
@@ -434,6 +435,34 @@ export class JazykEditWordPairComponent implements OnInit, OnDestroy {
       detailId2: [wordpair[lan2] ? wordpair[lan2].detailId || '' : '']
     });
     return wordpairForm;
+  }
+
+  fetchTags(search: string, i: number) {
+    if (search) {
+      const lanPair = [this.wordForms[i].value['lan1'], this.wordForms[i].value['lan2']];
+      this.jazykService
+      .searchTags(search, lanPair)
+      .takeWhile(() => this.componentActive)
+      .subscribe(
+        tagsFound => this.searchTags = tagsFound || [],
+        error => this.errorService.handleError(error)
+      );
+    } else {
+      this.searchTags = [];
+    }
+  }
+
+  addTag(newTag: string, i: number) {
+    let tags: string[];
+    newTag = newTag.trim();
+    tags = this.wordForms[i].value['tags'].split(';');
+    if (tags.filter(t => t.trim() === newTag).length < 1) {
+      // Only add tag if it doesn't exist already
+      tags.push(newTag);
+    }
+    tags = tags.filter(t => !!t); // remove empty tags
+    this.wordForms[i].patchValue({tags: tags.join(';')});
+    this.wordForms[i].markAsDirty();
   }
 
   getLanguageName(lanCode: string) {

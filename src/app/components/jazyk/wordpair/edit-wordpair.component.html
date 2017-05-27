@@ -82,6 +82,43 @@
                         </select>
                       </div>
                     </div>
+
+
+                    <div class="form-group">
+                      <label 
+                        for="tags" 
+                        class="control-label col-xs-2">
+                        Tags:
+                      </label>
+                      <div class="col-xs-10">
+                        <input type="text"
+                          class="form-control"
+                          formControlName="tags" 
+                          name="tags">
+                      </div>
+                    </div>
+                    <div class="col-xs-offset-2 col-xs-10">
+                      Search tags:
+                      <input type="text"
+                        class="form-control"
+                        (keyup)="fetchTags(searchtag.value, i)"
+                        #searchtag>
+                      <div class="btn btn-success" 
+                        *ngIf="searchTags.length < 1 && searchtag.value.length > 1"
+                        (click)="addTag(searchtag.value)">
+                        Add new tag
+                      </div>
+                    </div>
+                    <div class="col-xs-offset-2 col-xs-10">
+                      <ul class="searchtags list-inline">
+                        <li *ngFor="let tag of searchTags" 
+                          (click)="addTag(tag.name, i)"
+                          class="label label-info">
+                            {{tag.name}}
+                        </li>
+                      </ul>
+                    </div>
+
                   </div>
                 </div>
               </div>

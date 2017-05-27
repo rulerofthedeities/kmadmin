@@ -71,7 +71,7 @@ let addWordDocs = function(req, res, callback) {
   addedWords = [];
   cznlModel.find({tpe:{$ne:'zin'}}, {tpe:1, nl:1, cz:1, nlP:1, czP:1, categories:1}, function(err, cznlWords) {
     //cznlWords = cznlWords.slice(0, 500);
-    //cznlWords = cznlWords.filter(word => word.nl.word ==='mooi');
+    //cznlWords = cznlWords.filter(word => word.nl.word ==='nemen');
 
     async.eachSeries(cznlWords, addWord, function (err) {
       callback(err, {added:addedWords.length});
@@ -89,39 +89,6 @@ let addSentenceDocs = function(req, res, callback) {
     });
   });
 }
-
-/*
-let updateAltWords = function(callback) {
-  console.log('Updating alt words');
-  jazykWordModel.find({docTpe: "wordpair"}, {'nl.altLegacy':1, 'cs.altLegacy':1}, function(err, altwords) {
-    async.eachSeries(altwords, getAltArray, function (err) {
-      callback(err, {altered:alteredWords.length});
-    });
-  })
-}
-
-let getAltArray = function(word, callback) {
-  let words = [];
-  if (word.nl.altLegacy) {
-    let altWords = word.nl.altLegacy.split(';');
-    altWords = altWords.map(wordItem => {return {word:wordItem.trim(), _id:word._id, lan:'nl'}});
-    words = words.concat(altWords);
-  }
-  if (word.cs.altLegacy) {
-    let altWords = word.cs.altLegacy.split(';');
-    altWords = altWords.map(wordItem => {return {word:wordItem.trim(), _id:word._id, lan:'cz'}});
-    words = words.concat(altWords);
-  } 
-
-  if (words.length > 0) {
-    async.eachSeries(words, updateAltWord, function (err) {
-      callback(err);
-    });
-  } else {
-    callback(null);
-  }
-}
-*/
 
 let fetchGenusArticle = function(lan, word, callback) {
   query = lan === 'nl' ? {'nl.word':word.word} : {'cz.word':word.word};
@@ -187,20 +154,12 @@ let addNewWord = function(word, callback) {
   let newWordDetailCs = getWordDetail(word, 'cz');
   let newWordDetailCsP = getWordDetail(word, 'czP');
   let newWordCsP;
-
-  //Add tags
-  if (word.categories){
-    tags = word.categories.filter(cat => allowedTags.filter(atag => atag === cat).length > 0);
-    if (tags && !newWordDetailNl) {
-      newWordDetailNl = getEmptyWordDetail(word, 'nl');
-    }
-    newWordDetailNl.tags = tags;
-  }
+  let tags;
 
   if (newWordDetailCsP) {
     newWordCsP = {
       wordTpe: word.tpe,
-      lanPair: ['nl', 'cs']
+      lanPair: ['nl', 'cs'],
     }
 
     //Add word data
@@ -208,6 +167,19 @@ let addNewWord = function(word, callback) {
     newWordCsP.nl = nlword;
     let csword = addWordData(word.czP);
     newWordCsP.cs = csword;
+  }
+
+  //Add tags
+  if (word.categories){
+    tags = word.categories.filter(cat => allowedTags.filter(atag => atag === cat).length > 0);
+    tags = categories.translateTags(tags);
+  }
+
+  if (tags && tags[0] != '' ) {
+    newWord.tags = tags;
+    if (newWordCsP) {
+      newWordCsP.tags = tags;
+    }
   }
 
   //console.log('adding word', newWord);
@@ -315,6 +287,9 @@ let saveCSDetail = function(newWordDetailCs, newWordDetailCsP, newWord, newWordC
       } else {
         jazykDetailModel.create(newWordDetailCsP, function (err, result) {
           if (!err) {
+            if(newWordCsP) {
+              newWordCsP.cs.detailId = newWordDetailCsP._id;
+            }
             saveDocs(newWord, newWordCsP, word, function(err){
               callback(err);
             });

@@ -11,7 +11,7 @@ export abstract class JazykDetailForm implements OnChanges, OnInit {
   @Input() word: string;
   @Input() detail: WordDetail;
   @Input() detailOnly = false;
-  componentActive = true;
+  private componentActive = true;
   detailForm: FormGroup;
   detailExists = false;
   config: LanConfig;
@@ -102,13 +102,6 @@ export abstract class JazykDetailForm implements OnChanges, OnInit {
     return data;
   }
 
-  addNewField(formData: any, newData: any, field: string) {
-    // Postprocess
-    if (formData[field]) {
-      newData[field] = formData[field];
-    }
-  }
-
   setDirty() {
     // checkbox change doesn't set form as dirty
     this.detailForm.markAsDirty();
@@ -125,6 +118,29 @@ export abstract class JazykDetailForm implements OnChanges, OnInit {
     return detail;
   }
 
+  addNewField(formData: any, newData: any, field: string) {
+    // Postprocess
+    if (formData[field]) {
+      newData[field] = formData[field];
+    }
+  }
+
+  addNewArray(formData: any, newData: any, field: string, max: number) {
+    let newArr = [];
+    if (max > 1) {
+      // There is a separate field for each value
+      for (let i = 0; i < max; i++) {
+        if (formData[field + i]) {
+          newArr.push(formData[field + i]);
+        }
+      }
+    } else {
+      // All values are in one field
+      newArr = formData[field].split(';');
+    }
+    newData[field] = newArr;
+  }
+
   newDetail() {
     this.detail = null;
     this.detailExists = false;
@@ -133,6 +149,14 @@ export abstract class JazykDetailForm implements OnChanges, OnInit {
 
   isNoun() {
     return this.detailForm.value['wordTpe'] === 'noun';
+  }
+
+  isAdjective() {
+    return this.detailForm.value['wordTpe'] === 'adjective';
+  }
+
+  isVerb() {
+    return this.detailForm.value['wordTpe'] === 'verb';
   }
 
   isRead() {

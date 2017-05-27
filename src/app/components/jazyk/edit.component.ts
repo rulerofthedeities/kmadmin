@@ -16,12 +16,12 @@ import 'rxjs/add/operator/takeWhile';
 })
 
 export class JazykEditComponent implements OnInit, OnDestroy {
+  private componentActive = true;
   wordpairs: WordPair[] = [];
   worddetails: WordDetail[] = [];
   detail: WordDetail;
   lan: string;
   tpe: string;
-  componentActive = true;
   @ViewChild('edit') editWordPairs: JazykEditWordPairComponent;
   @ViewChild('placeholder', {read: ViewContainerRef}) viewContainerRef: ViewContainerRef;
   cmpRef: any;
