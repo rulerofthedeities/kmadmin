@@ -151,6 +151,14 @@ export abstract class JazykDetailForm implements OnChanges, OnInit {
     return this.detailForm.value['wordTpe'] === 'noun';
   }
 
+  isPronoun() {
+    return this.detailForm.value['wordTpe'] === 'pronoun';
+  }
+
+  isPreposition() {
+    return this.detailForm.value['wordTpe'] === 'preposition';
+  }
+
   isAdjective() {
     return this.detailForm.value['wordTpe'] === 'adjective';
   }

@@ -4,6 +4,7 @@ import {RouterModule} from '@angular/router';
 import {HttpModule} from '@angular/http';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {TooltipModule} from 'ngx-tooltip';
+// import {FileUploadModule} from 'ng2-file-upload';
 
 import {routes} from './jazyk.routes';
 
@@ -26,6 +27,9 @@ import {JazykDetailFormCsComponent} from './components/jazyk/worddetail/edit-wor
 import {JazykEditAltFieldComponent} from './components/jazyk/fields/edit-field-alt.component';
 import {JazykDetailInfoFieldsComponent} from './components/jazyk/fields/detail-info-fields.component';
 import {JazykDetailBasicFieldsComponent} from './components/jazyk/fields/detail-basic-fields.component';
+import {JazykFileUploadComponent} from './components/jazyk/fields/file-upload.component';
+import {JazykFilesMenuComponent} from './components/jazyk/files-menu.component';
+import {JazykFilesComponent} from './components/jazyk/files.component';
 
 @NgModule({
   imports: [
@@ -63,7 +67,10 @@ import {JazykDetailBasicFieldsComponent} from './components/jazyk/fields/detail-
     JazykDetailFormEnComponent,
     JazykDetailFormCsComponent,
     JazykDetailInfoFieldsComponent,
-    JazykDetailBasicFieldsComponent
+    JazykDetailBasicFieldsComponent,
+    JazykFileUploadComponent,
+    JazykFilesMenuComponent,
+    JazykFilesComponent
   ]
 })
 export class JazykModule {}

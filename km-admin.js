@@ -19,12 +19,19 @@ app.set('token_expiration', 604800);// Token expires after 7 days
 if (!process.env.JWT_TOKEN_SECRET) {
   console.log('WARNING: no config var JWT_TOKEN_SECRET set!!');
 }
+if (!process.env.AWS_S3_ID) {
+  console.log('WARNING: no config var AWS_S3_ID set!!');
+}
+if (!process.env.AWS_S3_KEY) {
+  console.log('WARNING: no config var AWS_S3_KEY set!!');
+}
 
 //middleware
 app.use(compression());
 app.use(bearerToken());
 app.use(bodyParser.json());
 app.use(express.static(path.join(__dirname, 'dist')));
+app.use('/images', express.static(path.join(__dirname, '/files/jazyk/images/publish')));
 
 if (app.get('env') == 'development') {
   console.log('Server running in development mode');

@@ -1,7 +1,7 @@
 import {Injectable, EventEmitter} from '@angular/core';
 import {Http, Headers, URLSearchParams} from '@angular/http';
 import {Observable} from 'rxjs/Observable';
-import {DetailFilterData, TpeList, Filter, LanPair, Language} from '../models/jazyk.model';
+import {CloudFile, DetailFilterData, TpeList, Filter, LanPair, Language} from '../models/jazyk.model';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
 import 'rxjs/add/observable/throw';
@@ -153,7 +153,6 @@ export class JazykService {
 /* Tags */
 
   searchTags(search: string, lanPair: string[]) {
-    console.log(search, lanPair);
     const params = new URLSearchParams();
     params.set('lanpair', lanPair.join(';'));
     params.set('search', search);
@@ -171,7 +170,42 @@ export class JazykService {
       .catch(error => Observable.throw(error));
   }
 
+/* File Upload */
 
+  saveFile(fileName: string) {
+    const headers = new Headers();
+    headers.append('Content-Type', 'application/json');
+    return this.http
+    .post('/api/jazyk/files/upload', {file: fileName}, {headers})
+    .map(response => response.json().obj)
+    .catch(error => Observable.throw(error));
+  }
+
+  saveCloudFileData(cloudData: CloudFile, localFile: string, tpe: string) {
+    const fileData = {
+      app: 'jazyk',
+      tpe,
+      ETag: cloudData.ETag,
+      cloudFile: cloudData.Location,
+      localFile
+    };
+    const headers = new Headers();
+    headers.append('Content-Type', 'application/json');
+    return this.http
+    .post('/api/jazyk/files/add', JSON.stringify(fileData), {headers})
+    .map(response => response.json().obj)
+    .catch(error => Observable.throw(error));
+  }
+
+  getLocalFiles(tpe: string) {
+    const params = new URLSearchParams();
+    params.set('app', 'jazyk');
+    params.set('tpe', tpe);
+    return this.http
+    .get('/api/jazyk/files/', {search: params})
+    .map(response => response.json().obj)
+    .catch(error => Observable.throw(error));
+  }
 
 /* Data */
 

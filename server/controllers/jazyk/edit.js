@@ -191,7 +191,6 @@ module.exports = {
           landoc1 = updateLanDoc(formData, 1),
           landoc2 = updateLanDoc(formData, 2);
     let wordpairId;
-    // GET WORDCOUNT
 
     console.log('update Wordpair Form data:', req.body);
     if (mongoose.Types.ObjectId.isValid(formData._id)) {
@@ -272,8 +271,13 @@ module.exports = {
     addRemoveValue(formData, updateObject, removeObject, 'conjugation');
     addRemoveValue(formData, updateObject, removeObject, 'aspect');
     addRemoveValue(formData, updateObject, removeObject, 'aspectPair');
+    addRemoveValue(formData, updateObject, removeObject, 'case');
     addRemoveValue(formData, updateObject, removeObject, 'followingCase');
     addRemoveValue(formData, updateObject, removeObject, 'tags');
+    addRemoveValue(formData, updateObject, removeObject, 'isDiminutive');
+    addRemoveValue(formData, updateObject, removeObject, 'isPlural');
+    addRemoveValue(formData, updateObject, removeObject, 'isComparative');
+    addRemoveValue(formData, updateObject, removeObject, 'isSuperlative');
 
     console.log('update', updateObject);
     console.log('remove', removeObject);

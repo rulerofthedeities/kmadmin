@@ -6,6 +6,7 @@ var path = require("path"),
     jazyk_sync = require("./controllers/jazyk/sync"),
     jazyk_edit = require("./controllers/jazyk/edit"),
     jazyk_config = require("./controllers/jazyk/config"),
+    jazyk_files = require("./controllers/jazyk/files"),
     avc_cities = require("./controllers/avc/cities"),
     avc_items = require("./controllers/avc/items");
 
@@ -40,9 +41,12 @@ module.exports.initialize = function(app, router) {
   router.get('/jazyk/config/lan/:lan', jazyk_config.getLanConfig);
   router.get('/jazyk/wordpair/exists', jazyk_edit.checkWordpairExists);
   router.get('/jazyk/tags', jazyk_edit.getTags);
+  router.get('/jazyk/files', jazyk_files.getFiles);
 
   router.post('/jazyk/word', jazyk_edit.addWordPair);
   router.post('/jazyk/detail', jazyk_edit.addWordDetail);
+  router.post('/jazyk/files/upload', jazyk_files.uploadFile);
+  router.post('/jazyk/files/add', jazyk_files.addFile);
   
   router.put('/jazyk/word', jazyk_edit.updateWordPair);
   router.put('/jazyk/detail', jazyk_edit.updateWordDetail);
@@ -56,10 +60,13 @@ module.exports.initialize = function(app, router) {
   router.get('/avc/item/:city/:item/:lan', avc_items.getItem);
   router.put('/avc/item/update', avc_items.updateItem);
 
+
+
   app.use('/api/', router);
 
   app.use(function (req, res) {
     var home = path.resolve(__dirname + '/../dist/index.html');
     res.sendFile(home);
   });
+
 };

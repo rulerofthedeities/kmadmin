@@ -5,13 +5,10 @@ import {Component} from '@angular/core';
     <nav class="clearfix">
       <ul class="nav navbar-nav">
         <li routerLinkActive="active">
-          <a routerLink="/jazyk/import" class="item">Import</a>
+          <a routerLink="/jazyk/files/images" class="item">Images</a>
         </li>
         <li routerLinkActive="active">
-          <a routerLink="/jazyk/edit" class="item">Edit</a>
-        </li>
-        <li routerLinkActive="active">
-          <a routerLink="/jazyk/files" class="item">Files</a>
+          <a routerLink="/jazyk/files/audio" class="item">Audio</a>
         </li>
       </ul>
     </nav>
@@ -20,6 +17,6 @@ import {Component} from '@angular/core';
   styleUrls: ['../menu.css']
 })
 
-export class JazykMenuComponent {
+export class JazykFilesMenuComponent {
 
 }

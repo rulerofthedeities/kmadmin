@@ -84,7 +84,6 @@ export interface WordDetail {
   images?: string[];
   audio?: string[];
   conjugation?: string[];
-  tags?: string[];
   isDiminutive?: boolean;
   isPlural?: boolean;
   isComparative?: boolean;
@@ -113,4 +112,9 @@ export interface LanConfig  {
   aspects: string[];
   cases: Case[];
   name: Lans;
+}
+
+export interface CloudFile {
+  ETag?: string;
+  Location: string;
 }

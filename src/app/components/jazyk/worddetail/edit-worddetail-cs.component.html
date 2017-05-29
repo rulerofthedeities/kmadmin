@@ -55,10 +55,10 @@ DETAIL CS
     <div class="form-group">
       <label 
         for="genus" 
-        class="control-label col-xs-2">
+        class="control-label col-xs-3">
         Genus:
       </label>
-      <div class="col-xs-10">
+      <div class="col-xs-9">
         <div *ngFor="let genus of genera">
           <input type="radio" 
             formControlName="genus" 
@@ -95,8 +95,87 @@ DETAIL CS
           name="plural">
       </div>
     </div>
+
+    <div class="form-group">
+      <label 
+        for="case" 
+        class="control-label col-xs-3">
+        Case:
+      </label>
+      <div class="col-xs-9">
+        <select 
+          class="form-control" 
+          id="case"
+          formControlName="case">
+          <option *ngFor="let case of cases" [value]="case.value">
+            {{case.code}}
+          </option>
+        </select>
+      </div>
+    </div>
+
+    <div class="checkbox col-xs-offset-3">
+      <label>
+        <input 
+        type="checkbox" 
+        name="isDiminutive"
+        formControlName="isDiminutive">
+        is Diminutive
+      </label>
+    </div>
+
+    <div class="checkbox col-xs-offset-3">
+      <label>
+        <input 
+        type="checkbox" 
+        name="isPlural"
+        formControlName="isPlural">
+        is Plural
+      </label>
+    </div>
   </div>
 
+<!-- pronoun -->
+  <div *ngIf="isPronoun()">
+    <div class="form-group">
+      <label 
+        for="case" 
+        class="control-label col-xs-3">
+        Case:
+      </label>
+      <div class="col-xs-9">
+        <select 
+          class="form-control" 
+          id="case"
+          formControlName="case">
+          <option *ngFor="let case of cases" [value]="case.value">
+            {{case.code}}
+          </option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+<!-- preposition -->
+  <div *ngIf="isPreposition()">
+    <div class="form-group">
+      <label 
+        for="fcase" 
+        class="control-label col-xs-3">
+        +Case:
+      </label>
+      <div class="col-xs-9">
+        <select 
+          class="form-control" 
+          id="fcase"
+          formControlName="followingCase">
+          <option *ngFor="let case of cases" [value]="case.value">
+            {{case.code}}
+          </option>
+        </select>
+      </div>
+    </div>
+  </div>
 
 <!-- adjective -->
   <div *ngIf="isAdjective()">
@@ -126,6 +205,26 @@ DETAIL CS
           formControlName="superlative" 
           name="superlative">
       </div>
+    </div>
+
+    <div class="checkbox col-xs-offset-3">
+      <label>
+        <input 
+        type="checkbox" 
+        name="isComparative"
+        formControlName="isComparative">
+        is Comparative
+      </label>
+    </div>
+
+    <div class="checkbox col-xs-offset-3">
+      <label>
+        <input 
+        type="checkbox" 
+        name="isSuperlative"
+        formControlName="isSuperlative">
+        is Superlative
+      </label>
     </div>
   </div>
 

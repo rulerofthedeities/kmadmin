@@ -39,12 +39,20 @@ export class JazykDetailFormNlComponent extends JazykDetailForm implements OnIni
       this.detailForm.addControl('diminutive', control);
       control = new FormControl(this.detail.plural);
       this.detailForm.addControl('plural', control);
+      control = new FormControl(this.detail.isDiminutive);
+      this.detailForm.addControl('isDiminutive', control);
+      control = new FormControl(this.detail.isPlural);
+      this.detailForm.addControl('isPlural', control);
     }
     if (this.detail.wordTpe === 'adjective') {
       control = new FormControl(this.detail.comparative);
       this.detailForm.addControl('comparative', control);
       control = new FormControl(this.detail.superlative);
       this.detailForm.addControl('superlative', control);
+      control = new FormControl(this.detail.isComparative);
+      this.detailForm.addControl('isComparative', control);
+      control = new FormControl(this.detail.isSuperlative);
+      this.detailForm.addControl('isSuperlative', control);
     }
     if (this.detail.wordTpe === 'verb') {
       let conj;
@@ -54,7 +62,6 @@ export class JazykDetailFormNlComponent extends JazykDetailForm implements OnIni
         this.detailForm.addControl('conjugation' + i, control);
       }
     }
-    // this.addTagControl();
   }
 
   postProcessFormData(formData: any): WordDetail {
@@ -66,7 +73,10 @@ export class JazykDetailFormNlComponent extends JazykDetailForm implements OnIni
     this.addNewField(formData, newData, 'comparative');
     this.addNewField(formData, newData, 'superlative');
     this.addNewArray(formData, newData, 'conjugation', 6);
-    // this.addNewArray(formData, newData, 'tags', 1);
+    this.addNewField(formData, newData, 'isDiminutive');
+    this.addNewField(formData, newData, 'isPlural');
+    this.addNewField(formData, newData, 'isComparative');
+    this.addNewField(formData, newData, 'isSuperlative');
 
     return newData;
   }
