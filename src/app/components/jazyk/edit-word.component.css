@@ -43,3 +43,6 @@ h4 > .fa {
   cursor: pointer;
   margin: 2px;
 }
+.filtertoggle{
+  cursor: pointer;
+}

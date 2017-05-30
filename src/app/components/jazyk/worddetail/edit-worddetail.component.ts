@@ -1,8 +1,9 @@
-import {Component, Input, OnChanges, OnInit} from '@angular/core';
+import {Component, Input, OnChanges, OnInit, ViewChild} from '@angular/core';
 import {FormBuilder, FormGroup, FormArray, FormControl, Validators} from '@angular/forms';
 import {JazykService} from '../../../services/jazyk.service';
 import {ErrorService} from '../../../services/error.service';
-import {WordDetail, LanConfig, Filter, TpeList, Language} from '../../../models/jazyk.model';
+import {WordDetail, LanConfig, Filter, Image, TpeList, Language} from '../../../models/jazyk.model';
+import {JazykImageListComponent} from '../fields/image-list-field.component';
 import 'rxjs/add/operator/takeWhile';
 
 export abstract class JazykDetailForm implements OnChanges, OnInit {
@@ -11,12 +12,14 @@ export abstract class JazykDetailForm implements OnChanges, OnInit {
   @Input() word: string;
   @Input() detail: WordDetail;
   @Input() detailOnly = false;
+  @ViewChild('imageList') images: JazykImageListComponent;
   private componentActive = true;
   detailForm: FormGroup;
   detailExists = false;
   config: LanConfig;
   languages: Language[];
   wordTpes: TpeList[];
+  showDetailFilter = false;
 
   constructor(
     public formBuilder: FormBuilder,
@@ -113,7 +116,8 @@ export abstract class JazykDetailForm implements OnChanges, OnInit {
       docTpe: data.docTpe,
       lan: data.lan,
       word: data.word,
-      wordTpe: data.wordTpe
+      wordTpe: data.wordTpe,
+      images: this.detail.images
     };
     return detail;
   }
@@ -169,6 +173,24 @@ export abstract class JazykDetailForm implements OnChanges, OnInit {
 
   isRead() {
     return !this.detailOnly || this.detailExists;
+  }
+
+  onSelectedImage(image: Image) {
+    this.detail.images = this.detail.images || [];
+    this.detail.images.push(image);
+    this.showDetailFilter = false;
+    this.detailForm.markAsDirty();
+  }
+
+  onRemoveImage(i: number) {
+    if (this.detail.images.length > i) {
+      this.detail.images.splice(i, 1);
+      this.detailForm.markAsDirty();
+    }
+  }
+
+  toggleImageFilter() {
+    this.showDetailFilter = !this.showDetailFilter;
   }
 
   getNewDetail(): WordDetail {

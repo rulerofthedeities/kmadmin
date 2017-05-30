@@ -51,11 +51,29 @@ module.exports = {
     });
   },
   getFiles: function (req, res) {
-    const params = req.query;
+    const query = req.query,
+          returnTotal = query.returnTotal === 'true' ? true : false,
+          word = query.isFromStart === 'true' ? "^" + query.word : query.word,
+          search = query.isExact === 'true' ? query.word : {$regex: word, $options:'i'};
 
-    Files.find({app: params.app, tpe: params.tpe}, {}, {sort:{localFile: 1}}, function(err, result) {
+    const q = {
+            app: query.app,
+            tpe: query.tpe,
+            name: search
+          };
+
+    Files.find(q, {}, {limit: 10, sort:{localFile: 1}}, function(err, files) {
       response.handleError(err, res, 500, 'Error fetching file list from local db', function() {
-        response.handleSuccess(res, result, 200, 'Fetched file list from local db');
+        // Count workaround until v3.4 (aggregate)
+        if (returnTotal) {
+          Files.count(q, function(err, total) {
+            response.handleError(err, res, 500, 'Error fetching file list total from local db', function(){
+              response.handleSuccess(res, {files, total}, 200, 'Fetched file list from local db');
+            });
+          });
+        } else {
+          response.handleSuccess(res, {files, total:0}, 200, 'Fetched file list from local db');
+        }
       });
     });
   }

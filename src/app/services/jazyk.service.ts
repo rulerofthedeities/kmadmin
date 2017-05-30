@@ -1,7 +1,7 @@
 import {Injectable, EventEmitter} from '@angular/core';
 import {Http, Headers, URLSearchParams} from '@angular/http';
 import {Observable} from 'rxjs/Observable';
-import {CloudFile, DetailFilterData, TpeList, Filter, LanPair, Language} from '../models/jazyk.model';
+import {CloudFile, DetailFilterData, TpeList, Filter, FilterFiles, LanPair, Language} from '../models/jazyk.model';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
 import 'rxjs/add/observable/throw';
@@ -182,14 +182,16 @@ export class JazykService {
   }
 
   saveCloudFileData(cloudData: CloudFile, localFile: string, tpe: string) {
+    const headers = new Headers(),
+          name = localFile.split('.')[0];
     const fileData = {
       app: 'jazyk',
       tpe,
       ETag: cloudData.ETag,
       cloudFile: cloudData.Location,
-      localFile
+      localFile,
+      name
     };
-    const headers = new Headers();
     headers.append('Content-Type', 'application/json');
     return this.http
     .post('/api/jazyk/files/add', JSON.stringify(fileData), {headers})
@@ -197,10 +199,14 @@ export class JazykService {
     .catch(error => Observable.throw(error));
   }
 
-  getLocalFiles(tpe: string) {
+  getLocalFiles(filter: FilterFiles) {
     const params = new URLSearchParams();
-    params.set('app', 'jazyk');
-    params.set('tpe', tpe);
+    params.set('app', filter.app);
+    params.set('tpe', filter.tpe);
+    params.set('word', filter.word);
+    params.set('isFromStart', filter.isFromStart ? filter.isFromStart.toString() : 'false');
+    params.set('isExact', filter.isExact ? filter.isExact.toString() : 'false');
+    params.set('returnTotal', filter.returnTotal ? filter.returnTotal.toString() : 'true');
     return this.http
     .get('/api/jazyk/files/', {search: params})
     .map(response => response.json().obj)
@@ -225,6 +231,17 @@ export class JazykService {
 
   getLanguageName(lanCode: string) {
     return this.getLanguages().filter(lan => lan.code === lanCode)[0].name;
+  }
+
+  getFilePath(tpe: string): string {
+    let path = '';
+
+    switch (tpe) {
+      case 'images' : path = 'http://localhost:4700/images/'; break;
+      case 'audio' : path = 'http://localhost:4700/audio/'; break;
+    }
+
+    return path;
   }
 
   getWordTypes() {

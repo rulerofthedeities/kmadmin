@@ -193,7 +193,34 @@ DETAIL NL
     </div>
   </div>
 
-  <km-file-upload></km-file-upload>
+<!-- FILES -->
+
+  <label 
+    for="images" 
+    class="control-label col-xs-3">
+    Images:
+  </label>
+  <div class="col-xs-9">
+    <km-image-list #imageList
+      [images]="detail.images"
+      (removeImage)=onRemoveImage($event)>
+    </km-image-list>
+    <div (click)="toggleImageFilter()" class="filtertoggle">
+      <span 
+        class="fa fa-chevron-circle-right"
+        [ngStyle]="{display:showDetailFilter ? 'none' : 'inline'}">  
+      </span>
+      <span 
+        class="fa fa-chevron-circle-down"
+        [ngStyle]="{display:!showDetailFilter ? 'none' : 'inline'}">  
+      </span>
+      Add images
+    </div>
+    <km-image-filter
+      [ngStyle]="{display: showDetailFilter ? 'block': 'none'}"
+      (selectedImage)="onSelectedImage($event);">
+    </km-image-filter>
+  </div>
 
 <!-- INFO FIELDS -->
 

@@ -1,6 +1,7 @@
 var mongoose = require('mongoose'),
     Schema = mongoose.Schema;
-    
+
+var imageSchema = new Schema({s3:String, local:String}, {_id : false})
 var detailSchema = new Schema({
     lan: {type: String, required: true},
     word: {type: String, required: true},
@@ -21,6 +22,7 @@ var detailSchema = new Schema({
     isPlural: Boolean,
     isComparative: Boolean,
     isSuperlative: Boolean,
+    images: [imageSchema],
     score: Number,
     wordCount: Number
   }, {collection: 'wordpairs'}

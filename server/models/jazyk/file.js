@@ -6,6 +6,7 @@ var fileSchema = new Schema({
     tpe: {type: String, required: true},
     cloudFile: {type: String, required: true},
     localFile: {type: String, required: true},
+    name: String,
     ETag: String,
     dtAdded: { type: Date, default: Date.now }
   }, {collection: 'cloudfiles'}

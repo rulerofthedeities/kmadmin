@@ -278,6 +278,8 @@ module.exports = {
     addRemoveValue(formData, updateObject, removeObject, 'isPlural');
     addRemoveValue(formData, updateObject, removeObject, 'isComparative');
     addRemoveValue(formData, updateObject, removeObject, 'isSuperlative');
+    addRemoveValue(formData, updateObject, removeObject, 'images');
+    addRemoveValue(formData, updateObject, removeObject, 'audio');
 
     console.log('update', updateObject);
     console.log('remove', removeObject);

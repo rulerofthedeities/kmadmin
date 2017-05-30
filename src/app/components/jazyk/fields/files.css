@@ -1,0 +1,12 @@
+.files .fdata {
+  float: right;
+}
+.files .thumb {
+  border: 1px solid #333;
+  width: 80px;
+}
+.files .image {
+  float: left;
+  margin-right: 2px;
+  margin-bottom: 2px;
+}

@@ -22,6 +22,15 @@ export interface Filter {
   returnTotal?: boolean;
 }
 
+export interface FilterFiles {
+  app: string;
+  tpe: string;
+  word: string;
+  isFromStart?: boolean;
+  isExact?: boolean;
+  returnTotal?: boolean;
+}
+
 export interface DetailFilterData {
   word1: string;
   lan1: string;
@@ -64,6 +73,11 @@ export interface WordPair {
   author?: string;
 }
 
+export interface Image {
+  s3: string;
+  local: string;
+}
+
 // This is constant for a word, regardless of language pair!!
 export interface WordDetail {
   _id: string;
@@ -81,7 +95,7 @@ export interface WordDetail {
   superlative?: string;
   aspect?: string;
   aspectPair?: string;
-  images?: string[];
+  images?: Image[];
   audio?: string[];
   conjugation?: string[];
   isDiminutive?: boolean;
@@ -117,4 +131,12 @@ export interface LanConfig  {
 export interface CloudFile {
   ETag?: string;
   Location: string;
+}
+
+export interface LocalFile {
+  cloudFile: string;
+  localFile: string;
+  ETag: string;
+  name: string;
+  dtAdded: Date;
 }
