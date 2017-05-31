@@ -29,7 +29,7 @@ export class JazykFilesComponent implements OnInit, OnDestroy {
   files: LocalFile[] = [];
   localFilePath: string;
   totalFiles: number;
-  audioState: string[] = [];
+  audio: any[] = [];
 
   constructor(
     private route: ActivatedRoute,
@@ -76,20 +76,23 @@ export class JazykFilesComponent implements OnInit, OnDestroy {
   }
 
   onPlay(file: string, i: number) {
-    if (this.audioState[i] !== 'playing') {
-      const audio = new Audio();
-      audio.src = this.localFilePath + file;
-      audio.load();
-      audio.play();
-
-      audio.onplaying = () => {
-        this.audioState[i] = 'playing';
+    if (!this.audio[i]) {
+      this.audio[i] = new Audio();
+      this.audio[i].src = this.localFilePath + file;
+      this.audio[i].load();
+      this.audio[i].play();
+      this.audio[i].onplaying = () => {
         console.log('The audio is now playing');
       };
-      audio.onended = () => {
-        this.audioState[i] = 'ended';
+      this.audio[i].onended = () => {
         console.log('The audio has ended');
       };
+    } else {
+      if (this.audio[i].ended || this.audio[i].paused) {
+        this.audio[i].play();
+      } else {
+        this.audio[i].pause();
+      }
     }
   }
 

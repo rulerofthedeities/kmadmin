@@ -23,8 +23,8 @@ Files:
       <img src="{{localFilePath + file.localFile}}" class="thumb" *ngIf="tpe==='images'">
       <div *ngIf="tpe==='audio'" (click)="onPlay(file.localFile, i)">
         <span class="fa fa-play-circle" [ngClass]="{
-          'fa-play-circle': audioState[i]=== 'playing'? false : true,
-          'fa-pause-circle': audioState[i]=== 'playing'? true : false
+          'fa-play-circle': !audio[i] || audio[i].ended ? true : false,
+          'fa-pause-circle': audio[i] && !audio[i].ended ? true : false
           }"></span>
       </div>
     </li>
