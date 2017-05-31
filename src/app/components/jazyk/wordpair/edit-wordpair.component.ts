@@ -408,9 +408,25 @@ export class JazykEditWordPairComponent implements OnInit, OnDestroy {
   }
 
   onAddNewWordPair() {
-    console.log('adding new wordpair');
+    console.log('adding new wordpair', this.wordForms[0].value['wordTpe']);
     const i = this.wordForms.length;
-    this.createNewWordPair(null, i);
+    let wordpair: WordPair = null;
+    if (i > 0) {
+      // copy data from previous word
+      const newLan = 'fr';
+      wordpair = {
+        _id: '',
+        docTpe: 'wordpair',
+        wordTpe: this.wordForms[0].value['wordTpe'],
+        lanPair: [this.wordForms[0].value['lan1'], newLan],
+        tags: this.wordForms[0].value['tags'] ? this.wordForms[0].value['tags'].split(';') : '',
+        [this.wordForms[0].value['lan1']]: {
+          word: this.wordForms[0].value['word1']
+        },
+        [newLan]: {word: ''}
+      };
+    }
+    this.createNewWordPair(wordpair, i);
   }
 
   buildWordpairForm(wordpair: WordPair): FormGroup {
