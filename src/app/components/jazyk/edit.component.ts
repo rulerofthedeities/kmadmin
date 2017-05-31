@@ -74,7 +74,7 @@ export class JazykEditComponent implements OnInit, OnDestroy {
   }
 
   private getDetailComponent(lan: string): any {
-    console.log(lan);
+    console.log('loading component for', lan);
     let comp: any;
     switch (lan) {
       case 'nl': comp = JazykDetailFormNlComponent; break;

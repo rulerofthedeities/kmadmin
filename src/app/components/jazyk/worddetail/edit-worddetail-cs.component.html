@@ -25,6 +25,7 @@ DETAIL CS
         <select 
           class="form-control" 
           id="tpe"
+          (change)="rebuildControls()"
           formControlName="wordTpe">
           <option *ngFor="let t of wordTpes" [value]="t.val">
             {{t.label}}
@@ -48,308 +49,309 @@ DETAIL CS
     </div>
   </div>
 
-<!-- DYNAMIC FIELDS -->
+  <div *ngIf="hasWordTpe()">
+  <!-- DYNAMIC FIELDS -->
 
-<!-- noun -->
-  <div *ngIf="isNoun()">
-    <div class="form-group">
-      <label 
-        for="genus" 
-        class="control-label col-xs-3">
-        Genus:
-      </label>
-      <div class="col-xs-9">
-        <div *ngFor="let genus of genera">
-          <input type="radio" 
-            formControlName="genus" 
-            name="genus" 
-            [value]="genus">{{genus}}
-        </div>
-      </div>
-    </div>
-
-    <div class="form-group">
-      <label 
-        for="diminutive" 
-        class="control-label col-xs-3">
-        Diminutive:
-      </label>
-      <div class="col-xs-9">
-        <input 
-          type="text"
-          formControlName="diminutive" 
-          name="diminutive">
-      </div>
-    </div>
-
-    <div class="form-group">
-      <label 
-        for="plural" 
-        class="control-label col-xs-3">
-        Plural:
-      </label>
-      <div class="col-xs-9">
-        <input 
-          type="text"
-          formControlName="plural" 
-          name="plural">
-      </div>
-    </div>
-
-    <div class="form-group">
-      <label 
-        for="case" 
-        class="control-label col-xs-3">
-        Case:
-      </label>
-      <div class="col-xs-9">
-        <select 
-          class="form-control" 
-          id="case"
-          formControlName="case">
-          <option *ngFor="let case of cases" [value]="case.value">
-            {{case.code}}
-          </option>
-        </select>
-      </div>
-    </div>
-
-    <div class="checkbox col-xs-offset-3">
-      <label>
-        <input 
-        type="checkbox" 
-        name="isDiminutive"
-        formControlName="isDiminutive">
-        is Diminutive
-      </label>
-    </div>
-
-    <div class="checkbox col-xs-offset-3">
-      <label>
-        <input 
-        type="checkbox" 
-        name="isPlural"
-        formControlName="isPlural">
-        is Plural
-      </label>
-    </div>
-  </div>
-
-<!-- pronoun -->
-  <div *ngIf="isPronoun()">
-    <div class="form-group">
-      <label 
-        for="case" 
-        class="control-label col-xs-3">
-        Case:
-      </label>
-      <div class="col-xs-9">
-        <select 
-          class="form-control" 
-          id="case"
-          formControlName="case">
-          <option *ngFor="let case of cases" [value]="case.value">
-            {{case.code}}
-          </option>
-        </select>
-      </div>
-    </div>
-  </div>
-
-<!-- preposition -->
-  <div *ngIf="isPreposition()">
-    <div class="form-group">
-      <label 
-        for="fcase" 
-        class="control-label col-xs-3">
-        +Case:
-      </label>
-      <div class="col-xs-9">
-        <select 
-          class="form-control" 
-          id="fcase"
-          formControlName="followingCase">
-          <option *ngFor="let case of cases" [value]="case.value">
-            {{case.code}}
-          </option>
-        </select>
-      </div>
-    </div>
-  </div>
-
-<!-- adjective -->
-  <div *ngIf="isAdjective()">
-    <div class="form-group">
-      <label 
-        for="comparative" 
-        class="control-label col-xs-3">
-        Comparative:
-      </label>
-      <div class="col-xs-9">
-        <input 
-          type="text"
-          formControlName="comparative" 
-          name="comparative">
-      </div>
-    </div>
-
-    <div class="form-group">
-      <label 
-        for="superlative" 
-        class="control-label col-xs-3">
-        Superlative:
-      </label>
-      <div class="col-xs-9">
-        <input 
-          type="text"
-          formControlName="superlative" 
-          name="superlative">
-      </div>
-    </div>
-
-    <div class="checkbox col-xs-offset-3">
-      <label>
-        <input 
-        type="checkbox" 
-        name="isComparative"
-        formControlName="isComparative">
-        is Comparative
-      </label>
-    </div>
-
-    <div class="checkbox col-xs-offset-3">
-      <label>
-        <input 
-        type="checkbox" 
-        name="isSuperlative"
-        formControlName="isSuperlative">
-        is Superlative
-      </label>
-    </div>
-  </div>
-
-<!-- verb -->
-  <div *ngIf="isVerb()">
-    <div class="form-group">
-      <label 
-        for="aspect" 
-        class="control-label col-xs-3">
-        Aspect:
-      </label>
-      <div class="col-xs-9">
-        <div *ngFor="let aspect of aspects">
-          <input type="radio" 
-            formControlName="aspect" 
-            name="aspect" 
-            [value]="aspect">{{aspect}}
-        </div>
-      </div>
-    </div>
-
-    <div class="form-group">
-      <label 
-        for="aspectpair" 
-        class="control-label col-xs-3">
-        Aspect pair:
-      </label>
-      <div class="col-xs-9">
-        <input 
-          type="text"
-          formControlName="aspectPair" 
-          name="aspectpair">
-      </div>
-    </div>
-
-    <div class="form-group">
-      <label 
-        for="fcase" 
-        class="control-label col-xs-3">
-        +Case:
-      </label>
-      <div class="col-xs-9">
-        <select 
-          class="form-control" 
-          id="fcase"
-          formControlName="followingCase">
-          <option *ngFor="let case of cases" [value]="case.value">
-            {{case.code}}
-          </option>
-        </select>
-      </div>
-    </div>
-
-    <div class="form-group">
-      <label 
-        for="conjugation1" 
-        class="control-label col-xs-3">
-        Conj.:
-      </label>
-      <div class="col-xs-9">
-        <div *ngFor="let pronoun of config.subjectPronouns; let i = index">
-          <div class="col-xs-3">
-          {{pronoun}}
+  <!-- noun -->
+    <div *ngIf="isNoun()">
+      <div class="form-group">
+        <label 
+          for="genus" 
+          class="control-label col-xs-3">
+          Genus:
+        </label>
+        <div class="col-xs-9">
+          <div *ngFor="let genus of genera">
+            <input type="radio" 
+              formControlName="genus" 
+              name="genus" 
+              [value]="genus">{{genus}}
           </div>
-          <div class="col-xs-9">
-            <input 
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label 
+          for="diminutive" 
+          class="control-label col-xs-3">
+          Diminutive:
+        </label>
+        <div class="col-xs-9">
+          <input 
             type="text"
-            [formControlName]="'conjugation' + i" 
-            [name]="'conjugation' + i">
+            formControlName="diminutive" 
+            name="diminutive">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label 
+          for="plural" 
+          class="control-label col-xs-3">
+          Plural:
+        </label>
+        <div class="col-xs-9">
+          <input 
+            type="text"
+            formControlName="plural" 
+            name="plural">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label 
+          for="case" 
+          class="control-label col-xs-3">
+          Case:
+        </label>
+        <div class="col-xs-9">
+          <select 
+            class="form-control" 
+            id="case"
+            formControlName="case">
+            <option *ngFor="let case of cases" [value]="case.value">
+              {{case.code}}
+            </option>
+          </select>
+        </div>
+      </div>
+
+      <div class="checkbox col-xs-offset-3">
+        <label>
+          <input 
+          type="checkbox" 
+          name="isDiminutive"
+          formControlName="isDiminutive">
+          is Diminutive
+        </label>
+      </div>
+
+      <div class="checkbox col-xs-offset-3">
+        <label>
+          <input 
+          type="checkbox" 
+          name="isPlural"
+          formControlName="isPlural">
+          is Plural
+        </label>
+      </div>
+    </div>
+
+  <!-- pronoun -->
+    <div *ngIf="isPronoun()">
+      <div class="form-group">
+        <label 
+          for="case" 
+          class="control-label col-xs-3">
+          Case:
+        </label>
+        <div class="col-xs-9">
+          <select 
+            class="form-control" 
+            id="case"
+            formControlName="case">
+            <option *ngFor="let case of cases" [value]="case.value">
+              {{case.code}}
+            </option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+  <!-- preposition -->
+    <div *ngIf="isPreposition()">
+      <div class="form-group">
+        <label 
+          for="fcase" 
+          class="control-label col-xs-3">
+          +Case:
+        </label>
+        <div class="col-xs-9">
+          <select 
+            class="form-control" 
+            id="fcase"
+            formControlName="followingCase">
+            <option *ngFor="let case of cases" [value]="case.value">
+              {{case.code}}
+            </option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+  <!-- adjective -->
+    <div *ngIf="isAdjective()">
+      <div class="form-group">
+        <label 
+          for="comparative" 
+          class="control-label col-xs-3">
+          Comparative:
+        </label>
+        <div class="col-xs-9">
+          <input 
+            type="text"
+            formControlName="comparative" 
+            name="comparative">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label 
+          for="superlative" 
+          class="control-label col-xs-3">
+          Superlative:
+        </label>
+        <div class="col-xs-9">
+          <input 
+            type="text"
+            formControlName="superlative" 
+            name="superlative">
+        </div>
+      </div>
+
+      <div class="checkbox col-xs-offset-3">
+        <label>
+          <input 
+          type="checkbox" 
+          name="isComparative"
+          formControlName="isComparative">
+          is Comparative
+        </label>
+      </div>
+
+      <div class="checkbox col-xs-offset-3">
+        <label>
+          <input 
+          type="checkbox" 
+          name="isSuperlative"
+          formControlName="isSuperlative">
+          is Superlative
+        </label>
+      </div>
+    </div>
+
+  <!-- verb -->
+    <div *ngIf="isVerb()">
+      <div class="form-group">
+        <label 
+          for="aspect" 
+          class="control-label col-xs-3">
+          Aspect:
+        </label>
+        <div class="col-xs-9">
+          <div *ngFor="let aspect of aspects">
+            <input type="radio" 
+              formControlName="aspect" 
+              name="aspect" 
+              [value]="aspect">{{aspect}}
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label 
+          for="aspectpair" 
+          class="control-label col-xs-3">
+          Aspect pair:
+        </label>
+        <div class="col-xs-9">
+          <input 
+            type="text"
+            formControlName="aspectPair" 
+            name="aspectpair">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label 
+          for="fcase" 
+          class="control-label col-xs-3">
+          +Case:
+        </label>
+        <div class="col-xs-9">
+          <select 
+            class="form-control" 
+            id="fcase"
+            formControlName="followingCase">
+            <option *ngFor="let case of cases" [value]="case.value">
+              {{case.code}}
+            </option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label 
+          for="conjugation1" 
+          class="control-label col-xs-3">
+          Conj.:
+        </label>
+        <div class="col-xs-9">
+          <div *ngFor="let pronoun of config.subjectPronouns; let i = index">
+            <div class="col-xs-3">
+            {{pronoun}}
+            </div>
+            <div class="col-xs-9">
+              <input 
+              type="text"
+              [formControlName]="'conjugation' + i" 
+              [name]="'conjugation' + i">
+            </div>
           </div>
         </div>
       </div>
     </div>
-  </div>
 
-<!-- FILES -->
+  <!-- FILES -->
 
-  <label 
-    for="images" 
-    class="control-label col-xs-3">
-    Images:
-  </label>
-  <div class="col-xs-9">
-    <km-image-list #imageList
-      [images]="detail.images"
-      (removeImage)=onRemoveImage($event)>
-    </km-image-list>
-    <div (click)="toggleImageFilter()" class="filtertoggle">
-      <span 
-        class="fa fa-chevron-circle-right"
-        [ngStyle]="{display:showDetailFilter ? 'none' : 'inline'}">  
-      </span>
-      <span 
-        class="fa fa-chevron-circle-down"
-        [ngStyle]="{display:!showDetailFilter ? 'none' : 'inline'}">  
-      </span>
-      Add images
+    <label 
+      for="images" 
+      class="control-label col-xs-3">
+      Images:
+    </label>
+    <div class="col-xs-9">
+      <km-image-list
+        [images]="detail.images"
+        (removeImage)=onRemoveImage($event)>
+      </km-image-list>
+      <div (click)="toggleImageFilter()" class="filtertoggle">
+        <span 
+          class="fa fa-chevron-circle-right"
+          [ngStyle]="{display:showDetailFilter ? 'none' : 'inline'}">  
+        </span>
+        <span 
+          class="fa fa-chevron-circle-down"
+          [ngStyle]="{display:!showDetailFilter ? 'none' : 'inline'}">  
+        </span>
+        Add images
+      </div>
+      <km-image-filter
+        [ngStyle]="{display: showDetailFilter ? 'block': 'none'}"
+        (selectedImage)="onSelectedImage($event);">
+      </km-image-filter>
     </div>
-    <km-image-filter
-      [ngStyle]="{display: showDetailFilter ? 'block': 'none'}"
-      (selectedImage)="onSelectedImage($event);">
-    </km-image-filter>
+
+  <!-- INFO FIELDS -->
+
+    <km-detail-fields-info [detail]="detail" *ngIf="detailExists">
+    </km-detail-fields-info>
+
+  <!-- BUTTONS -->
+
+    <div 
+      class="btn btn-success" 
+      *ngIf="detailOnly && detailExists && detailForm?.dirty" 
+      (click)="updateDetail(detailForm.value)">
+      Update
+    </div>
+
+    <div 
+      class="btn btn-success" 
+      *ngIf="detailOnly && !detailExists" 
+      (click)="addDetail(detailForm.value)">
+      Add
+    </div>
   </div>
-
-<!-- INFO FIELDS -->
-
-  <km-detail-fields-info [detail]="detail" *ngIf="detailExists">
-  </km-detail-fields-info>
-
-<!-- BUTTONS -->
-
-  <div 
-    class="btn btn-success" 
-    *ngIf="detailOnly && detailExists && detailForm?.dirty" 
-    (click)="updateDetail(detailForm.value)">
-    Update
-  </div>
-
-  <div 
-    class="btn btn-success" 
-    *ngIf="detailOnly && !detailExists" 
-    (click)="addDetail(detailForm.value)">
-    Add
-  </div>
-
 
   <div>
     Detail Only: {{detailOnly}}<br>

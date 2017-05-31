@@ -26,11 +26,35 @@ export class JazykDetailFormEnComponent extends JazykDetailForm implements OnIni
 
   buildForm() {
     super.buildForm();
+    this.addControls();
+  }
+
+  addControls() {
+    let control: FormControl;
+    switch (this.detail.wordTpe) {
+      case 'noun':
+        control = new FormControl(this.detail.plural);
+        this.detailForm.addControl('plural', control);
+        control = new FormControl(this.detail.isPlural);
+        this.detailForm.addControl('isPlural', control);
+        break;
+    case 'verb':
+      let conj;
+      for (let i = 0; i < 6; i++) {
+        conj = this.detail.conjugation ? this.detail.conjugation[i] : '';
+        control = new FormControl(conj);
+        this.detailForm.addControl('conjugation' + i, control);
+      }
+      break;
+    }
   }
 
   postProcessFormData(formData: any): WordDetail {
     console.log('post processing en');
     const newData: WordDetail = super.copyDetail(formData);
+    this.addNewField(formData, newData, 'plural');
+    this.addNewArray(formData, newData, 'conjugation', 6);
+    this.addNewField(formData, newData, 'isPlural');
 
     return newData;
   }

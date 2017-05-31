@@ -30,12 +30,12 @@ export class JazykFilesComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
-    this.localFilePath = this.jazykService.getFilePath('images');
     this.route
     .data
     .takeWhile(() => this.componentActive)
     .subscribe(data => {
       this.tpe = data.tpe;
+      this.localFilePath = this.jazykService.getFilePath(this.tpe);
       const filter = {
         app: 'jazyk',
         tpe: data.tpe,
@@ -46,19 +46,21 @@ export class JazykFilesComponent implements OnInit, OnDestroy {
   }
 
   onChange(file: any) {
-    const legacyFile = file.files[0].name;
-    this.jazykService
-    .saveFile(legacyFile)
-    .takeWhile(() => this.componentActive)
-    .subscribe(
-      savedFile => {
-        if (savedFile) {
-          console.log('saved file to cloud', savedFile);
-          this.saveLocalFileRecord(savedFile, legacyFile);
-        }
-      },
-      error => this.errorService.handleError(error)
-    );
+    if (file.files[0]) {
+      const legacyFile = file.files[0].name;
+      this.jazykService
+      .saveFile(legacyFile)
+      .takeWhile(() => this.componentActive)
+      .subscribe(
+        savedFile => {
+          if (savedFile) {
+            console.log('saved file to cloud', savedFile);
+            this.saveLocalFileRecord(savedFile, legacyFile);
+          }
+        },
+        error => this.errorService.handleError(error)
+      );
+    }
   }
 
   onSelectedFilter(filter: FilterFiles) {
@@ -71,7 +73,7 @@ export class JazykFilesComponent implements OnInit, OnDestroy {
     .takeWhile(() => this.componentActive)
     .subscribe(
       savedFile => {
-        this.files.push(savedFile)
+        this.files.push(savedFile);
         this.totalFiles++;
       },
       error => this.errorService.handleError(error)
@@ -84,8 +86,8 @@ export class JazykFilesComponent implements OnInit, OnDestroy {
     .takeWhile(() => this.componentActive)
     .subscribe(
       data => {
-        this.files = data.files,
-        this.totalFiles = data.total
+        this.files = data.files;
+        this.totalFiles = data.total;
       },
       error => this.errorService.handleError(error)
     );

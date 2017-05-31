@@ -56,10 +56,18 @@ let updateLanDoc = function(formData, nr) {
 }
 
 let addRemoveValue = function(formData, updateObject, removeObject, field) {
-  if (formData[field] === undefined) {
+  if (formData[field] === undefined || formData[field].length === 0) {
     removeObject[field] = formData[field];
   } else {
     updateObject[field] = formData[field];
+  }
+}
+
+let addValue = function(formData, addObject, field) {
+  if (formData[field] === undefined || formData[field].length === 0) {
+    //ignore
+  } else {
+    addObject[field] = formData[field];
   }
 }
 
@@ -216,29 +224,41 @@ module.exports = {
   },
   addWordDetail: function(req, res) {
     const formData = req.body,
-          newWord = {
+          addObject = {
       docTpe: 'details',
       wordTpe: formData.wordTpe,
       lan: formData.lan,
       word: formData.word
     }
 
-    if (formData.article) {
-      newWord.article = formData.article
-    }
-    if (formData.genus) {
-      newWord.genus = formData.genus
-    }
+    addValue(formData, addObject, 'article');
+    addValue(formData, addObject, 'genus');
+    addValue(formData, addObject, 'diminutive');
+    addValue(formData, addObject, 'plural');
+    addValue(formData, addObject, 'comparative');
+    addValue(formData, addObject, 'superlative');
+    addValue(formData, addObject, 'conjugation');
+    addValue(formData, addObject, 'aspect');
+    addValue(formData, addObject, 'aspectPair');
+    addValue(formData, addObject, 'case');
+    addValue(formData, addObject, 'followingCase');
+    addValue(formData, addObject, 'tags');
+    addValue(formData, addObject, 'isDiminutive');
+    addValue(formData, addObject, 'isPlural');
+    addValue(formData, addObject, 'isComparative');
+    addValue(formData, addObject, 'isSuperlative');
+    addValue(formData, addObject, 'images');
+    addValue(formData, addObject, 'audio');
 
     // Add wordcount
-    wordCount.getWordCount(newWord, countConn, function(err, countData){
+    wordCount.getWordCount(addObject, countConn, function(err, countData){
       if (!err) {
-        newWord.wordCount = countData.wordCount;
-        newWord.score = countData.score;
+        addObject.wordCount = countData.wordCount;
+        addObject.score = countData.score;
       } 
       console.log('Add Worddetail Form data:', req.body);
-      console.log('Add Worddetail New document:', newWord);
-      WordDetail.create(newWord, function (err, result) {
+      console.log('Add Worddetail New document:', addObject);
+      WordDetail.create(addObject, function (err, result) {
         response.handleError(err, res, 500, 'Error adding worddetail', function() {
           response.handleSuccess(res, result, 200, 'Added worddetail');
         });

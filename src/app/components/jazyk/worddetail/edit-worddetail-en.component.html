@@ -25,6 +25,7 @@ DETAIL EN
         <select 
           class="form-control" 
           id="tpe"
+          (change)="rebuildControls()"
           formControlName="wordTpe">
           <option *ngFor="let t of wordTpes" [value]="t.val">
             {{t.label}}
@@ -48,30 +49,112 @@ DETAIL EN
     </div>
   </div>
 
-<!-- DYNAMIC FIELDS -->
+  <div *ngIf="hasWordTpe()">
+  <!-- DYNAMIC FIELDS -->
+
+  <!-- noun -->
+    <div *ngIf="isNoun()">
+      <div class="form-group">
+        <label 
+          for="plural" 
+          class="control-label col-xs-3">
+          Plural:
+        </label>
+        <div class="col-xs-9">
+          <input 
+            type="text"
+            formControlName="plural" 
+            name="plural">
+        </div>
+      </div>
+
+      <div class="checkbox col-xs-offset-3">
+        <label>
+          <input 
+          type="checkbox" 
+          name="isPlural"
+          formControlName="isPlural">
+          is Plural
+        </label>
+      </div>
+    </div>
+
+  <!-- verb -->
+    <div *ngIf="isVerb()">
+
+      <div class="form-group">
+        <label 
+          for="conjugation1" 
+          class="control-label col-xs-3">
+          Conj.:
+        </label>
+        <div class="col-xs-9">
+          <div *ngFor="let pronoun of config.subjectPronouns; let i = index">
+            <div class="col-xs-3">
+            {{pronoun}}
+            </div>
+            <div class="col-xs-9">
+              <input 
+              type="text"
+              [formControlName]="'conjugation' + i" 
+              [name]="'conjugation' + i">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  <!-- FILES -->
+
+    <label 
+      for="images" 
+      class="control-label col-xs-3">
+      Images:
+    </label>
+    <div class="col-xs-9">
+      <km-image-list
+        [images]="detail.images"
+        (removeImage)=onRemoveImage($event)>
+      </km-image-list>
+      <div (click)="toggleImageFilter()" class="filtertoggle">
+        <span 
+          class="fa fa-chevron-circle-right"
+          [ngStyle]="{display:showDetailFilter ? 'none' : 'inline'}">  
+        </span>
+        <span 
+          class="fa fa-chevron-circle-down"
+          [ngStyle]="{display:!showDetailFilter ? 'none' : 'inline'}">  
+        </span>
+        Add images
+      </div>
+      <km-image-filter
+        [ngStyle]="{display: showDetailFilter ? 'block': 'none'}"
+        (selectedImage)="onSelectedImage($event);">
+      </km-image-filter>
+    </div>
 
 
-<!-- INFO FIELDS -->
+  <!-- INFO FIELDS -->
 
-  <km-detail-fields-info [detail]="detail" *ngIf="detailExists">
-  </km-detail-fields-info>
+    <km-detail-fields-info [detail]="detail" *ngIf="detailExists">
+    </km-detail-fields-info>
 
-<!-- BUTTONS -->
+  <!-- BUTTONS -->
 
-  <div 
-    class="btn btn-success" 
-    *ngIf="detailOnly && detailExists && detailForm?.dirty" 
-    (click)="updateDetail(detailForm.value)">
-    Update
+    <div 
+      class="btn btn-success" 
+      *ngIf="detailOnly && detailExists && detailForm?.dirty" 
+      (click)="updateDetail(detailForm.value)">
+      Update
+    </div>
+
+    <div 
+      class="btn btn-success" 
+      *ngIf="detailOnly && !detailExists" 
+      (click)="addDetail(detailForm.value)">
+      Add
+    </div>
   </div>
-
-  <div 
-    class="btn btn-success" 
-    *ngIf="detailOnly && !detailExists" 
-    (click)="addDetail(detailForm.value)">
-    Add
-  </div>
-
 
   <div>
     Detail Only: {{detailOnly}}<br>

@@ -7,18 +7,20 @@ Add {{tpe}} file:
   #file />
 
 Files:
-<km-filter-files 
-  [tpe]="tpe" 
-  (selectedFilter)="onSelectedFilter($event)">
-</km-filter-files>
+<div *ngIf="tpe">
+  <km-filter-files 
+    [tpe]="tpe" 
+    (selectedFilter)="onSelectedFilter($event)">
+  </km-filter-files>
 
-<div class="text-muted">
-  Aantal files: <strong>{{totalFiles}}</strong>
+  <div class="text-muted">
+    Aantal files: <strong>{{totalFiles}}</strong>
+  </div>
+
+  <ul class="list-group imgs">
+    <li *ngFor="let file of files" class="list-group-item">
+      <img src="{{this.localFilePath + file.localFile}}" class="thumb">
+      <span class="badge">{{file.name}}</span>
+    </li>
+  </ul>
 </div>
-
-<ul class="list-group imgs">
-  <li *ngFor="let file of files" class="list-group-item">
-    <img src="{{this.localFilePath + file.localFile}}" class="thumb">
-    <span class="badge">{{file.name}}</span>
-  </li>
-</ul>

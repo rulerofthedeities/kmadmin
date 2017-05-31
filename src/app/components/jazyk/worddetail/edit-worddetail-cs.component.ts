@@ -29,61 +29,65 @@ export class JazykDetailFormCsComponent extends JazykDetailForm implements OnIni
   }
 
   buildForm() {
-    let control: FormControl;
     super.buildForm();
+    this.addControls();
+  }
 
+  addControls() {
+    let control: FormControl;
     this.genera = this.config.genera;
     this.aspects = this.config.aspects;
     this.cases = this.config.cases;
-
-    if (this.detail.wordTpe === 'noun') {
-      this.detail.case = this.detail.case ?  this.detail.case : '1';
-      control = new FormControl(this.detail.genus, Validators.required);
-      this.detailForm.addControl('genus', control);
-      control = new FormControl(this.detail.diminutive);
-      this.detailForm.addControl('diminutive', control);
-      control = new FormControl(this.detail.plural);
-      this.detailForm.addControl('plural', control);
-      control = new FormControl(this.detail.case);
-      this.detailForm.addControl('case', control);
-      control = new FormControl(this.detail.isDiminutive);
-      this.detailForm.addControl('isDiminutive', control);
-      control = new FormControl(this.detail.isPlural);
-      this.detailForm.addControl('isPlural', control);
-    }
-    if (this.detail.wordTpe === 'pronoun') {
-      this.detail.case = this.detail.case ?  this.detail.case : '1';
-      control = new FormControl(this.detail.case);
-      this.detailForm.addControl('case', control);
-    }
-    if (this.detail.wordTpe === 'preposition') {
-      control = new FormControl(this.detail.followingCase);
-      this.detailForm.addControl('followingCase', control);
-    }
-    if (this.detail.wordTpe === 'adjective') {
-      control = new FormControl(this.detail.comparative);
-      this.detailForm.addControl('comparative', control);
-      control = new FormControl(this.detail.superlative);
-      this.detailForm.addControl('superlative', control);
-      control = new FormControl(this.detail.isComparative);
-      this.detailForm.addControl('isComparative', control);
-      control = new FormControl(this.detail.isSuperlative);
-      this.detailForm.addControl('isSuperlative', control);
-    }
-    if (this.detail.wordTpe === 'verb') {
-      this.cases.unshift({code: 'none', value: ''});
-      let conj;
-      for (let i = 0; i < 6; i++) {
-        conj = this.detail.conjugation ? this.detail.conjugation[i] : '';
-        control = new FormControl(conj);
-        this.detailForm.addControl('conjugation' + i, control);
-      }
-      control = new FormControl(this.detail.aspect, Validators.required);
-      this.detailForm.addControl('aspect', control);
-      control = new FormControl(this.detail.aspectPair);
-      this.detailForm.addControl('aspectPair', control);
-      control = new FormControl(this.detail.followingCase);
-      this.detailForm.addControl('followingCase', control);
+    switch (this.detail.wordTpe) {
+      case 'noun':
+        this.detail.case = this.detail.case ?  this.detail.case : '1';
+        control = new FormControl(this.detail.genus, Validators.required);
+        this.detailForm.addControl('genus', control);
+        control = new FormControl(this.detail.diminutive);
+        this.detailForm.addControl('diminutive', control);
+        control = new FormControl(this.detail.plural);
+        this.detailForm.addControl('plural', control);
+        control = new FormControl(this.detail.case);
+        this.detailForm.addControl('case', control);
+        control = new FormControl(this.detail.isDiminutive);
+        this.detailForm.addControl('isDiminutive', control);
+        control = new FormControl(this.detail.isPlural);
+        this.detailForm.addControl('isPlural', control);
+        break;
+      case 'pronoun':
+        this.detail.case = this.detail.case ?  this.detail.case : '1';
+        control = new FormControl(this.detail.case);
+        this.detailForm.addControl('case', control);
+        break;
+      case 'preposition':
+        control = new FormControl(this.detail.followingCase);
+        this.detailForm.addControl('followingCase', control);
+        break;
+      case 'adjective':
+        control = new FormControl(this.detail.comparative);
+        this.detailForm.addControl('comparative', control);
+        control = new FormControl(this.detail.superlative);
+        this.detailForm.addControl('superlative', control);
+        control = new FormControl(this.detail.isComparative);
+        this.detailForm.addControl('isComparative', control);
+        control = new FormControl(this.detail.isSuperlative);
+        this.detailForm.addControl('isSuperlative', control);
+        break;
+      case 'verb':
+        this.cases.unshift({code: 'none', value: ''});
+        let conj;
+        for (let i = 0; i < 6; i++) {
+          conj = this.detail.conjugation ? this.detail.conjugation[i] : '';
+          control = new FormControl(conj);
+          this.detailForm.addControl('conjugation' + i, control);
+        }
+        control = new FormControl(this.detail.aspect, Validators.required);
+        this.detailForm.addControl('aspect', control);
+        control = new FormControl(this.detail.aspectPair);
+        this.detailForm.addControl('aspectPair', control);
+        control = new FormControl(this.detail.followingCase);
+        this.detailForm.addControl('followingCase', control);
+        break;
     }
   }
 

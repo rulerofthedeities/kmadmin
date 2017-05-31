@@ -1,7 +1,7 @@
 var mongoose = require('mongoose'),
     Schema = mongoose.Schema;
 
-var imageSchema = new Schema({s3:String, local:String}, {_id : false})
+var fileSchema = new Schema({s3:String, local:String}, {_id : false})
 var detailSchema = new Schema({
     lan: {type: String, required: true},
     word: {type: String, required: true},
@@ -17,28 +17,16 @@ var detailSchema = new Schema({
     superlative: String,
     aspect: String,
     aspectPair: String,
-    conjugation: [String],
+    conjugation: { type: [String], default: void 0 },
     isDiminutive: Boolean,
     isPlural: Boolean,
     isComparative: Boolean,
     isSuperlative: Boolean,
-    images: [imageSchema],
+    images: { type: [fileSchema], default: void 0 },
+    audio: { type: [fileSchema], default: void 0 },
     score: Number,
     wordCount: Number
   }, {collection: 'wordpairs'}
 );
-detailSchema.pre('save', function (next) {
-  if (this.isNew) {
-    if (this.conjugation.length == 0) {
-      this.conjugation = undefined;       
-    }                      
-  }
-  next();
-});
-detailSchema.post('init', function(doc) {
-  if (doc.conjugation && doc.conjugation.length < 1) {
-    doc.conjugation = undefined;
-  }
-});
 
 module.exports = detailSchema;

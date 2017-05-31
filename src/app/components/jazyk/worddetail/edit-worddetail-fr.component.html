@@ -25,6 +25,7 @@ DETAIL FR
         <select 
           class="form-control" 
           id="tpe"
+          (change)="rebuildControls()"
           formControlName="wordTpe">
           <option *ngFor="let t of wordTpes" [value]="t.val">
             {{t.label}}
@@ -48,43 +49,126 @@ DETAIL FR
     </div>
   </div>
 
-<!-- DYNAMIC FIELDS -->
+  <div *ngIf="hasWordTpe()">
+  <!-- DYNAMIC FIELDS -->
 
-  <div class="form-group" *ngIf="isNoun()">
-    <label 
-      for="genus" 
-      class="control-label col-xs-2">
-      Genus:
-    </label>
-    <div class="col-xs-10">
-      <div *ngFor="let genus of genera">
-        <input type="radio" 
-          formControlName="genus" 
-          name="genus" 
-          [value]="genus">{{genus}}
+  <!-- noun -->
+    <div *ngIf="isNoun()">
+      <div class="form-group">
+        <label 
+          for="genus" 
+          class="control-label col-xs-2">
+          Genus:
+        </label>
+        <div class="col-xs-10">
+          <div *ngFor="let genus of genera">
+            <input type="radio" 
+              formControlName="genus" 
+              name="genus" 
+              [value]="genus">{{genus}}
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label 
+          for="plural" 
+          class="control-label col-xs-3">
+          Plural:
+        </label>
+        <div class="col-xs-9">
+          <input 
+            type="text"
+            formControlName="plural" 
+            name="plural">
+        </div>
+      </div>
+
+      <div class="checkbox col-xs-offset-3">
+        <label>
+          <input 
+          type="checkbox" 
+          name="isPlural"
+          formControlName="isPlural">
+          is Plural
+        </label>
       </div>
     </div>
-  </div>
 
-<!-- INFO FIELDS -->
+  <!-- verb -->
+    <div *ngIf="isVerb()">
 
-  <km-detail-fields-info [detail]="detail" *ngIf="detailExists">
-  </km-detail-fields-info>
+      <div class="form-group">
+        <label 
+          for="conjugation1" 
+          class="control-label col-xs-3">
+          Conj.:
+        </label>
+        <div class="col-xs-9">
+          <div *ngFor="let pronoun of config.subjectPronouns; let i = index">
+            <div class="col-xs-3">
+            {{pronoun}}
+            </div>
+            <div class="col-xs-9">
+              <input 
+              type="text"
+              [formControlName]="'conjugation' + i" 
+              [name]="'conjugation' + i">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
 
-<!-- BUTTONS -->
+  <!-- FILES -->
 
-  <div 
-    class="btn btn-success" 
-    *ngIf="detailOnly && detailExists && detailForm?.dirty" 
-    (click)="updateDetail(detailForm.value)">
-    Update
-  </div>
+    <label 
+      for="images" 
+      class="control-label col-xs-3">
+      Images:
+    </label>
+    <div class="col-xs-9">
+      <km-image-list
+        [images]="detail.images"
+        (removeImage)=onRemoveImage($event)>
+      </km-image-list>
+      <div (click)="toggleImageFilter()" class="filtertoggle">
+        <span 
+          class="fa fa-chevron-circle-right"
+          [ngStyle]="{display:showDetailFilter ? 'none' : 'inline'}">  
+        </span>
+        <span 
+          class="fa fa-chevron-circle-down"
+          [ngStyle]="{display:!showDetailFilter ? 'none' : 'inline'}">  
+        </span>
+        Add images
+      </div>
+      <km-image-filter
+        [ngStyle]="{display: showDetailFilter ? 'block': 'none'}"
+        (selectedImage)="onSelectedImage($event);">
+      </km-image-filter>
+    </div>
 
-  <div 
-    class="btn btn-success" 
-    *ngIf="detailOnly && !detailExists && detailForm?.dirty" 
-    (click)="addDetail(detailForm.value)">
-    Add
+  <!-- INFO FIELDS -->
+
+    <km-detail-fields-info [detail]="detail" *ngIf="detailExists">
+    </km-detail-fields-info>
+
+  <!-- BUTTONS -->
+
+    <div 
+      class="btn btn-success" 
+      *ngIf="detailOnly && detailExists && detailForm?.dirty" 
+      (click)="updateDetail(detailForm.value)">
+      Update
+    </div>
+
+    <div 
+      class="btn btn-success" 
+      *ngIf="detailOnly && !detailExists && detailForm?.dirty" 
+      (click)="addDetail(detailForm.value)">
+      Add
+    </div>
   </div>
   
 Detail exists: {{detailExists}}<br>

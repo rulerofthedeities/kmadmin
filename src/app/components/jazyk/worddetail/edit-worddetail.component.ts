@@ -1,4 +1,4 @@
-import {Component, Input, OnChanges, OnInit, ViewChild} from '@angular/core';
+import {Component, Input, OnChanges, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, FormArray, FormControl, Validators} from '@angular/forms';
 import {JazykService} from '../../../services/jazyk.service';
 import {ErrorService} from '../../../services/error.service';
@@ -12,7 +12,6 @@ export abstract class JazykDetailForm implements OnChanges, OnInit {
   @Input() word: string;
   @Input() detail: WordDetail;
   @Input() detailOnly = false;
-  @ViewChild('imageList') images: JazykImageListComponent;
   private componentActive = true;
   detailForm: FormGroup;
   detailExists = false;
@@ -39,6 +38,11 @@ export abstract class JazykDetailForm implements OnChanges, OnInit {
 
   ngOnChanges() {
     this.processChanges();
+  }
+
+  rebuildControls() {
+    this.detail.wordTpe = this.detailForm.value['wordTpe'];
+    this.addControls();
   }
 
   processChanges() {
@@ -100,6 +104,8 @@ export abstract class JazykDetailForm implements OnChanges, OnInit {
       error => this.errorService.handleError(error)
     );
   }
+
+  addControls() {}
 
   postProcessFormData(data: any): any {
     return data;
@@ -173,6 +179,10 @@ export abstract class JazykDetailForm implements OnChanges, OnInit {
 
   isRead() {
     return !this.detailOnly || this.detailExists;
+  }
+
+  hasWordTpe() {
+    return !!this.detailForm.value['wordTpe'];
   }
 
   onSelectedImage(image: Image) {

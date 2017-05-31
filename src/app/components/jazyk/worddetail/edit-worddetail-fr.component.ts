@@ -26,22 +26,40 @@ export class JazykDetailFormFrComponent extends JazykDetailForm implements OnIni
   }
 
   buildForm() {
-    let control: FormControl;
     super.buildForm();
+    this.addControls();
+  }
 
+  addControls() {
+    let control: FormControl;
     this.genera = this.config.genera;
-    if (this.detail.wordTpe === 'noun') {
-      control = new FormControl(this.detail.genus, Validators.required);
-      this.detailForm.addControl('genus', control);
+    switch (this.detail.wordTpe) {
+      case 'noun':
+        control = new FormControl(this.detail.genus, Validators.required);
+        this.detailForm.addControl('genus', control);
+        control = new FormControl(this.detail.plural);
+        this.detailForm.addControl('plural', control);
+        control = new FormControl(this.detail.isPlural);
+        this.detailForm.addControl('isPlural', control);
+        break;
+    case 'verb':
+      let conj;
+      for (let i = 0; i < 6; i++) {
+        conj = this.detail.conjugation ? this.detail.conjugation[i] : '';
+        control = new FormControl(conj);
+        this.detailForm.addControl('conjugation' + i, control);
+      }
+      break;
     }
   }
 
   postProcessFormData(formData: any): WordDetail {
     console.log('post processing fr');
     const newData: WordDetail = super.copyDetail(formData);
-    if (formData.genus) {
-      newData.genus = formData.genus;
-    }
+    this.addNewField(formData, newData, 'genus');
+    this.addNewField(formData, newData, 'plural');
+    this.addNewArray(formData, newData, 'conjugation', 6);
+    this.addNewField(formData, newData, 'isPlural');
 
     return newData;
   }
