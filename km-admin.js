@@ -24,6 +24,7 @@ app.use(bearerToken());
 app.use(bodyParser.json());
 app.use(express.static(path.join(__dirname, 'dist')));
 app.use('/images', express.static(path.join(__dirname, '/files/jazyk/images/publish')));
+app.use('/audio', express.static(path.join(__dirname, '/files/jazyk/audio/publish')));
 
 
 //routing

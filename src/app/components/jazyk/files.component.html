@@ -17,10 +17,16 @@ Files:
     Aantal files: <strong>{{totalFiles}}</strong>
   </div>
 
-  <ul class="list-group imgs">
-    <li *ngFor="let file of files" class="list-group-item">
-      <img src="{{this.localFilePath + file.localFile}}" class="thumb">
-      <span class="badge">{{file.name}}</span>
+  <ul class="list-group files">
+    <li *ngFor="let file of files; let i = index" class="list-group-item">
+      <div class="name">{{file.name}}</div>
+      <img src="{{localFilePath + file.localFile}}" class="thumb" *ngIf="tpe==='images'">
+      <div *ngIf="tpe==='audio'" (click)="onPlay(file.localFile, i)">
+        <span class="fa fa-play-circle" [ngClass]="{
+          'fa-play-circle': audioState[i]=== 'playing'? false : true,
+          'fa-pause-circle': audioState[i]=== 'playing'? true : false
+          }"></span>
+      </div>
     </li>
   </ul>
 </div>

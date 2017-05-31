@@ -172,25 +172,30 @@ export class JazykService {
 
 /* File Upload */
 
-  saveFile(fileName: string) {
+  saveFileToCloud(fileName: string, tpe: string) {
     const headers = new Headers();
     headers.append('Content-Type', 'application/json');
     return this.http
-    .post('/api/jazyk/files/upload', {file: fileName}, {headers})
+    .post('/api/jazyk/files/upload', {file: fileName, tpe}, {headers})
     .map(response => response.json().obj)
     .catch(error => Observable.throw(error));
   }
 
   saveCloudFileData(cloudData: CloudFile, localFile: string, tpe: string) {
     const headers = new Headers(),
-          name = localFile.split('.')[0];
+          format = localFile.split('.')[1] || 'unknown';
+    let name = localFile.split('.')[0];
+    if (tpe === 'audio') {
+      name = name.substr(3, name.length - 3);
+    }
     const fileData = {
       app: 'jazyk',
       tpe,
       ETag: cloudData.ETag,
       cloudFile: cloudData.Location,
       localFile,
-      name
+      name,
+      format
     };
     headers.append('Content-Type', 'application/json');
     return this.http

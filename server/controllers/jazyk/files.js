@@ -2,34 +2,52 @@ const Uploader = require('s3-streaming-upload').Uploader,
       fs = require('fs'),
       response = require('../../response'),
       mongoose = require('mongoose'),
-      folder = 'images/',
       Files = require('../../models/jazyk/file');
 
 module.exports = {
   uploadFile: function (req, res) {
     console.log('body', req.body);
+    const tpe = req.body.tpe,
+          newFileName = new mongoose.mongo.ObjectId(),
+          legacyFileName = req.body.file,
+          name = legacyFileName.split('.')[0],
+          extension = legacyFileName.split('.')[1] || 'unknown';
+    let localPath, s3Folder, contentTpe;
 
-    console.log('file id', new mongoose.mongo.ObjectId());
+    switch (tpe) {
+      case 'images':
+        localPath = '/projects/kmodo/km-admin/files/jazyk/images/publish/';
+        s3Folder = 'images/';
+        contentTpe = 'image/'
+        break;
+      case 'audio':
+        localPath = '/projects/kmodo/km-admin/files/jazyk/audio/publish/';
+        s3Folder = 'audio/';
+        contentTpe = 'audio/'
+        break;
+    }
 
-    const newFileName = new mongoose.mongo.ObjectId();
-    const legacyFileName = req.body.file;
-    const name = legacyFileName.split('.')[0];
-    const format = legacyFileName.split('.')[1] || 'unknown';
+    if (extension === 'mp3') {
+      format = 'mpeg';
+    } else {
+      format = extension;
+    }
     console.log('meta name', name);
     console.log('meta format', format);
+    console.log('creating stream for ', localPath + legacyFileName);
 
-    const stream = fs.createReadStream('/projects/kmodo/km-admin/files/jazyk/images/publish/' + req.body.file);
+    const stream = fs.createReadStream(localPath + legacyFileName);
     
     let upload = new Uploader({
       accessKey:  process.env.AWS_S3_ID,
       secretKey:  process.env.AWS_S3_KEY,
       bucket:     'jazyk',
       region:     'eu-central-1',
-      objectName: folder + newFileName,
+      objectName: s3Folder + newFileName,
       stream:     stream,
       debug:      true,
       objectParams: {
-        ContentType: 'image/' + format,
+        ContentType: contentTpe + format,
         ACL: 'public-read'
       }
     });

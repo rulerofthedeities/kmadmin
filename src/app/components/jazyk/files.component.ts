@@ -8,10 +8,17 @@ import {CloudFile, FilterFiles, LocalFile} from '../../models/jazyk.model';
 @Component({
   templateUrl: 'files.component.html',
   styles: [`
-    .imgs {width:340px;}
+    .files {width:340px;}
     .thumb {
       width:100px;
       border:1px solid #333;
+    }
+    .fa {
+      font-size: 24px;
+      cursor: pointer;
+    }
+    .name {
+      float: right;
     }
   `]
 })
@@ -22,6 +29,7 @@ export class JazykFilesComponent implements OnInit, OnDestroy {
   files: LocalFile[] = [];
   localFilePath: string;
   totalFiles: number;
+  audioState: string[] = [];
 
   constructor(
     private route: ActivatedRoute,
@@ -49,7 +57,7 @@ export class JazykFilesComponent implements OnInit, OnDestroy {
     if (file.files[0]) {
       const legacyFile = file.files[0].name;
       this.jazykService
-      .saveFile(legacyFile)
+      .saveFileToCloud(legacyFile, this.tpe)
       .takeWhile(() => this.componentActive)
       .subscribe(
         savedFile => {
@@ -65,6 +73,24 @@ export class JazykFilesComponent implements OnInit, OnDestroy {
 
   onSelectedFilter(filter: FilterFiles) {
     this.fetchLocalFiles(filter);
+  }
+
+  onPlay(file: string, i: number) {
+    if (this.audioState[i] !== 'playing') {
+      const audio = new Audio();
+      audio.src = this.localFilePath + file;
+      audio.load();
+      audio.play();
+
+      audio.onplaying = () => {
+        this.audioState[i] = 'playing';
+        console.log('The audio is now playing');
+      };
+      audio.onended = () => {
+        this.audioState[i] = 'ended';
+        console.log('The audio has ended');
+      };
+    }
   }
 
   private saveLocalFileRecord(cloudFile: CloudFile, legacyFile: string) {

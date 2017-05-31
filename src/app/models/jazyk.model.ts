@@ -138,5 +138,6 @@ export interface LocalFile {
   localFile: string;
   ETag: string;
   name: string;
+  format: string;
   dtAdded: Date;
 }
