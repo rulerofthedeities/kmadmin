@@ -1,7 +1,7 @@
 import {Injectable, EventEmitter} from '@angular/core';
 import {Http, Headers, URLSearchParams} from '@angular/http';
 import {Observable} from 'rxjs/Observable';
-import {CloudFile, DetailFilterData, TpeList, Filter, FilterFiles, LanPair, Language} from '../models/jazyk.model';
+import {CloudFile, DetailFilterData, TpeList, Filter, FilterFiles, LocalFile, LanPair, Language} from '../models/jazyk.model';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
 import 'rxjs/add/observable/throw';
@@ -172,31 +172,47 @@ export class JazykService {
 
 /* File Upload */
 
-  saveFileToCloud(fileName: string, tpe: string) {
+  saveFileToCloud(legacyFile: any, tpe: string) {
+    console.log('saving to cloud', {file: legacyFile, tpe});
+    const file = {
+      name: legacyFile.name,
+      size: legacyFile.size,
+      type: legacyFile.type
+    };
     const headers = new Headers();
     headers.append('Content-Type', 'application/json');
     return this.http
-    .post('/api/jazyk/files/upload', {file: fileName, tpe}, {headers})
+    .post('/api/jazyk/files/upload', JSON.stringify({file, tpe}), {headers})
     .map(response => response.json().obj)
     .catch(error => Observable.throw(error));
   }
 
-  saveCloudFileData(cloudData: CloudFile, localFile: string, tpe: string) {
+  saveCloudFileData(cloudData: CloudFile, localFile: any, tpe: string) {
     const headers = new Headers(),
-          format = localFile.split('.')[1] || 'unknown';
-    let name = localFile.split('.')[0];
+          format = localFile.type;
+    let name = localFile.name.split('.')[0];
     if (tpe === 'audio') {
       name = name.substr(3, name.length - 3);
     }
-    const fileData = {
+    const fileData: LocalFile = {
+      _id: cloudData._id,
       app: 'jazyk',
       tpe,
       ETag: cloudData.ETag,
       cloudFile: cloudData.Location,
-      localFile,
+      localFile: localFile.name,
       name,
-      format
+      format,
+      size: localFile.size
     };
+
+    if (tpe === 'audio') {
+      const lan2 = localFile.name.split('_')[0];
+      const lan1 = lan2 === 'gb' || lan2 === 'us' ? 'en' : lan2;
+      fileData.lan = lan1 + '-' + lan2;
+    }
+    console.log('cloudData', cloudData);
+    console.log('fileData', fileData);
     headers.append('Content-Type', 'application/json');
     return this.http
     .post('/api/jazyk/files/add', JSON.stringify(fileData), {headers})

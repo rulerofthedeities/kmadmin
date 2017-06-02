@@ -3,6 +3,7 @@ Add {{tpe}} file:
   id="fileupload"
   name="myfile"
   type="file" 
+  multiple="true" 
   (change)="onChange(file)" 
   #file />
 
@@ -17,9 +18,12 @@ Files:
     Aantal files: <strong>{{totalFiles}}</strong>
   </div>
 
-  <ul class="list-group files">
+  <ul class="list-group files" [class.audio]="tpe==='audio'">
     <li *ngFor="let file of files; let i = index" class="list-group-item">
-      <div class="name">{{file.name}}</div>
+      <div class="data">
+        <div><strong>{{file.name}}</strong></div>
+        <div class="size">{{file.size | fileSize}}</div>
+      </div>
       <img src="{{localFilePath + file.localFile}}" class="thumb" *ngIf="tpe==='images'">
       <div *ngIf="tpe==='audio'" (click)="onPlay(file.localFile, i)">
         <span class="fa fa-play-circle" [ngClass]="{

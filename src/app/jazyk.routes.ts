@@ -5,6 +5,7 @@ import {JazykEditComponent} from './components/jazyk/edit.component';
 import {JazykEditMenuComponent} from './components/jazyk/edit-menu.component';
 import {JazykFilesComponent} from './components/jazyk/files.component';
 import {JazykFilesMenuComponent} from './components/jazyk/files-menu.component';
+import {JazykProcessAudioComponent} from './components/jazyk/process-audio.component';
 
 export const routes: Routes = [
   {
@@ -25,7 +26,8 @@ export const routes: Routes = [
         component: JazykFilesMenuComponent,
         children: [
           {path: 'images', component: JazykFilesComponent, data : {tpe : 'images'}},
-          {path: 'audio', component: JazykFilesComponent, data : {tpe : 'audio'}}
+          {path: 'audio', component: JazykFilesComponent, data : {tpe : 'audio'}},
+          {path: 'processaudio', component: JazykProcessAudioComponent}
         ]
       }
     ]

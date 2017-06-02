@@ -5,10 +5,13 @@ import {Component} from '@angular/core';
     <nav class="clearfix">
       <ul class="nav navbar-nav">
         <li routerLinkActive="active">
-          <a routerLink="/jazyk/files/images" class="item">Images</a>
+          <a routerLink="/jazyk/files/images" class="item">Import Images</a>
         </li>
         <li routerLinkActive="active">
-          <a routerLink="/jazyk/files/audio" class="item">Audio</a>
+          <a routerLink="/jazyk/files/audio" class="item">Import Audio</a>
+        </li>
+        <li routerLinkActive="active">
+          <a routerLink="/jazyk/files/processaudio" class="item">Process Audio</a>
         </li>
       </ul>
     </nav>

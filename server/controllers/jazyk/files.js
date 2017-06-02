@@ -6,12 +6,12 @@ const Uploader = require('s3-streaming-upload').Uploader,
 
 module.exports = {
   uploadFile: function (req, res) {
-    console.log('body', req.body);
+    console.log('upload body', req.body);
     const tpe = req.body.tpe,
           newFileName = new mongoose.mongo.ObjectId(),
-          legacyFileName = req.body.file,
-          name = legacyFileName.split('.')[0],
-          extension = legacyFileName.split('.')[1] || 'unknown';
+          legacyFileName = req.body.file.name,
+          format = req.body.file.type;
+
     let localPath, s3Folder, contentTpe;
 
     switch (tpe) {
@@ -21,18 +21,16 @@ module.exports = {
         contentTpe = 'image/'
         break;
       case 'audio':
+        const lan = legacyFileName.split('_')[0];
+        if (lan === 'gb' || lan === 'us') {
+          lan = 'en';
+        }
         localPath = '/projects/kmodo/km-admin/files/jazyk/audio/publish/';
-        s3Folder = 'audio/';
+        s3Folder = 'audio/' + lan + '/';
         contentTpe = 'audio/'
         break;
     }
 
-    if (extension === 'mp3') {
-      format = 'mpeg';
-    } else {
-      format = extension;
-    }
-    console.log('meta name', name);
     console.log('meta format', format);
     console.log('creating stream for ', localPath + legacyFileName);
 
@@ -47,14 +45,15 @@ module.exports = {
       stream:     stream,
       debug:      true,
       objectParams: {
-        ContentType: contentTpe + format,
+        ContentType: format,
         ACL: 'public-read'
       }
     });
 
     upload.send(function (err, file) {
       response.handleError(err, res, 500, 'Error uploading file to S3', function(){
-        response.handleSuccess(res, file, 200, 'Uploaded file to S3');
+        file._id = newFileName;
+        response.handleSuccess(res, {file, legacyFile:req.body.file}, 200, 'Uploaded file to S3');
       });
     });
   },

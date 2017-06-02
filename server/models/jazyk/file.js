@@ -8,6 +8,8 @@ var fileSchema = new Schema({
     localFile: {type: String, required: true},
     name: String,
     format: String,
+    lan: String,
+    size: Number,
     ETag: String,
     dtAdded: { type: Date, default: Date.now }
   }, {collection: 'cloudfiles'}

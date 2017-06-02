@@ -31,6 +31,9 @@ import {JazykFilesComponent} from './components/jazyk/files.component';
 import {JazykFilesFilterComponent} from './components/jazyk/filter/files-filter.component';
 import {JazykImageFieldComponent} from './components/jazyk/fields/image-filter-field.component';
 import {JazykImageListComponent} from './components/jazyk/fields/image-list-field.component';
+import {JazykProcessAudioComponent} from './components/jazyk/process-audio.component';
+
+import {FileSizePipe} from './pipes/file-size.pipe';
 
 @NgModule({
   imports: [
@@ -73,7 +76,9 @@ import {JazykImageListComponent} from './components/jazyk/fields/image-list-fiel
     JazykFilesComponent,
     JazykFilesFilterComponent,
     JazykImageFieldComponent,
-    JazykImageListComponent
+    JazykImageListComponent,
+    JazykProcessAudioComponent,
+    FileSizePipe
   ]
 })
 export class JazykModule {}

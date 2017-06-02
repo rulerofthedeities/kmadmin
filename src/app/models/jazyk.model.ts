@@ -129,15 +129,21 @@ export interface LanConfig  {
 }
 
 export interface CloudFile {
+  _id?: string;
   ETag?: string;
   Location: string;
 }
 
 export interface LocalFile {
+  _id?: string;
+  app: string;
+  tpe: string;
   cloudFile: string;
   localFile: string;
   ETag: string;
   name: string;
+  size: number;
   format: string;
-  dtAdded: Date;
+  lan?: string;
+  dtAdded?: Date;
 }

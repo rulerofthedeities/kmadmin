@@ -7,20 +7,7 @@ import {CloudFile, FilterFiles, LocalFile} from '../../models/jazyk.model';
 
 @Component({
   templateUrl: 'files.component.html',
-  styles: [`
-    .files {width:340px;}
-    .thumb {
-      width:100px;
-      border:1px solid #333;
-    }
-    .fa {
-      font-size: 24px;
-      cursor: pointer;
-    }
-    .name {
-      float: right;
-    }
-  `]
+  styleUrls: ['./files.component.css']
 })
 
 export class JazykFilesComponent implements OnInit, OnDestroy {
@@ -53,21 +40,26 @@ export class JazykFilesComponent implements OnInit, OnDestroy {
     });
   }
 
-  onChange(file: any) {
-    if (file.files[0]) {
-      const legacyFile = file.files[0].name;
-      this.jazykService
-      .saveFileToCloud(legacyFile, this.tpe)
-      .takeWhile(() => this.componentActive)
-      .subscribe(
-        savedFile => {
-          if (savedFile) {
-            console.log('saved file to cloud', savedFile);
-            this.saveLocalFileRecord(savedFile, legacyFile);
-          }
-        },
-        error => this.errorService.handleError(error)
-      );
+  onChange(selectedFiles: any) {
+    const files = selectedFiles.files; // note: object, not an array
+    const nrOfFiles = files.length;
+    let legacyFile;
+    for (let i = 0; i < nrOfFiles; i++) {
+      legacyFile = files[i];
+      if (legacyFile) {
+        this.jazykService
+        .saveFileToCloud(legacyFile, this.tpe)
+        .takeWhile(() => this.componentActive)
+        .subscribe(
+          savedFile => {
+            if (savedFile) {
+              console.log('saved file to cloud', savedFile);
+              this.saveLocalFileRecord(savedFile.file, savedFile.legacyFile);
+            }
+          },
+          error => this.errorService.handleError(error)
+        );
+      }
     }
   }
 
@@ -96,7 +88,7 @@ export class JazykFilesComponent implements OnInit, OnDestroy {
     }
   }
 
-  private saveLocalFileRecord(cloudFile: CloudFile, legacyFile: string) {
+  private saveLocalFileRecord(cloudFile: CloudFile, legacyFile: any) {
     this.jazykService
     .saveCloudFileData(cloudFile, legacyFile, this.tpe)
     .takeWhile(() => this.componentActive)
