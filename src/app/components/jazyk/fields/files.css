@@ -5,8 +5,12 @@
   border: 1px solid #333;
   width: 80px;
 }
-.files .image {
+.files .image, .files .audio {
   float: left;
   margin-right: 2px;
   margin-bottom: 2px;
+}
+.fa {
+  font-size: 24px;
+  cursor: pointer;
 }

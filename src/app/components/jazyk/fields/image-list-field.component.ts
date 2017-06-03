@@ -1,13 +1,13 @@
 import {Component, OnInit, Input, Output, EventEmitter} from '@angular/core';
 import {JazykService} from '../../../services/jazyk.service';
-import {LocalFile, FilterFiles, Image} from '../../../models/jazyk.model';
+import {LocalFile, FilterFiles, File} from '../../../models/jazyk.model';
 
 @Component({
   selector: 'km-image-list',
   template: `
     <ul class="list-unstyled files">
       <li *ngFor="let image of images; let i=index" (click)="onRemove(i)" class="image">
-        <img src="{{this.localImageFilePath + image.local}}" class="thumb" >
+        <img src="{{getImageUrl(image)}}" class="thumb" >
       </li>
     </ul>
     <div class="clearfix"></div>
@@ -15,7 +15,7 @@ import {LocalFile, FilterFiles, Image} from '../../../models/jazyk.model';
   styleUrls: ['files.css']
 })
 export class JazykImageListComponent implements OnInit {
-  @Input() images: Image[];
+  @Input() images: File[];
   @Output() removeImage = new EventEmitter<number>();
   localImageFilePath: string;
 
@@ -28,7 +28,10 @@ export class JazykImageListComponent implements OnInit {
   }
 
   onRemove(i) {
-    console.log('remove', this.images[i]);
     this.removeImage.emit(i);
+  }
+
+  getImageUrl(file: File) {
+    return this.localImageFilePath + file.local.replace('#', '%23');
   }
 }

@@ -89,13 +89,17 @@ module.exports = {
     const query = req.query,
           returnTotal = query.returnTotal === 'true' ? true : false,
           word = query.isFromStart === 'true' ? "^" + query.word : query.word,
-          search = query.isExact === 'true' ? query.word : {$regex: word, $options:'i'};
+          search = query.isExact === 'true' ? query.word : {$regex: word, $options:'i'},
+          lan = query.lan;
 
     const q = {
             app: query.app,
             tpe: query.tpe,
             name: search
           };
+    if (lan) {
+      q.lan = lan
+    }
 
     Files.find(q, {}, {limit: 20, sort:{localFile: 1}}, function(err, files) {
       response.handleError(err, res, 500, 'Error fetching file list from local db', function() {

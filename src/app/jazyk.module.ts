@@ -31,6 +31,9 @@ import {JazykFilesComponent} from './components/jazyk/files.component';
 import {JazykFilesFilterComponent} from './components/jazyk/filter/files-filter.component';
 import {JazykImageFieldComponent} from './components/jazyk/fields/image-filter-field.component';
 import {JazykImageListComponent} from './components/jazyk/fields/image-list-field.component';
+import {JazykAudioFieldComponent} from './components/jazyk/fields/audio-filter-field.component';
+import {JazykAudioListComponent} from './components/jazyk/fields/audio-list-field.component';
+import {JazykAudioFileComponent} from './components/jazyk/fields/audio-file.component';
 import {JazykProcessAudioComponent} from './components/jazyk/process-audio.component';
 
 import {FileSizePipe} from './pipes/file-size.pipe';
@@ -77,6 +80,9 @@ import {FileSizePipe} from './pipes/file-size.pipe';
     JazykFilesFilterComponent,
     JazykImageFieldComponent,
     JazykImageListComponent,
+    JazykAudioFieldComponent,
+    JazykAudioListComponent,
+    JazykAudioFileComponent,
     JazykProcessAudioComponent,
     FileSizePipe
   ]

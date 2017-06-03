@@ -232,6 +232,7 @@ export class JazykService {
     params.set('app', filter.app);
     params.set('tpe', filter.tpe);
     params.set('word', filter.word);
+    params.set('lan', filter.lanCode);
     params.set('isFromStart', filter.isFromStart ? filter.isFromStart.toString() : 'false');
     params.set('isExact', filter.isExact ? filter.isExact.toString() : 'false');
     params.set('returnTotal', filter.returnTotal ? filter.returnTotal.toString() : 'true');

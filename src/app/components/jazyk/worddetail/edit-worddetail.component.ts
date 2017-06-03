@@ -2,7 +2,7 @@ import {Component, Input, OnChanges, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, FormArray, FormControl, Validators} from '@angular/forms';
 import {JazykService} from '../../../services/jazyk.service';
 import {ErrorService} from '../../../services/error.service';
-import {WordDetail, LanConfig, Filter, Image, TpeList, Language} from '../../../models/jazyk.model';
+import {WordDetail, LanConfig, Filter, File, TpeList, Language} from '../../../models/jazyk.model';
 import {JazykImageListComponent} from '../fields/image-list-field.component';
 import 'rxjs/add/operator/takeWhile';
 
@@ -18,7 +18,8 @@ export abstract class JazykDetailForm implements OnChanges, OnInit {
   config: LanConfig;
   languages: Language[];
   wordTpes: TpeList[];
-  showDetailFilter = false;
+  showDetailImageFilter = false;
+  showDetailAudioFilter = false;
 
   constructor(
     public formBuilder: FormBuilder,
@@ -185,10 +186,10 @@ export abstract class JazykDetailForm implements OnChanges, OnInit {
     return !!this.detailForm.value['wordTpe'];
   }
 
-  onSelectedImage(image: Image) {
+  onSelectedImage(image: File) {
     this.detail.images = this.detail.images || [];
     this.detail.images.push(image);
-    this.showDetailFilter = false;
+    this.showDetailImageFilter = false;
     this.detailForm.markAsDirty();
   }
 
@@ -200,7 +201,25 @@ export abstract class JazykDetailForm implements OnChanges, OnInit {
   }
 
   toggleImageFilter() {
-    this.showDetailFilter = !this.showDetailFilter;
+    this.showDetailImageFilter = !this.showDetailImageFilter;
+  }
+
+  onSelectedAudio(audio: File) {
+    this.detail.audios = this.detail.audios || [];
+    this.detail.audios.push(audio);
+    this.showDetailAudioFilter = false;
+    this.detailForm.markAsDirty();
+  }
+
+  onRemoveAudio(i: number) {
+    if (this.detail.audios.length > i) {
+      this.detail.audios.splice(i, 1);
+      this.detailForm.markAsDirty();
+    }
+  }
+
+  toggleAudioFilter() {
+    this.showDetailAudioFilter = !this.showDetailAudioFilter;
   }
 
   getNewDetail(): WordDetail {

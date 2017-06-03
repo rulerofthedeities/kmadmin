@@ -26,6 +26,7 @@ export interface FilterFiles {
   app: string;
   tpe: string;
   word: string;
+  lanCode?: string;
   isFromStart?: boolean;
   isExact?: boolean;
   returnTotal?: boolean;
@@ -73,7 +74,7 @@ export interface WordPair {
   author?: string;
 }
 
-export interface Image {
+export interface File {
   s3: string;
   local: string;
 }
@@ -96,8 +97,8 @@ export interface WordDetail {
   superlative?: string;
   aspect?: string;
   aspectPair?: string;
-  images?: Image[];
-  audio?: string[];
+  images?: File[];
+  audios?: File[];
   conjugation?: string[];
   isDiminutive?: boolean;
   isPlural?: boolean;

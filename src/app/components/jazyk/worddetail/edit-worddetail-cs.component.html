@@ -304,6 +304,7 @@ DETAIL CS
 
   <!-- FILES -->
 
+  <!-- images -->
     <label 
       for="images" 
       class="control-label col-xs-3">
@@ -329,6 +330,35 @@ DETAIL CS
         [ngStyle]="{display: showDetailFilter ? 'block': 'none'}"
         (selectedImage)="onSelectedImage($event);">
       </km-image-filter>
+    </div>
+
+  <!-- audio -->
+    <label 
+      for="audio" 
+      class="control-label col-xs-3">
+      Audio:
+    </label>
+    <div class="col-xs-9">
+      <km-audio-list
+        [audios]="detail.audios"
+        (removeAudio)=onRemoveAudio($event)>
+      </km-audio-list>
+      <div (click)="toggleAudioFilter()" class="filtertoggle">
+        <span 
+          class="fa fa-chevron-circle-right"
+          [ngStyle]="{display:showDetailAudioFilter ? 'none' : 'inline'}">  
+        </span>
+        <span 
+          class="fa fa-chevron-circle-down"
+          [ngStyle]="{display:!showDetailAudioFilter ? 'none' : 'inline'}">  
+        </span>
+        Add audio
+      </div>
+      <km-audio-filter
+        [ngStyle]="{display: showDetailAudioFilter ? 'block': 'none'}"
+        [lan]="detail.lan"
+        (selectedAudio)="onSelectedAudio($event);">
+      </km-audio-filter>
     </div>
 
   <!-- INFO FIELDS -->

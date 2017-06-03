@@ -16,7 +16,6 @@ export class JazykFilesComponent implements OnInit, OnDestroy {
   files: LocalFile[] = [];
   localFilePath: string;
   totalFiles: number;
-  audio: any[] = [];
 
   constructor(
     private route: ActivatedRoute,
@@ -69,27 +68,6 @@ export class JazykFilesComponent implements OnInit, OnDestroy {
 
   onSelectedFilter(filter: FilterFiles) {
     this.fetchLocalFiles(filter);
-  }
-
-  onPlay(file: string, i: number) {
-    if (!this.audio[i]) {
-      this.audio[i] = new Audio();
-      this.audio[i].src = this.localFilePath + file;
-      this.audio[i].load();
-      this.audio[i].play();
-      this.audio[i].onplaying = () => {
-        console.log('The audio is now playing');
-      };
-      this.audio[i].onended = () => {
-        console.log('The audio has ended');
-      };
-    } else {
-      if (this.audio[i].ended || this.audio[i].paused) {
-        this.audio[i].play();
-      } else {
-        this.audio[i].pause();
-      }
-    }
   }
 
   getImageUrl(file: LocalFile) {

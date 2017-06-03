@@ -24,7 +24,7 @@ var detailSchema = new Schema({
     isComparative: Boolean,
     isSuperlative: Boolean,
     images: { type: [fileSchema], default: void 0 },
-    audio: { type: [fileSchema], default: void 0 },
+    audios: { type: [fileSchema], default: void 0 },
     score: Number,
     wordCount: Number
   }, {collection: 'wordpairs'}

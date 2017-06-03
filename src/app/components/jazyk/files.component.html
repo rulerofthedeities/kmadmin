@@ -22,17 +22,19 @@ Files:
     <li *ngFor="let file of files; let i = index" class="list-group-item">
       <div class="data">
         <div><strong>{{file.name}}</strong></div>
-        <div class="size">{{file.size | fileSize}}</div>
-        <div class="size">{{file.localFile}}</div>
-        <div class="size">{{file._id}}</div>
+        <div *ngIf="tpe==='images'" class="size">
+          <div>{{file.size | fileSize:0}}</div>
+          <div>{{file.localFile}}</div>
+          <div>{{file._id}}</div>
+        </div>
+        <div *ngIf="tpe==='audio'" class="size">
+          <div>{{file.size | fileSize:0}} / {{file.localFile}} / {{file._id}}</div>
+        </div>
       </div>
       <img src="{{getImageUrl(file)}}" class="thumb" *ngIf="tpe==='images'">
-      <div *ngIf="tpe==='audio'" (click)="onPlay(file.localFile, i)">
-        <span class="fa fa-play-circle" [ngClass]="{
-          'fa-play-circle': !audio[i] || audio[i].ended ? true : false,
-          'fa-pause-circle': audio[i] && !audio[i].ended ? true : false
-          }"></span>
-      </div>
+      <km-audio-file *ngIf="tpe==='audio'"
+        [fileName]="file.localFile">
+      </km-audio-file>
     </li>
   </ul>
 </div>
