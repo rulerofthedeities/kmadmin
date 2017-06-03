@@ -51,7 +51,21 @@ DETAIL EN
 
   <div *ngIf="hasWordTpe()">
   <!-- DYNAMIC FIELDS -->
-
+    <div class="form-group">
+      <label 
+        for="region" 
+        class="control-label col-xs-3">
+        Region:
+      </label>
+      <div class="col-xs-9">
+        <div *ngFor="let region of regions">
+          <input type="radio" 
+            formControlName="region" 
+            name="region" 
+            [value]="region"><img src="/assets/img/flags/{{detail.lan}}-{{region}}.png" class="flag" *ngIf="region !== 'any'">{{region}}
+        </div>
+      </div>
+    </div>
   <!-- noun -->
     <div *ngIf="isNoun()">
       <div class="form-group">

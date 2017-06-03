@@ -46,3 +46,8 @@ h4 > .fa {
 .filtertoggle{
   cursor: pointer;
 }
+.flag {
+  border: 1px solid #333;
+  width: 20px;
+  margin: 0 3px;
+}

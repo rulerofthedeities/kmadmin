@@ -18,6 +18,7 @@ var lanConfigSchema = new Schema({
     genera: [String],
     subjectPronouns: [String],
     aspects: [String],
+    regions: [String],
     cases: [caseSchema]
   }, {collection: 'config'}
 );

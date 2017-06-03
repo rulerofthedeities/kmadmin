@@ -12,6 +12,7 @@ import {JazykDetailForm} from '../worddetail/edit-worddetail.component';
 })
 
 export class JazykDetailFormEnComponent extends JazykDetailForm implements OnInit {
+  regions: string[];
   constructor (
     formBuilder: FormBuilder,
     errorService: ErrorService,
@@ -25,12 +26,18 @@ export class JazykDetailFormEnComponent extends JazykDetailForm implements OnIni
   }
 
   buildForm() {
+    this.regions = this.config.regions;
+    if (this.regions[0] !== 'any') {
+      this.regions.unshift('any');
+    }
     super.buildForm();
     this.addControls();
   }
 
   addControls() {
     let control: FormControl;
+    control = new FormControl(this.detail.region, Validators.required);
+    this.detailForm.addControl('region', control);
     switch (this.detail.wordTpe) {
       case 'noun':
         control = new FormControl(this.detail.plural);
@@ -52,6 +59,7 @@ export class JazykDetailFormEnComponent extends JazykDetailForm implements OnIni
   postProcessFormData(formData: any): WordDetail {
     console.log('post processing en');
     const newData: WordDetail = super.copyDetail(formData);
+    this.addNewField(formData, newData, 'region');
     this.addNewField(formData, newData, 'plural');
     this.addNewArray(formData, newData, 'conjugation', 6);
     this.addNewField(formData, newData, 'isPlural');

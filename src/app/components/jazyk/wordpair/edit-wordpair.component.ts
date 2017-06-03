@@ -287,11 +287,11 @@ export class JazykEditWordPairComponent implements OnInit, OnDestroy {
         ids => {
           wordFormData.detailId1 = wordFormData.detailId1 || ids[0];
           wordFormData.detailId2 = wordFormData.detailId2 || ids[1];
-          if (!this.formHelpers[0].wordPairExists) {
+          if (!this.formHelpers[i].wordPairExists) {
             this.addWordPair(wordFormData, i);
             this.formHelpers[i].wordPairExists = true;
           } else {
-            if (this.wordForms[0].dirty) {
+            if (this.wordForms[i].dirty) {
               this.updateWordPair(wordFormData, i);
             } else {
               this.formHelpers[i].msg = {

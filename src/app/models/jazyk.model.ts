@@ -85,6 +85,7 @@ export interface WordDetail {
   word: string;
   docTpe: string;
   wordTpe: string;
+  region?: string;
   article?: string;
   case?: string;
   followingCase?: string;
@@ -121,11 +122,12 @@ export interface Case {
 export interface LanConfig  {
   tpe: string;
   code: string;
-  articles: string[];
-  genera: string[];
-  aspects: string[];
-  cases: Case[];
+  articles?: string[];
+  genera?: string[];
+  aspects?: string[];
+  cases?: Case[];
   name: Lans;
+  regions?: string[];
 }
 
 export interface CloudFile {

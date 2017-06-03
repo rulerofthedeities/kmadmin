@@ -231,6 +231,7 @@ module.exports = {
       word: formData.word
     }
 
+    addValue(formData, addObject, 'region');
     addValue(formData, addObject, 'article');
     addValue(formData, addObject, 'genus');
     addValue(formData, addObject, 'diminutive');
@@ -282,6 +283,7 @@ module.exports = {
 
     // ADD & REMOVE VALUES
 
+    addRemoveValue(formData, updateObject, removeObject, 'region');
     addRemoveValue(formData, updateObject, removeObject, 'article');
     addRemoveValue(formData, updateObject, removeObject, 'genus');
     addRemoveValue(formData, updateObject, removeObject, 'diminutive');

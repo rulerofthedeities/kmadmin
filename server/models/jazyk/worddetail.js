@@ -7,6 +7,7 @@ var detailSchema = new Schema({
     word: {type: String, required: true},
     docTpe: {type: String, default: 'details'},
     wordTpe: {type: String, required: true},
+    region: String,
     article: String,
     case: String,
     followingCase: String,
