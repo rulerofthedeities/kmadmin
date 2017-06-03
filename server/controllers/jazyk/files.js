@@ -4,6 +4,18 @@ const Uploader = require('s3-streaming-upload').Uploader,
       mongoose = require('mongoose'),
       Files = require('../../models/jazyk/file');
 
+checkIfDuplicate = function(localFile, cb) {
+  let q = {localFile: localFile.name};
+  console.log('checking', localFile, q);
+  Files.findOne(q, function(err, file) {
+    if (file) {
+      cb(err, true);
+    } else {
+      cb(err, false);
+    }
+  });
+}
+
 module.exports = {
   uploadFile: function (req, res) {
     console.log('upload body', req.body);
@@ -31,31 +43,37 @@ module.exports = {
         break;
     }
 
-    console.log('meta format', format);
-    console.log('creating stream for ', localPath + legacyFileName);
+    console.log('Checking if file already exists in local db');
+    checkIfDuplicate(req.body.file, function(err, isDuplicate){
+      if (isDuplicate) {
+        response.handleSuccess(res, {file:null, legacyFile:req.body.file, isDuplicate}, 200, 'File already exists');
+      } else {
+        console.log('creating stream for ', localPath + legacyFileName);
 
-    const stream = fs.createReadStream(localPath + legacyFileName);
-    
-    let upload = new Uploader({
-      accessKey:  process.env.AWS_S3_ID,
-      secretKey:  process.env.AWS_S3_KEY,
-      bucket:     'jazyk',
-      region:     'eu-central-1',
-      objectName: s3Folder + newFileName,
-      stream:     stream,
-      debug:      true,
-      objectParams: {
-        ContentType: format,
-        ACL: 'public-read'
+        const stream = fs.createReadStream(localPath + legacyFileName);
+        
+        let upload = new Uploader({
+          accessKey:  process.env.AWS_S3_ID,
+          secretKey:  process.env.AWS_S3_KEY,
+          bucket:     'jazyk',
+          region:     'eu-central-1',
+          objectName: s3Folder + newFileName,
+          stream:     stream,
+          debug:      true,
+          objectParams: {
+            ContentType: format,
+            ACL: 'public-read'
+          }
+        });
+
+        upload.send(function (err, file) {
+          response.handleError(err, res, 500, 'Error uploading file to S3', function(){
+            file._id = newFileName;
+            response.handleSuccess(res, {file, legacyFile:req.body.file, isDuplicate}, 200, 'Uploaded file to S3');
+          });
+        });
       }
-    });
-
-    upload.send(function (err, file) {
-      response.handleError(err, res, 500, 'Error uploading file to S3', function(){
-        file._id = newFileName;
-        response.handleSuccess(res, {file, legacyFile:req.body.file}, 200, 'Uploaded file to S3');
-      });
-    });
+    })
   },
   addFile: function (req, res) {
     console.log('body', req.body);
@@ -79,7 +97,7 @@ module.exports = {
             name: search
           };
 
-    Files.find(q, {}, {limit: 10, sort:{localFile: 1}}, function(err, files) {
+    Files.find(q, {}, {limit: 20, sort:{localFile: 1}}, function(err, files) {
       response.handleError(err, res, 500, 'Error fetching file list from local db', function() {
         // Count workaround until v3.4 (aggregate)
         if (returnTotal) {

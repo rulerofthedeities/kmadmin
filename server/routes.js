@@ -7,6 +7,7 @@ var path = require("path"),
     jazyk_edit = require("./controllers/jazyk/edit"),
     jazyk_config = require("./controllers/jazyk/config"),
     jazyk_files = require("./controllers/jazyk/files"),
+    jazyk_audio = require("./controllers/jazyk/audio"),
     avc_cities = require("./controllers/avc/cities"),
     avc_items = require("./controllers/avc/items");
 
@@ -42,6 +43,7 @@ module.exports.initialize = function(app, router) {
   router.get('/jazyk/wordpair/exists', jazyk_edit.checkWordpairExists);
   router.get('/jazyk/tags', jazyk_edit.getTags);
   router.get('/jazyk/files', jazyk_files.getFiles);
+  router.get('/jazyk/audio', jazyk_audio.processFiles);
 
   router.post('/jazyk/word', jazyk_edit.addWordPair);
   router.post('/jazyk/detail', jazyk_edit.addWordDetail);

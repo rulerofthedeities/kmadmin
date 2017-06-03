@@ -23,8 +23,10 @@ Files:
       <div class="data">
         <div><strong>{{file.name}}</strong></div>
         <div class="size">{{file.size | fileSize}}</div>
+        <div class="size">{{file.localFile}}</div>
+        <div class="size">{{file._id}}</div>
       </div>
-      <img src="{{localFilePath + file.localFile}}" class="thumb" *ngIf="tpe==='images'">
+      <img src="{{getImageUrl(file)}}" class="thumb" *ngIf="tpe==='images'">
       <div *ngIf="tpe==='audio'" (click)="onPlay(file.localFile, i)">
         <span class="fa fa-play-circle" [ngClass]="{
           'fa-play-circle': !audio[i] || audio[i].ended ? true : false,

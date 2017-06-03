@@ -19,33 +19,38 @@ export class JazykService {
 
   compareNlWords() {
     // Compare nl words in cznl with nl words in jazyk
-    return this.http.get('/api/jazyk/sync/compare/words')
-      .map(conn => conn.json().obj)
-      .catch(error => Observable.throw(error));
+    return this.http
+    .get('/api/jazyk/sync/compare/words')
+    .map(conn => conn.json().obj)
+    .catch(error => Observable.throw(error));
   }
   compareNlSentences() {
     // Compare nl sentences in cznl with nl words in jazyk
-    return this.http.get('/api/jazyk/sync/compare/sentences')
-      .map(conn => conn.json().obj)
-      .catch(error => Observable.throw(error));
+    return this.http
+    .get('/api/jazyk/sync/compare/sentences')
+    .map(conn => conn.json().obj)
+    .catch(error => Observable.throw(error));
   }
   removeWords() {
     // Remove cn + cz wordpairs and worddetails from jazyk db
-    return this.http.get('/api/jazyk/sync/removecz')
-      .map(conn => conn.json().obj)
-      .catch(error => Observable.throw(error));
+    return this.http
+    .get('/api/jazyk/sync/removecz')
+    .map(conn => conn.json().obj)
+    .catch(error => Observable.throw(error));
   }
   addNlWords() {
     // Add nl words from cznl to jazyk
-    return this.http.get('/api/jazyk/sync/add/words')
-      .map(conn => conn.json().obj)
-      .catch(error => Observable.throw(error));
+    return this.http
+    .get('/api/jazyk/sync/add/words')
+    .map(conn => conn.json().obj)
+    .catch(error => Observable.throw(error));
   }
   addNlSentences() {
     // Add nl sentences from cznl to jazyk
-    return this.http.get('/api/jazyk/sync/add/sentences')
-      .map(conn => conn.json().obj)
-      .catch(error => Observable.throw(error));
+    return this.http
+    .get('/api/jazyk/sync/add/sentences')
+    .map(conn => conn.json().obj)
+    .catch(error => Observable.throw(error));
   }
 /* Wordpairs */
 
@@ -190,8 +195,10 @@ export class JazykService {
   saveCloudFileData(cloudData: CloudFile, localFile: any, tpe: string) {
     const headers = new Headers(),
           format = localFile.type;
-    let name = localFile.name.split('.')[0];
+    let name = localFile.name.split('.')[0]; // remove extension
+    name = name.split('#')[0]; // multiple files with similar name
     if (tpe === 'audio') {
+      // remove language code
       name = name.substr(3, name.length - 3);
     }
     const fileData: LocalFile = {
@@ -230,6 +237,13 @@ export class JazykService {
     params.set('returnTotal', filter.returnTotal ? filter.returnTotal.toString() : 'true');
     return this.http
     .get('/api/jazyk/files/', {search: params})
+    .map(response => response.json().obj)
+    .catch(error => Observable.throw(error));
+  }
+
+  renameAudioFiles() {
+     return this.http
+    .get('/api/jazyk/audio')
     .map(response => response.json().obj)
     .catch(error => Observable.throw(error));
   }

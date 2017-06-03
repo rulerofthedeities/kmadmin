@@ -51,10 +51,14 @@ export class JazykFilesComponent implements OnInit, OnDestroy {
         .saveFileToCloud(legacyFile, this.tpe)
         .takeWhile(() => this.componentActive)
         .subscribe(
-          savedFile => {
-            if (savedFile) {
-              console.log('saved file to cloud', savedFile);
-              this.saveLocalFileRecord(savedFile.file, savedFile.legacyFile);
+          result => {
+            if (result) {
+              if (result.isDuplicate) {
+                console.log('File %s already exists', result.legacyFile.name);
+              } else {
+                console.log('saved file to cloud', result.file);
+                this.saveLocalFileRecord(result.file, result.legacyFile);
+              }
             }
           },
           error => this.errorService.handleError(error)
@@ -86,6 +90,11 @@ export class JazykFilesComponent implements OnInit, OnDestroy {
         this.audio[i].pause();
       }
     }
+  }
+
+  getImageUrl(file: LocalFile) {
+   const url = this.localFilePath + file.localFile.replace('#', '%23');
+   return url;
   }
 
   private saveLocalFileRecord(cloudFile: CloudFile, legacyFile: any) {
