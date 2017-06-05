@@ -9,6 +9,7 @@ import {ErrorService} from '../../services/error.service';
     <p>expand all audio files into the d:/audio/process/input directory</p>
     <p>the index.tags.txt files must contain the Swac index tags</p>
     <p>This tool will rename the files with the actual word</p>
+    <p>!! For english region, update backend code depending on the region of the speaker</p>
 
     <div class="btn btn-success" (click)="start()">Convert files<div>
   `

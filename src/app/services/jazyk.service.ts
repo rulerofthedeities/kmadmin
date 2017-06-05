@@ -214,9 +214,7 @@ export class JazykService {
     };
 
     if (tpe === 'audio') {
-      const lan2 = localFile.name.split('_')[0];
-      const lan1 = lan2 === 'gb' || lan2 === 'us' ? 'en' : lan2;
-      fileData.lan = lan1 + '-' + lan2;
+      fileData.lan = localFile.name.slice(0, 2);
     }
     console.log('cloudData', cloudData);
     console.log('fileData', fileData);
@@ -243,7 +241,7 @@ export class JazykService {
   }
 
   renameAudioFiles() {
-     return this.http
+    return this.http
     .get('/api/jazyk/audio')
     .map(response => response.json().obj)
     .catch(error => Observable.throw(error));

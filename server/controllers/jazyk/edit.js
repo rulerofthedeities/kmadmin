@@ -249,7 +249,7 @@ module.exports = {
     addValue(formData, addObject, 'isComparative');
     addValue(formData, addObject, 'isSuperlative');
     addValue(formData, addObject, 'images');
-    addValue(formData, addObject, 'audio');
+    addValue(formData, addObject, 'audios');
 
     // Add wordcount
     wordCount.getWordCount(addObject, countConn, function(err, countData){
@@ -301,7 +301,7 @@ module.exports = {
     addRemoveValue(formData, updateObject, removeObject, 'isComparative');
     addRemoveValue(formData, updateObject, removeObject, 'isSuperlative');
     addRemoveValue(formData, updateObject, removeObject, 'images');
-    addRemoveValue(formData, updateObject, removeObject, 'audio');
+    addRemoveValue(formData, updateObject, removeObject, 'audios');
 
     console.log('update', updateObject);
     console.log('remove', removeObject);

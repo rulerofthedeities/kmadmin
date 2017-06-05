@@ -10,6 +10,7 @@ import {LocalFile, FilterFiles, File} from '../../../models/jazyk.model';
         <km-audio-file
           [fileName]="audio.local">
         </km-audio-file>
+        <img src="/assets/img/flags/{{audio.local.slice(0,2)}}.png" class="flag">
       </li>
     </ul>
     <div class="clearfix"></div>

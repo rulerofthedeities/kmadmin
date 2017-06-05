@@ -124,7 +124,8 @@ export abstract class JazykDetailForm implements OnChanges, OnInit {
       lan: data.lan,
       word: data.word,
       wordTpe: data.wordTpe,
-      images: this.detail.images
+      images: this.detail.images,
+      audios: this.detail.audios
     };
     return detail;
   }

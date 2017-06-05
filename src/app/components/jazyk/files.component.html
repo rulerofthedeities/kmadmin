@@ -11,6 +11,7 @@ Files:
 <div *ngIf="tpe">
   <km-filter-files 
     [tpe]="tpe" 
+    [showLan]="true"
     (selectedFilter)="onSelectedFilter($event)">
   </km-filter-files>
 
@@ -21,7 +22,10 @@ Files:
   <ul class="list-group files" [class.audio]="tpe==='audio'">
     <li *ngFor="let file of files; let i = index" class="list-group-item">
       <div class="data">
-        <div><strong>{{file.name}}</strong></div>
+        <div>
+          <img src="/assets/img/flags/{{file.lan}}.png" class="flag" *ngIf="tpe==='audio'">
+          <strong>{{file.name}}</strong>
+        </div>
         <div *ngIf="tpe==='images'" class="size">
           <div>{{file.size | fileSize:0}}</div>
           <div>{{file.localFile}}</div>

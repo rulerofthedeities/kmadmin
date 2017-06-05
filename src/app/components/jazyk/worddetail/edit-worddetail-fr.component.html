@@ -136,18 +136,48 @@ DETAIL FR
       <div (click)="toggleImageFilter()" class="filtertoggle">
         <span 
           class="fa fa-chevron-circle-right"
-          [ngStyle]="{display:showDetailFilter ? 'none' : 'inline'}">  
+          [ngStyle]="{display:showDetailImageFilter ? 'none' : 'inline'}">  
         </span>
         <span 
           class="fa fa-chevron-circle-down"
-          [ngStyle]="{display:!showDetailFilter ? 'none' : 'inline'}">  
+          [ngStyle]="{display:!showDetailImageFilter ? 'none' : 'inline'}">  
         </span>
         Add images
       </div>
       <km-image-filter
-        [ngStyle]="{display: showDetailFilter ? 'block': 'none'}"
+        [ngStyle]="{display: showDetailImageFilter ? 'block': 'none'}"
         (selectedImage)="onSelectedImage($event);">
       </km-image-filter>
+    </div>
+
+  <!-- audio -->
+    <label 
+      for="audio" 
+      class="control-label col-xs-3">
+      Audio:
+    </label>
+    <div class="col-xs-9">
+      <km-audio-list
+        [audios]="detail.audios"
+        (removeAudio)=onRemoveAudio($event)>
+      </km-audio-list>
+      <div (click)="toggleAudioFilter()" class="filtertoggle">
+        <span 
+          class="fa fa-chevron-circle-right"
+          [ngStyle]="{display:showDetailAudioFilter ? 'none' : 'inline'}">  
+        </span>
+        <span 
+          class="fa fa-chevron-circle-down"
+          [ngStyle]="{display:!showDetailAudioFilter ? 'none' : 'inline'}">  
+        </span>
+        Add audio
+      </div>
+      <km-audio-filter
+        [ngStyle]="{display: showDetailAudioFilter ? 'block': 'none'}"
+        [lan]="detail.lan"
+        [word]="detail.word"
+        (selectedAudio)="onSelectedAudio($event);">
+      </km-audio-filter>
     </div>
     
   <!-- INFO FIELDS -->
@@ -172,11 +202,13 @@ DETAIL FR
     </div>
   </div>
   
-Detail exists: {{detailExists}}<br>
-    <pre>Form value: {{ detailForm.value | json }}</pre>
-    <p>Form status: {{ detailForm.status | json }}</p>
-    <p>Form dirty: {{ detailForm.dirty |json }}</p>
+  <p>Form status: {{ detailForm.status | json }}</p>
 
 </form>
 
-<pre>{{detail|json}}</pre>
+<div 
+  class="btn btn-warning" 
+  *ngIf="detailOnly && detailExists" 
+  (click)="newDetail()">
+  New Detail
+</div>

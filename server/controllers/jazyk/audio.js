@@ -14,6 +14,7 @@ processSwac = function(res, data) {
       case 'nld': prefix = 'nl-'; break;
       case 'fra': prefix = 'fr-'; break;
       case 'ita': prefix = 'it-'; break;
+      // case 'eng': prefix = 'gb-'; break; //Region: London
       case 'eng': prefix = 'us-'; break; //Region: Midwest
       case 'spa': prefix = 'mx-'; break; //Region: Mexico
     }

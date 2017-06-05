@@ -31,6 +31,18 @@
         Exact match
       </label>
     </div>
+    <div class="form-group" *ngIf="tpe==='audio' && showLan">
+      <label for="lanFilter" class="sr-only">Filter woord:</label>
+      <select 
+        class="form-control" 
+        id="tpe"
+        (change)="onFilterChanged()"
+        [(ngModel)]="filter.lanCode">
+        <option *ngFor="let region of regions" [value]="region === 'any' ? '' : region">
+          {{region}}
+        </option>
+      </select>
+    </div>
   </div>
 </div>
 

@@ -1,16 +1,22 @@
-.files {width:340px;}
+.files {
+  width:600px;
+}
 .thumb {
-  width:100px;
   border:1px solid #333;
+  width:100px;
 }
 .data {
   float: right;
   width: 200px;
 }
 .audio .data {
-  width: 270px;
+  width: 520px;
 }
 .size {
   color: #666;
   font-size: 10px;
+}
+.flag {
+  border: 1px solid #333;
+  width: 20px;
 }

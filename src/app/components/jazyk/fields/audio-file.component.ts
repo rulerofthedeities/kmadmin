@@ -5,13 +5,11 @@ import {JazykService} from '../../../services/jazyk.service';
 @Component({
   selector: 'km-audio-file',
   template: `
-    <div>
-      <span (click)="onPlay()" class="fa fa-play-circle" [ngClass]="{
-        'fa-play-circle': !audio || audio.ended ? true : false,
-        'fa-pause-circle': audio && !audio.ended ? true : false
-        }">
-      </span>
-    </div>
+    <span (click)="onPlay()" class="fa fa-play-circle" [ngClass]="{
+      'fa-play-circle': !audio || audio.ended ? true : false,
+      'fa-pause-circle': audio && !audio.ended ? true : false
+      }">
+    </span>
   `,
   styleUrls: ['./files.css']
 })
@@ -33,17 +31,8 @@ export class JazykAudioFileComponent implements OnInit {
     event.stopPropagation();
     if (!this.audio) {
       this.audio = new Audio();
-      this.audio.src = this.localFilePath + this.fileName;
+      this.audio.src = this.localFilePath + this.fileName.replace('#', '%23');
       this.audio.load();
-      this.audio.play();
-      /*
-      this.audio.onplaying = () => {
-        console.log('The audio is now playing');
-      };
-      */
-      this.audio.onended = () => {
-        console.log('The audio has ended');
-      };
     } else {
       if (this.audio.ended || this.audio.paused) {
         this.audio.play();
@@ -51,5 +40,15 @@ export class JazykAudioFileComponent implements OnInit {
         this.audio.pause();
       }
     }
+    this.audio.onended = () => {
+      console.log('The audio has ended');
+    };
+    this.audio.onloadeddata = () => {
+      console.log('The audio has loaded');
+      this.audio.play();
+    };
+    this.audio.onplaying = () => {
+      console.log('The audio is now playing');
+    };
   }
 }

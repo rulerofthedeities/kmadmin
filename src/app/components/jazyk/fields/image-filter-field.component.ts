@@ -1,4 +1,4 @@
-import {Component, OnInit, Output, OnDestroy, EventEmitter} from '@angular/core';
+import {Component, Input, OnInit, Output, OnDestroy, EventEmitter} from '@angular/core';
 import {JazykService} from '../../../services/jazyk.service';
 import {ErrorService} from '../../../services/error.service';
 import {LocalFile, FilterFiles, File} from '../../../models/jazyk.model';
@@ -9,6 +9,7 @@ import 'rxjs/add/operator/takeWhile';
   template: `
     <km-filter-files
       tpe="images" 
+      [word]="word"
       (selectedFilter)="onSelectedImageFilter($event)">
     </km-filter-files>
     <ul class="list-group files">
@@ -21,6 +22,7 @@ import 'rxjs/add/operator/takeWhile';
   styleUrls: ['files.css']
 })
 export class JazykImageFieldComponent implements OnInit, OnDestroy {
+  @Input() word: string;
   @Output() selectedImage = new EventEmitter<File>();
   private componentActive = true;
   images: LocalFile[];

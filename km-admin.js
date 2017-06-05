@@ -26,7 +26,6 @@ app.use(express.static(path.join(__dirname, 'dist')));
 app.use('/images', express.static(path.join(__dirname, '/files/jazyk/images/publish')));
 app.use('/audio', express.static(path.join(__dirname, '/files/jazyk/audio/publish')));
 
-
 //routing
 routes.initialize(app, new express.Router());
 
@@ -35,7 +34,7 @@ var options = {
   server: { socketOptions: { keepAlive: 1, connectTimeoutMS: 30000 } },
   replset: { socketOptions: { keepAlive: 1, connectTimeoutMS: 30000 } }
 };
-//mongoose.Promise = require('bluebird');
+mongoose.Promise = require('bluebird');
 mongoose.connect(db_url, options, function(err) {
   indexes.create(function() {
     app.listen(app.get('port'), function() { 

@@ -9,6 +9,7 @@ import 'rxjs/add/operator/takeWhile';
   template: `
     <km-filter-files
       tpe="audio" 
+      [word]="word"
       (selectedFilter)="onSelectedAudioFilter($event)">
     </km-filter-files>
     <ul class="list-group files">
@@ -24,6 +25,7 @@ import 'rxjs/add/operator/takeWhile';
 })
 export class JazykAudioFieldComponent implements OnDestroy {
   @Input() lan: string;
+  @Input() word: string;
   @Output() selectedAudio = new EventEmitter<File>();
   private componentActive = true;
   audios: LocalFile[];
@@ -51,9 +53,7 @@ export class JazykAudioFieldComponent implements OnDestroy {
   }
 
   selectAudio(i: number) {
-    console.log('selected ', this.audios[i]);
     const audio: LocalFile = this.audios[i];
-    
     let selected: File;
     if (audio) {
       selected = {

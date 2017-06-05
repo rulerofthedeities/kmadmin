@@ -221,6 +221,7 @@ DETAIL NL
       </div>
       <km-image-filter
         [ngStyle]="{display: showDetailImageFilter ? 'block': 'none'}"
+        [word]="detail.word"
         (selectedImage)="onSelectedImage($event);">
       </km-image-filter>
     </div>
@@ -250,6 +251,7 @@ DETAIL NL
       <km-audio-filter
         [ngStyle]="{display: showDetailAudioFilter ? 'block': 'none'}"
         [lan]="detail.lan"
+        [word]="detail.word"
         (selectedAudio)="onSelectedAudio($event);">
       </km-audio-filter>
     </div>
@@ -277,19 +279,14 @@ DETAIL NL
   </div>
 
   <div>
-    Detail Only: {{detailOnly}}<br>
-    Detail exists: {{detailExists}}<br>
     Form status: {{ detailForm.status | json }}<br>
-    Form dirty: {{ detailForm.dirty |json }}
   </div>
 
 </form>
 
-  <div 
-    class="btn btn-warning" 
-    *ngIf="detailOnly && detailExists" 
-    (click)="newDetail()">
-    New Detail
-  </div>
-
-<pre>{{detail|json}}</pre>
+<div 
+  class="btn btn-warning" 
+  *ngIf="detailOnly && detailExists" 
+  (click)="newDetail()">
+  New Detail
+</div>

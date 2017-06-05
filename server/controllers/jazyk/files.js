@@ -33,10 +33,7 @@ module.exports = {
         contentTpe = 'image/'
         break;
       case 'audio':
-        const lan = legacyFileName.split('_')[0];
-        if (lan === 'gb' || lan === 'us') {
-          lan = 'en';
-        }
+        const lan = legacyFileName.split('-')[0];
         localPath = '/projects/kmodo/km-admin/files/jazyk/audio/publish/';
         s3Folder = 'audio/' + lan + '/';
         contentTpe = 'audio/'
@@ -98,7 +95,7 @@ module.exports = {
             name: search
           };
     if (lan) {
-      q.lan = lan
+      q.lan = lan ==='en' ? {$in: ['gb', 'us']} : lan;
     }
 
     Files.find(q, {}, {limit: 20, sort:{localFile: 1}}, function(err, files) {
