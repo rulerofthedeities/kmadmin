@@ -26,11 +26,11 @@ export class JazykDetailFormEnComponent extends JazykDetailForm implements OnIni
   }
 
   buildForm() {
+    super.buildForm();
     this.regions = this.config.regions;
     if (this.regions[0] !== this.detail.lan) {
       this.regions.unshift(this.detail.lan);
     }
-    super.buildForm();
     this.addControls();
   }
 

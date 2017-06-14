@@ -1,7 +1,6 @@
 {
   "name": "km-admin",
   "version": "0.0.0",
-  "license": "MIT",
   "scripts": {
     "preinstall": "npm install pm2 -g",
     "ng": "ng",

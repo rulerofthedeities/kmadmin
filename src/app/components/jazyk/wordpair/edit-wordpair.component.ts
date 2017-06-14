@@ -65,6 +65,7 @@ export class JazykEditWordPairComponent implements OnInit, OnDestroy {
     let lan1, lan2;
     this.isSubmitted[i] = false;
     if (wordpair) {
+      console.log('wordpair id', wordpair._id);
       lan1 = wordpair.lanPair[0];
       lan2 = wordpair.lanPair[1];
     }
@@ -201,6 +202,7 @@ export class JazykEditWordPairComponent implements OnInit, OnDestroy {
   private setExistingDetail(detail: WordDetail, i: number, w: string) {
     // Set id in wordpair form
     this.wordForms[i].patchValue({['detailId' + w]: detail._id});
+    this.wordForms[i].markAsDirty();
     // Form helpers
     this['detail' + w][i] = detail;
     this.formHelpers[i]['detail' + w].hasDetail = true;
