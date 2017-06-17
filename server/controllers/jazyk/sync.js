@@ -288,7 +288,7 @@ let saveCSDetail = function(newWordDetailCs, newWordDetailCsP, newWord, newWordC
         jazykDetailModel.create(newWordDetailCsP, function (err, result) {
           if (!err) {
             if(newWordCsP) {
-              newWordCsP.cs.detailId = newWordDetailCsP._id;
+              newWordCsP.cs.detailId = result._id;
             }
             saveDocs(newWord, newWordCsP, word, function(err){
               callback(err);

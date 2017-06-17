@@ -15,7 +15,7 @@ import 'rxjs/add/operator/takeWhile';
     Compare nl words in cznl with nl words in jazyk
     <div class="compareResult" *ngIf="compare?.words">
       <div>{{compare.words|json}}</div>
-      <button class="btn btn-danger" (click)="onRemoveWords()">
+      <button class="btn btn-danger disabled" disabled="true" (click)="onRemoveWords()">
         Remove cz & nl words from jazyk
       </button><br>
       <div>{{removed|json}}</div><br>

@@ -4,7 +4,8 @@ let async = require('async'),
     countWord, searchwords, CountModel;
 
 getSingleWordCount = function(word, callback) {
-  countWord = word.toLowerCase();
+  countWord = word.toLowerCase().replace(/\?|\!/g, '');
+  console.log('fetching score for word', countWord);
   
   CountModel.findOne({_id: countWord}, {_id:0, score:1}, function(err, count) {
     countData.wordCount = countData.wordCount + 1;

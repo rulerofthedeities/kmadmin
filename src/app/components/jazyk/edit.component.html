@@ -19,7 +19,8 @@
       ></km-filter-list>
     </div>
     <div class="col-xs-9" *ngIf="tpe==='wordpairs'">
-      <km-edit-wordpair #edit>
+      <km-edit-wordpair #edit
+        [filterLan]="lan">
       </km-edit-wordpair>
     </div>
     <div class="col-xs-9" *ngIf="tpe==='worddetails'">

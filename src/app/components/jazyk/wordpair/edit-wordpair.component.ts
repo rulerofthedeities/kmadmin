@@ -34,6 +34,7 @@ interface FormHelper {
 })
 
 export class JazykEditWordPairComponent implements OnInit, OnDestroy {
+  @Input() filterLan: string = 'fr';
   @ViewChildren('df1') detailForms1: QueryList<JazykDetailForm>;
   @ViewChildren('df2') detailForms2: QueryList<JazykDetailForm>;
   private componentActive = true;
@@ -73,7 +74,7 @@ export class JazykEditWordPairComponent implements OnInit, OnDestroy {
       word1: wordpair ? wordpair[lan1].word : '',
       lan1: wordpair ? wordpair.lanPair[0] : 'nl',
       word2: wordpair ? wordpair[lan2].word : '',
-      lan2: wordpair ? wordpair.lanPair[1] : 'fr',
+      lan2: wordpair ? wordpair.lanPair[1] : this.filterLan,
       tpe: wordpair ? wordpair.wordTpe : ''
     };
     this.formHelpers[i] = {
@@ -161,7 +162,7 @@ export class JazykEditWordPairComponent implements OnInit, OnDestroy {
   getDetailByFilter(i: number, w: string) {
     // Look for a word detail document for this word
     const filter: Filter = {
-      word: this.detailFilterData[i]['word' + w],
+      word: this.detailFilterData[i]['word' + w].replace(/\?|\!/g, ''),
       lanCode: this.detailFilterData[i]['lan' + w],
       wordTpe: this.detailFilterData[i]['tpe'],
       isFromStart: true,
@@ -201,8 +202,12 @@ export class JazykEditWordPairComponent implements OnInit, OnDestroy {
 
   private setExistingDetail(detail: WordDetail, i: number, w: string) {
     // Set id in wordpair form
-    this.wordForms[i].patchValue({['detailId' + w]: detail._id});
-    this.wordForms[i].markAsDirty();
+    if (this.wordForms[i].value['detailId' + w] !== detail._id) {
+      console.log('Detail Id for', w, ' has changed to:', this.wordForms[i].value['detailId' + w]);
+      this.wordForms[i].patchValue({['detailId' + w]: detail._id});
+      this.wordForms[i].markAsDirty();
+    }
+
     // Form helpers
     this['detail' + w][i] = detail;
     this.formHelpers[i]['detail' + w].hasDetail = true;
@@ -415,17 +420,16 @@ export class JazykEditWordPairComponent implements OnInit, OnDestroy {
     let wordpair: WordPair = null;
     if (i > 0) {
       // copy data from previous word
-      const newLan = 'fr';
       wordpair = {
         _id: '',
         docTpe: 'wordpair',
         wordTpe: this.wordForms[0].value['wordTpe'],
-        lanPair: [this.wordForms[0].value['lan1'], newLan],
+        lanPair: [this.wordForms[0].value['lan1'], this.filterLan],
         tags: this.wordForms[0].value['tags'] ? this.wordForms[0].value['tags'].split(';') : '',
         [this.wordForms[0].value['lan1']]: {
           word: this.wordForms[0].value['word1']
         },
-        [newLan]: {word: ''}
+        [this.filterLan]: {word: ''}
       };
     }
     this.createNewWordPair(wordpair, i);
