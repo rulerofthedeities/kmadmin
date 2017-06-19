@@ -17,25 +17,6 @@ DETAIL NL
   <div *ngIf="!isRead()">
     <div class="form-group">
       <label 
-        for="tpe" 
-        class="control-label col-xs-3">
-        Word Type:
-      </label>
-      <div class="col-xs-9">
-        <select 
-          class="form-control" 
-          id="tpe"
-          (change)="rebuildControls()"
-          formControlName="wordTpe">
-          <option *ngFor="let t of wordTpes" [value]="t.val">
-            {{t.label}}
-          </option>
-        </select>
-      </div>
-    </div>
-
-    <div class="form-group">
-      <label 
         for="word" 
         class="control-label col-xs-3">
         Word:
@@ -46,6 +27,26 @@ DETAIL NL
           id="word"
           formControlName="word">
       </div>
+    </div>
+  </div>
+
+<!-- ALL WORD TYPES -->
+  <div class="form-group">
+    <label 
+      for="tpe" 
+      class="control-label col-xs-3">
+      Type:
+    </label>
+    <div class="col-xs-9">
+      <select 
+        class="form-control" 
+        id="tpe"
+        (change)="rebuildControls()"
+        formControlName="wordTpe">
+        <option *ngFor="let t of wordTpes" [value]="t.val">
+          {{t.label}}
+        </option>
+      </select>
     </div>
   </div>
 

@@ -16,7 +16,7 @@ export interface TpeList {
 export interface Filter {
   word: string;
   lanCode: string;
-  wordTpe: string;
+  wordTpe?: string;
   isFromStart?: boolean;
   isExact?: boolean;
   returnTotal?: boolean;
@@ -63,7 +63,6 @@ interface Word {
 export interface WordPair {
   _id: string;
   docTpe: string;
-  wordTpe: string;
   lanPair: string[];
   cs?: Word;
   de?: Word;

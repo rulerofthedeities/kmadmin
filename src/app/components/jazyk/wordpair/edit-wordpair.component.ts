@@ -75,7 +75,7 @@ export class JazykEditWordPairComponent implements OnInit, OnDestroy {
       lan1: wordpair ? wordpair.lanPair[0] : 'nl',
       word2: wordpair ? wordpair[lan2].word : '',
       lan2: wordpair ? wordpair.lanPair[1] : this.filterLan,
-      tpe: wordpair ? wordpair.wordTpe : ''
+      tpe: ''
     };
     this.formHelpers[i] = {
       detail1: {hasDetail: false, hasMultiple: false, showDetail: false, details: null},
@@ -89,7 +89,6 @@ export class JazykEditWordPairComponent implements OnInit, OnDestroy {
     wordpair = wordpair ? wordpair : {
       _id: '',
       docTpe: 'wordpair',
-      wordTpe: '',
       lanPair: ['nl', 'cs'],
       tags: [],
       nl: {
@@ -423,7 +422,6 @@ export class JazykEditWordPairComponent implements OnInit, OnDestroy {
       wordpair = {
         _id: '',
         docTpe: 'wordpair',
-        wordTpe: this.wordForms[0].value['wordTpe'],
         lanPair: [this.wordForms[0].value['lan1'], this.filterLan],
         tags: this.wordForms[0].value['tags'] ? this.wordForms[0].value['tags'].split(';') : '',
         [this.wordForms[0].value['lan1']]: {
@@ -441,7 +439,6 @@ export class JazykEditWordPairComponent implements OnInit, OnDestroy {
     const wordpairForm = this.formBuilder.group({
       _id: [wordpair._id],
       docTpe: [wordpair.docTpe],
-      wordTpe: [wordpair.wordTpe, [Validators.required]],
       tags: [wordpair.tags ? wordpair.tags.join(';') : ''],
       lan1: [wordpair.lanPair[0]],
       lan2: [wordpair.lanPair[1]],

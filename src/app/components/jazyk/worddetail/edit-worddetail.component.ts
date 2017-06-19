@@ -42,7 +42,7 @@ export abstract class JazykDetailForm implements OnChanges, OnInit {
   }
 
   rebuildControls() {
-    this.detail.wordTpe = this.detailForm.value['wordTpe'];
+    // this.detail.wordTpe = this.detailForm.value['wordTpe'];
     this.addControls();
   }
 
@@ -63,16 +63,15 @@ export abstract class JazykDetailForm implements OnChanges, OnInit {
   buildDetailForm() {
     if (!this.detailOnly) {
       // get data from wordpair
-      this.detail.wordTpe = this.wordTpe;
       this.detail.lan = this.lan;
       this.detail.word = this.word;
     }
     this.detailForm = this.formBuilder.group({
       '_id': [this.detail._id],
       'docTpe': ['details'],
-      'wordTpe': [this.detail.wordTpe],
       'lan': [this.detail.lan],
-      'word': [this.detail.word]
+      'word': [this.detail.word],
+      'wordTpe': [this.detail.wordTpe]
     });
   }
 
@@ -106,7 +105,10 @@ export abstract class JazykDetailForm implements OnChanges, OnInit {
     );
   }
 
-  addControls() {}
+  addControls() {
+    const control = new FormControl(this.detail.wordTpe, Validators.required);
+    this.detailForm.addControl('wordTpe', control);
+  }
 
   postProcessFormData(data: any): any {
     return data;
@@ -118,6 +120,7 @@ export abstract class JazykDetailForm implements OnChanges, OnInit {
   }
 
   copyDetail(data: any): WordDetail {
+    console.log('copy detail', data);
     const detail: WordDetail = {
       _id: data._id,
       docTpe: data.docTpe,

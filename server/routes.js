@@ -4,6 +4,7 @@ var path = require("path"),
     sync_databases = require("./controllers/sync/databases"),
     sync_sync = require("./controllers/sync/sync"),
     jazyk_sync = require("./controllers/jazyk/sync"),
+    jazyk_fix = require("./controllers/jazyk/fix"),
     jazyk_edit = require("./controllers/jazyk/edit"),
     jazyk_config = require("./controllers/jazyk/config"),
     jazyk_files = require("./controllers/jazyk/files"),
@@ -35,10 +36,13 @@ module.exports.initialize = function(app, router) {
   router.get('/jazyk/sync/add/sentences', jazyk_sync.addSentences);
   router.get('/jazyk/sync/removecz', jazyk_sync.removeWords);
 
+  router.get('/jazyk/fix/movetpe', jazyk_fix.movetpe);
+
   router.get('/jazyk/wordpairs', jazyk_edit.getWordPairs);
   router.get('/jazyk/worddetails', jazyk_edit.getWordDetails);
   router.get('/jazyk/worddetail/filter', jazyk_edit.getWordDetailByFilter);
   router.get('/jazyk/worddetail/id', jazyk_edit.getWordDetailById);
+  router.get('/jazyk/worddetail/wordtpe', jazyk_edit.getWordTpe);
   router.get('/jazyk/config/lan/:lan', jazyk_config.getLanConfig);
   router.get('/jazyk/wordpair/exists', jazyk_edit.checkWordpairExists);
   router.get('/jazyk/tags', jazyk_edit.getTags);

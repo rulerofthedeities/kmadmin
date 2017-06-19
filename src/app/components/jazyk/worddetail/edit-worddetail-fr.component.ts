@@ -33,7 +33,8 @@ export class JazykDetailFormFrComponent extends JazykDetailForm implements OnIni
   addControls() {
     let control: FormControl;
     this.genera = this.config.genera;
-    switch (this.detail.wordTpe) {
+    const wordTpe = this.detailForm.value['wordTpe'];
+    switch (wordTpe) {
       case 'noun':
         control = new FormControl(this.detail.genus, Validators.required);
         this.detailForm.addControl('genus', control);

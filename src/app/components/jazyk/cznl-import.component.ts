@@ -12,6 +12,7 @@ import 'rxjs/add/operator/takeWhile';
     <button class="btn btn-primary" (click)="onCompareSentences()">
       Compare nl sentences
     </button>
+
     Compare nl words in cznl with nl words in jazyk
     <div class="compareResult" *ngIf="compare?.words">
       <div>{{compare.words|json}}</div>
@@ -31,6 +32,11 @@ import 'rxjs/add/operator/takeWhile';
         Add new nl sentences
       </button>
     </div>
+
+
+    <button class="btn btn-primary" (click)="onMoveWordTpe()">
+      Move wordTpe to language objects
+    </button>
 
   `
 })
@@ -84,6 +90,15 @@ export class CznlImportComponent implements OnDestroy {
   onAddSentences() {
     this.jazykService
     .addNlSentences()
+    .takeWhile(() => this.componentActive)
+    .subscribe(
+      result => {console.log(result); }
+    );
+  }
+
+  onMoveWordTpe() {
+    this.jazykService
+    .moveWordTpe()
     .takeWhile(() => this.componentActive)
     .subscribe(
       result => {console.log(result); }

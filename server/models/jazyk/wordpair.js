@@ -16,7 +16,6 @@ var wordLangSchema = new Schema({
 
 var wordSchema = new Schema({
   docTpe: {type: String, default: 'wordpair'},
-  wordTpe: {type: String, required: true},
   lanPair: [String],
   tags: [String],
   cs: wordLangSchema,

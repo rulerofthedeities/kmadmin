@@ -33,9 +33,11 @@ export class JazykDetailFormNlComponent extends JazykDetailForm implements OnIni
   }
 
   addControls() {
+    super.addControls();
     let control: FormControl;
     this.articles = this.config.articles;
-    switch (this.detail.wordTpe) {
+    const wordTpe = this.detailForm.value['wordTpe'];
+    switch (wordTpe) {
       case 'noun':
         control = new FormControl(this.detail.article, Validators.required);
         this.detailForm.addControl('article', control);

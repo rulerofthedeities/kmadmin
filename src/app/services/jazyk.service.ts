@@ -14,7 +14,6 @@ export class JazykService {
     private http: Http
   ) {}
 
-
 /* Sync */
 
   compareNlWords() {
@@ -49,6 +48,13 @@ export class JazykService {
     // Add nl sentences from cznl to jazyk
     return this.http
     .get('/api/jazyk/sync/add/sentences')
+    .map(conn => conn.json().obj)
+    .catch(error => Observable.throw(error));
+  }
+  moveWordTpe() {
+    // Move wordtpe from wordpair body to wordpair nl/cs
+    return this.http
+    .get('/api/jazyk/fix/movetpe')
     .map(conn => conn.json().obj)
     .catch(error => Observable.throw(error));
   }
@@ -151,6 +157,15 @@ export class JazykService {
     headers.append('Content-Type', 'application/json');
     return this.http
     .put('/api/jazyk/detail', JSON.stringify(detailFormData), {headers})
+    .map(response => response.json().obj)
+    .catch(error => Observable.throw(error));
+  }
+
+  getWordTpe(detailId: string) {
+    const params = new URLSearchParams();
+    params.set('id', detailId);
+    return this.http
+    .get('/api/jazyk/worddetail/wordtpe/', {search: params})
     .map(response => response.json().obj)
     .catch(error => Observable.throw(error));
   }

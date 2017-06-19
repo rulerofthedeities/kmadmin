@@ -148,6 +148,15 @@ module.exports = {
       });
     });
   },
+  getWordTpe: function(req, res) {
+    const detailId = req.query.id;
+    WordDetail.findOne({_id:detailId}, {_id:0, 'wordTpe':1}, {}, function(err, wordTpe) {
+      console.log(wordTpe, wordTpe);
+      response.handleError(err, res, 500, 'Error fetching wordTpe', function(){
+        response.handleSuccess(res, wordTpe, 200, 'Fetched wordTpe');
+      });
+    });
+  },
   checkWordpairExists: function(req, res) {
     const query = req.query,
           wordTpe = query.wordTpe,

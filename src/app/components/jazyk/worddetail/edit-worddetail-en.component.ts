@@ -38,7 +38,8 @@ export class JazykDetailFormEnComponent extends JazykDetailForm implements OnIni
     let control: FormControl;
     control = new FormControl(this.detail.region, Validators.required);
     this.detailForm.addControl('region', control);
-    switch (this.detail.wordTpe) {
+    const wordTpe = this.detailForm.value['wordTpe'];
+    switch (wordTpe) {
       case 'noun':
         control = new FormControl(this.detail.plural);
         this.detailForm.addControl('plural', control);

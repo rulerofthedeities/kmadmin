@@ -38,7 +38,8 @@ export class JazykDetailFormCsComponent extends JazykDetailForm implements OnIni
     this.genera = this.config.genera;
     this.aspects = this.config.aspects;
     this.cases = this.config.cases;
-    switch (this.detail.wordTpe) {
+    const wordTpe = this.detailForm.value['wordTpe'];
+    switch (wordTpe) {
       case 'noun':
         this.detail.case = this.detail.case ?  this.detail.case : '1';
         control = new FormControl(this.detail.genus, Validators.required);

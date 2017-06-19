@@ -4,14 +4,14 @@
     (click)="selectListWordPair(i)"
     [ngClass]="{'active': i === selectedListWord,'inactive': i !== selectedListWord}">
      
-    <div [tooltip]="wordpairTooltip" tooltipPlacement="top">
+    <div [tooltip]="wordpairTooltip" tooltipPlacement="top" on-mouseover='getWordTpe(i)'>
       {{getWordPair(wordpair)}}
     </div>
 
     <tooltip-content #wordpairTooltip>
       <ul class="list-unstyled">
         <li class="wordpairTT">
-          {{wordpair.wordTpe}}
+          {{wordpair[lan].wordTpe}}
         </li>
         <li class="wordpairTT">
           <span class="ttLbl">{{wordpair.lanPair[0]}}:</span> {{wordpair[wordpair.lanPair[0]].word}}

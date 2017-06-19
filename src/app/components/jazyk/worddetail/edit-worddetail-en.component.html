@@ -17,35 +17,35 @@ DETAIL EN
   <div *ngIf="!isRead()">
     <div class="form-group">
       <label 
-        for="tpe" 
-        class="control-label col-xs-2">
-        Word Type:
-      </label>
-      <div class="col-xs-10">
-        <select 
-          class="form-control" 
-          id="tpe"
-          (change)="rebuildControls()"
-          formControlName="wordTpe">
-          <option *ngFor="let t of wordTpes" [value]="t.val">
-            {{t.label}}
-          </option>
-        </select>
-      </div>
-    </div>
-
-    <div class="form-group">
-      <label 
         for="word" 
-        class="control-label col-xs-2">
+        class="control-label col-xs-3">
         Word:
       </label>
-      <div class="col-xs-10">
+      <div class="col-xs-9">
         <input 
           class="form-control" 
           id="word"
           formControlName="word">
       </div>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label 
+      for="tpe" 
+      class="control-label col-xs-3">
+      Word Type:
+    </label>
+    <div class="col-xs-9">
+      <select 
+        class="form-control" 
+        id="tpe"
+        (change)="rebuildControls()"
+        formControlName="wordTpe">
+        <option *ngFor="let t of wordTpes" [value]="t.val">
+          {{t.label}}
+        </option>
+      </select>
     </div>
   </div>
 
